@@ -1,0 +1,54 @@
+﻿# FIRST PARAMETERS FOR CALIBRATING ANIMALJAMMODEL
+# USING ECJ LIBRARY
+
+# params file to be loaded for the algorithm and the problem calibration
+parent.0 =	./algorithms/GGA_TOURNAMENT_SBX_RESET.params
+parent.1 =	./problems/ANIMALJAM_5PARAMS_STATICNET_MC15.params
+
+# general parameters for the optimization, stopping criteria and seed
+eval.problem.error-measure = eucl
+
+# Seed for the optimizer
+seed.0 = 1
+
+# number of GA runs (automatically use different set of random numbers)
+jobs = 1
+
+# number of generations of each GA job
+generations = 2
+
+# The Animal Jam problem takes two properties files: one for TRA and TST
+eval.problem.parameter-file = ./config/calibration/BassSF1000agentsTra.properties
+eval.problem.parameter-file-test = ./config/calibration/BassSF1000agentsTst.properties
+
+# statistics files to replaced for the run
+eval.problem.output-file = ./log/output_describe
+stat.file = ../log/outGeneral.stat
+stat.child.0.pop-file = ../log/outAllInd.stat
+
+# Add our statistics object
+stat = ec.simple.SimpleStatistics
+stat.do-time = true
+# NOT TO WRITE GENERATIONAL STATS
+# stat.do-generation = false
+# NOT TO PRINT FINAL DESCRIBE METHOD
+# stat.do-final = false
+# NOT TO SEE SCREEN MESSAGES
+# stat.do-message = false
+# NOT TO PRINT ANYTHING (BOTH SCREEN AND FILE)
+#stat.silent = true
+
+# another statistics object to store all the individuals
+stat.num-children = 1
+stat.child.0 = optimizer.StatsAllIndividuals
+# NOT TO CREATE LOG FILE OR NOT TO PRINT ANYTHING (BOTH FILE AND SCREEN)
+# stat.child.0.silent.file = true
+# stat.child.0.silent = true
+
+# for multithreading
+# breedthreads = auto
+# evalthreads = auto
+
+
+
+

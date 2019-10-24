@@ -1,0 +1,38 @@
+# PARAMETERS DEFINITION ECJ LIBRARY
+# STANDARD GENERATIONAL SINGLEOBJECTIVE GA 
+# 100 POP SIZE
+# K=3 TOURNAMENT SELECTION
+# SBX CROSSOVER
+# RESET MUTATION
+# -----------------------------------------
+
+# The type of model to build
+parent.0		= ./simple.params
+pop.subpop.0.size = 100
+
+pop.subpop.0.species		= ec.vector.FloatVectorSpecies
+pop.subpop.0.species.ind	= ec.vector.DoubleVectorIndividual
+pop.subpop.0.species.fitness 	= ec.simple.SimpleFitness
+
+# defining breed for crossover, mutation and tournament selection (k=3)
+pop.subpop.0.species.pipe			= ec.vector.breed.VectorMutationPipeline
+pop.subpop.0.species.pipe.source.0		= ec.vector.breed.VectorCrossoverPipeline
+pop.subpop.0.species.pipe.source.0.source.0	= ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.1	= ec.select.TournamentSelection
+select.tournament.size		= 3
+
+# Two-points crossover
+pop.subpop.0.species.crossover-type = two
+
+# to test... better results for sure...
+# pop.subpop.0.species.crossover-type = sbx
+# pop.subpop.0.species.crossover-distribution-index = 20
+
+# Reset mutation (for floats we have reset, gauss or polynomial)
+pop.subpop.0.species.mutation-type	= reset
+pop.subpop.0.species.mutation-prob	= 0.1
+
+# Use Gaussian Convolution with a standard deviation of 0.5
+# pop.subpop.0.species.mutation-type = gauss
+# pop.subpop.0.species.mutation-stdev = 0.5
+# pop.subpop.0.species.mutation-bounded = true
