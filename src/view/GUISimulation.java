@@ -147,7 +147,7 @@ public class GUISimulation extends GUIState {
 
         chart = new TimeSeriesChartGenerator();
         chart.setTitle("Total Subscriptions evolution");
-        chart.setYAxisLabel("# subscriptors");
+        chart.setYAxisLabel("# Purchases");
         chart.setXAxisLabel("Time");
 
         chartFrame = chart.createFrame();
@@ -158,7 +158,7 @@ public class GUISimulation extends GUIState {
 
         chart2 = new TimeSeriesChartGenerator();
         chart2.setTitle("New Subscriptions and historical data");
-        chart2.setYAxisLabel("# subscriptors");
+        chart2.setYAxisLabel("# Purchases");
         chart2.setXAxisLabel("Time");
 
         chartFrame2 = chart2.createFrame();
