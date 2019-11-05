@@ -52,7 +52,7 @@ public class ConsoleSimulation {
                         + " ; \nand config file " + fileName
                         + "\n\nRunning Agent-based DSS. Please wait...");
 
-                // load historical data
+  
                 try {
 
                     data = new HistoricalData(dataFile);
@@ -78,8 +78,6 @@ public class ConsoleSimulation {
 
             }
 
-//            double simulated[][];
-//            simulated = new double[NRUNS][(int) maxSteps];
             controller = new Controller(fileName, seed, maxSteps);
 
             int simulated2[][][] = new int[NRUNS][controller.getModelParameters().getBrands()][(int) maxSteps];
@@ -129,6 +127,7 @@ public class ConsoleSimulation {
                 System.out.println();
                 for (int k = 0; k < NRUNS; k++) {
                     for (int j = 0; j < maxSteps; j++) {
+                        
                         System.out.print("\nMacro-level simulation output for day (step) " + j + ";\n");
 
                         for (int i = 0; i < controller.getModelParameters().getBrands(); i++) {
