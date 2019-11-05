@@ -16,8 +16,9 @@
 
 hs_err_pid*
 
-build/
+build/*
 nbbuild/
-dist/
+dist/*
 nbdist/
-bin/
+bin/*
+!build.xml
