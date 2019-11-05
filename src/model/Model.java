@@ -44,7 +44,7 @@ public class Model extends SimState {
 
     int currentDay;
 
-    ModelParameters params;
+    public static ModelParameters params;
 
     Bag agents;
 
@@ -154,6 +154,10 @@ public class Model extends SimState {
     public int getCumPremiumsAtStep(int _position) {
         return cumPremiumAgents[_position];
     }
+    
+    public int getCumPurchasesToBrandAtStep(int _position, int _brand) {
+        return cumPurchases[_brand][_position];
+    }
 
     /**
      * Get the number of CUMULATIVE premium members for all the period of time
@@ -172,6 +176,10 @@ public class Model extends SimState {
     public int getNewPremiumsAtStep(int _position) {
         return newPremiumAgents[_position];
     }
+    
+    public int getNewPurchasesForBrandAtStep(int _position, int _brand) {
+        return newPurchases[_brand][_position];
+    }
 
     /**
      * Get the number of NEW premium members for all the period of time
@@ -189,8 +197,8 @@ public class Model extends SimState {
     /**
      * Get the parameter object with all the input parameters
      */
-    public ModelParameters getParametersObject() {
-        return this.params;
+    public static ModelParameters getParametersObject() {
+        return params;
     }
 
     /**

@@ -13,7 +13,10 @@ Mediante la aplicación de políticas de targeting, se estudiará la influencia 
 Give examples
 ```
 
-### Installing
+### Run
+
+Console simulation
+-noHist -configFile config/targeting/config.properties -seed 10 -runs 100 -until 365
 
 
 ## Authors
