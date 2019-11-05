@@ -62,10 +62,11 @@ public class GUISimulation extends GUIState {
     public static void main(String[] args) {
         // Standard palette (6 - Color-based palette considering colorblind)
         colorPalette = new Colors(6);
+        showSocialNetwork = true;
 
         configFileName = args[0];
 
-        if (args[1].compareTo("--noSocialNetwork") == 0) {
+        if (args.length > 1 && args[1].compareTo("--noSocialNetwork") == 0) {
             showSocialNetwork = false;
         }
 
