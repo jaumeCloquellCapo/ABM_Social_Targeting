@@ -18,6 +18,9 @@ Give examples
 Console simulation
 -noHist -configFile config/targeting/config.properties -seed 10 -runs 100 -until 365
 
+GuiSimulation
+config/targeting/config.properties
+
 
 ## Authors
 
