@@ -87,7 +87,7 @@ public class ConsoleSimulation {
             for (int i = 0; i < NRUNS; i++) {
                 controller.runModel();
 
-                ArrayList<Integer> results = controller.getNewPremiumsArray();
+                // ArrayList<Integer> results = controller.getNewPremiumsArray();
 
                 int[][] results2 = controller.getNewPuchasesOfEveryBrand(); // nrums - brand - step
 
