@@ -1,8 +1,6 @@
 package view;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
 import calibration.HistoricalData;
 import controller.Controller;
 
@@ -15,7 +13,7 @@ import controller.Controller;
 public class ConsoleSimulation {
 
     public static void main(String[] args) {
-
+        
         System.out.println("Agent-based Mk DSS running software.\n******************* "
                 + "\nLinked to paper 'Building Agent-Based Decision Support Systems \nfor "
                 + "Word-Of-Mouth Programs. A Freemium Application'. \nCo-authored by M. Chica and W. Rand "
@@ -29,6 +27,7 @@ public class ConsoleSimulation {
 
         } else if (args.length == 9) {
 
+            
             Controller controller = null;
 
             long seed = Long.parseLong(args[4]);

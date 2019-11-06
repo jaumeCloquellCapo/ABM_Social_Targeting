@@ -101,8 +101,13 @@ public class ModelParameters {
 
     // Brands params
     int maxDrivers;
+
+    double[] preferences; 
     
     int brands;
+    
+    double[][] brandDrivers; 
+    String[] brandName; 
 
     double[] segmentDailyProbBuy; // probability to buy
 
@@ -130,6 +135,34 @@ public class ModelParameters {
 
     public void setBrands(int brands) {
         this.brands = brands;
+    }
+
+    public void setBrandDrivers(int brand, double [] drivers) {
+
+        this.brandDrivers[brand] = drivers;
+    }
+
+    public void setBrandNames(int brand, String name) {
+
+        this.brandName[brand] = name;
+    }
+
+    public void setPreferences(double [] _preferences) {
+        this.preferences = _preferences;
+    }
+
+    public double[] getPreferences() {
+        return this.preferences;
+    }
+
+    public double[] getBrandDrivers(int brand) {
+
+        return this.brandDrivers[brand];
+    }
+
+    public String getBrandNames(int brand) {
+
+        return this.brandName[brand];
     }
 
     //
@@ -881,6 +914,21 @@ public class ModelParameters {
             // if (experimentType == TARGETING) {
             setBrands(this.brands = config.getParameterInteger("brands"));
             setMaxDrivers(this.maxDrivers = config.getParameterInteger("drivers"));
+
+            
+
+            this.brandDrivers = new double[this.brands][this.maxDrivers];
+            this.brandName = new String[this.brands];
+            this.preferences = new double[this.maxDrivers];
+
+            setPreferences(config.getParameterDoubleArray("model.preferences"));
+
+            for (int i = 0; i < this.brands; i++) {
+                // System.out.print(Arrays.toString(config.getParameterDoubleArray("brand."+ i +".drivers")));
+                // System.out.print(config.getParameterString("brand."+ i +".name"));
+                this.setBrandDrivers(i, config.getParameterDoubleArray("brand."+ i +".drivers")); 
+                this.setBrandNames(i, config.getParameterString("brand."+ i +".name"));
+            }
 
             // }
             startDate = config.getParameterDate("startDate");

@@ -142,6 +142,20 @@ public class ConfigFileReader {
 		}
 		return tmpDouble;
 	}
+
+	public String[] getParameterStringArray(String ParameterName) {
+		String[] tmpStr;
+		String[] tmpDouble;
+		
+		// Important: we use "," to divide columns and ";" to divide rows
+		tmpStr = parameters.getProperty(ParameterName).split(",");
+		tmpDouble = new String[tmpStr.length];
+		// Transform to double		
+		for(int i=0; i<tmpStr.length; i++) {
+			tmpDouble[i] = tmpStr[i];
+		}
+		return tmpDouble;
+	}
 	
 	/**
 	 * Gets the given parameter as an double two dimensional array.

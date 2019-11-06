@@ -14,7 +14,7 @@ import java.util.UUID;
 public class Brand {
 
     private int id;
-
+    public String name;
     double[] drivers;
 
     /**
@@ -23,9 +23,10 @@ public class Brand {
      * @param _id
      * @param drivers Nº of drivers
      */
-    public Brand(int _id, int drivers) {
+    public Brand(int _id, int drivers, String _name) {
         this.id = _id;
         this.drivers = new double[(drivers)];
+        this.name = _name;
     }
 
     /**

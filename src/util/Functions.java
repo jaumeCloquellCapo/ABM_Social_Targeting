@@ -21,9 +21,7 @@ import javax.swing.JTextField;
 import au.com.bytecode.opencsv.CSVReader;
 import ec.util.MersenneTwisterFast;
 import java.util.Arrays;
-import model.Brand;
 import model.Model;
-import model.ModelParameters;
 
 /**
  * Function class contains support and utility functions used on several

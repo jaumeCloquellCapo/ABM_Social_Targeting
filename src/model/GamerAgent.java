@@ -3,8 +3,6 @@ package model;
 import sim.engine.*;
 
 import java.util.*;
-import util.Functions;
-import static util.Functions.sumDoubleArray;
 
 /**
  * Defines a gamer for ABM model.

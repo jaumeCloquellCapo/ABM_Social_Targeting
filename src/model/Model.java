@@ -257,14 +257,16 @@ public class Model extends SimState {
 
     }
 
-    private void createBrands(int _brands, int _drivers) {
+    private void createBrands(ModelParameters params) {
+        int _brands = params.getBrands();
+        int _drivers = params.getMaxDrivers();
 
         this.brands = new Brand[_brands];
 
         for (int i = 0; i < _brands; i++) {
-            Brand b = new Brand(i, _drivers);
+            Brand b = new Brand(i, _drivers, params.getBrandNames(i));
             for (int j = 0; j < _drivers; j++) {
-                b.setDrivers(j, this.random.nextDouble(true, true));
+                b.setDrivers(j, params.getBrandDrivers(i)[j]);
                 this.setBrands(i, b);
             }
         }
@@ -325,7 +327,7 @@ public class Model extends SimState {
         // TODO [Jaume] Configurar los driver de los productos en el archivo de configuracion
         // Creamos una lista de marcas de productos y que ademas contienen un listado de drivers para cada producto.
         // En un principio estos drivers son inicializados aleatoriamente aunque la idea es poder configurarlo mas adelante
-        createBrands(params.getBrands(), params.getMaxDrivers());
+        createBrands(params);
 
         printSumamryBrandScreen();
 
@@ -563,10 +565,11 @@ public class Model extends SimState {
         //logger.info("Agent " + nodeId + " assigned to subscription status " + state); 
         GamerAgent cl = new GamerAgent(nodeId, segmentId, state, params.getMaxDrivers(), MAX_STEPS);
 
-        // TODO [jaume] Estas preferencias deberan ser definidas en el archivo de configuracion.
+        // TODO [jaume] Estas SON definidas en el archivo de configuracion.
+        
         // Inicializamos la preferencias aleatoriamente del agente
         for (int j = 0; j < params.getMaxDrivers(); j++) {
-            cl.setPreferences(j, this.random.nextDouble(true, true));
+            cl.setPreferences(j, Model.getParametersObject().getPreferences()[j]);
         }
 
         return cl;
@@ -800,6 +803,8 @@ public class Model extends SimState {
             System.out.print("  ID " + b.getBrandId());
             System.out.println();
             System.out.print("  Drivers nº " + Arrays.toString(b.getDrivers()));
+            System.out.println();
+            System.out.print("  Name: " + b.name);
             System.out.println();
 
         }
