@@ -66,6 +66,10 @@ public class ConfigFileReader {
 			}
 		}
 	}
+
+	public Boolean checkIfExist(String ParameterName) {
+		return (parameters.containsKey(ParameterName));
+	}
 	
 	/**
 	 * Gets the given parameter.

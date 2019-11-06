@@ -55,19 +55,20 @@ public class ModelParameters {
 
     String networkFilesPattern;
 
-    int maxKDegree;					// max average degree of the network <k> (=density*nAgents)
-    double maxDensity;				// max density
+    int maxKDegree; // max average degree of the network <k> (=density*nAgents)
+    double maxDensity; // max density
 
-    boolean staticSN;				// make SN static for efficiency purposes 
+    boolean staticSN; // make SN static for efficiency purposes
     // (it will ignore prob. add/remove)
 
     // for the weigths variant
-    double weight;							// weight for edges of the SN after marketing action
-    int weightDuration;						// days the weight effect
-    double obtainSubscriptionIncrease;		// the increase in p (obtain subscription)
-    int minPremFriendsToBelongSet;			// the minimum number of friends (premium) to belong to the set of users with reward
-    int seededUsers;						// the users we are rewarding
-    int rewardApproach;						// the users we are rewarding
+    double weight; // weight for edges of the SN after marketing action
+    int weightDuration; // days the weight effect
+    double obtainSubscriptionIncrease; // the increase in p (obtain subscription)
+    int minPremFriendsToBelongSet; // the minimum number of friends (premium) to belong to the set of users with
+                                   // reward
+    int seededUsers; // the users we are rewarding
+    int rewardApproach; // the users we are rewarding
 
     // Type of the experiment
     int experimentType = 0;
@@ -76,43 +77,45 @@ public class ModelParameters {
     int nrSegments;
 
     double[] segmentSizes;
-    double[] segmentInitialPercentagePremium;		// percentage of premium subscribers  see Gamer::{NON_USER, BASIC_USER, PREMIUM_USER}
+    double[] segmentInitialPercentagePremium; // percentage of premium subscribers see Gamer::{NON_USER, BASIC_USER,
+                                              // PREMIUM_USER}
 
     // for the social network
     double[] segmentsConnectivity;
 
     // for the animal gamers (dynamic network)
-    double[] segmentDailyProbNewFriend;	// probability  to have a new friend
-    double[] segmentDailyProbLoseFriend;			// probability to lose an old friend
+    double[] segmentDailyProbNewFriend; // probability to have a new friend
+    double[] segmentDailyProbLoseFriend; // probability to lose an old friend
 
     // probs to obtain and leave subscriptions
-    double[] segmentDailyProbObtainSubscription;	// probability to become a premium subscriptor without friends info
-    //double[] segmentDailyProbLeaveSubscription;	// probability to leave a premium subscription
+    double[] segmentDailyProbObtainSubscription; // probability to become a premium subscriptor without friends info
+    // double[] segmentDailyProbLeaveSubscription; // probability to leave a premium
+    // subscription
 
     // daily probs to play during the weekend and weekdays
-    double[] segmentDailyProbPlayNoWeekend;	// probability  to play one day (working day, no weekend)
-    double[] segmentDailyProbPlayWeekend;	// probability to play one day (weekend)
+    double[] segmentDailyProbPlayNoWeekend; // probability to play one day (working day, no weekend)
+    double[] segmentDailyProbPlayWeekend; // probability to play one day (weekend)
 
-    // rates for the threshold premium contagion (cascade model)	
+    // rates for the threshold premium contagion (cascade model)
     double[] segmentSocialAdoptionParam;
 
-    // graph read from file	
+    // graph read from file
     Graph graphFromFile;
 
     // Brands params
     int maxDrivers;
 
-    double[] preferences; 
-    
+    double[] preferences;
+
     int brands;
-    
-    double[][] brandDrivers; 
-    String[] brandName; 
+
+    double[][] brandDrivers;
+    String[] brandName;
 
     double[] segmentDailyProbBuy; // probability to buy
 
-    //--------------------------- Get/Set methods ---------------------------//
-    
+    // --------------------------- Get/Set methods ---------------------------//
+
     public double[] getSegmentDailyProbBuy() {
         return segmentDailyProbBuy;
     }
@@ -137,7 +140,7 @@ public class ModelParameters {
         this.brands = brands;
     }
 
-    public void setBrandDrivers(int brand, double [] drivers) {
+    public void setBrandDrivers(int brand, double[] drivers) {
 
         this.brandDrivers[brand] = drivers;
     }
@@ -147,7 +150,7 @@ public class ModelParameters {
         this.brandName[brand] = name;
     }
 
-    public void setPreferences(double [] _preferences) {
+    public void setPreferences(double[] _preferences) {
         this.preferences = _preferences;
     }
 
@@ -510,8 +513,8 @@ public class ModelParameters {
     }
 
     /**
-     * Gets the segment prob for becoming a premium subscriptor without looking
-     * at friends
+     * Gets the segment prob for becoming a premium subscriptor without looking at
+     * friends
      *
      * @return
      */
@@ -520,8 +523,8 @@ public class ModelParameters {
     }
 
     /**
-     * Sets the segment prob for becoming a premium subscriptor without looking
-     * at friends
+     * Sets the segment prob for becoming a premium subscriptor without looking at
+     * friends
      *
      * @param segmentDailyProbObtainSubscription
      */
@@ -534,17 +537,22 @@ public class ModelParameters {
      *
      * @return
      */
-    /*public double[] getSegmentWeeklyProbLeaveSubscription() {
-		return segmentWeeklyProbLeaveSubscription;
-	}*/
+    /*
+     * public double[] getSegmentWeeklyProbLeaveSubscription() { return
+     * segmentWeeklyProbLeaveSubscription; }
+     */
     /**
      * Sets the segment prob leaving a subscription
      *
      * @param segmentWeeklyProbLeaveSubscription
      */
-    /*public void setSegmentWeeklyProbLeaveSubscription(double[] _segmentWeeklyProbLeaveSubscription) {
-		this.segmentWeeklyProbLeaveSubscription = _segmentWeeklyProbLeaveSubscription;
-	}*/
+
+    /*
+     * public void setSegmentWeeklyProbLeaveSubscription(double[]
+     * _segmentWeeklyProbLeaveSubscription) {
+     * this.segmentWeeklyProbLeaveSubscription =
+     * _segmentWeeklyProbLeaveSubscription; }
+     */
     /**
      * @return the segmentDailyProbPlayNoWeekend
      */
@@ -553,11 +561,9 @@ public class ModelParameters {
     }
 
     /**
-     * @param segmentDailyProbPlayNoWeekend the segmentDailyProbPlayNoWeekend to
-     * set
+     * @param segmentDailyProbPlayNoWeekend the segmentDailyProbPlayNoWeekend to set
      */
-    public void setSegmentDailyProbPlayNoWeekend(
-            double[] segmentDailyProbPlayNoWeekend) {
+    public void setSegmentDailyProbPlayNoWeekend(double[] segmentDailyProbPlayNoWeekend) {
         this.segmentDailyProbPlayNoWeekend = segmentDailyProbPlayNoWeekend;
     }
 
@@ -571,8 +577,7 @@ public class ModelParameters {
     /**
      * @param segmentDailyProbPlayWeekend the segmentDailyProbPlayWeekend to set
      */
-    public void setSegmentDailyProbPlayWeekend(
-            double[] segmentDailyProbPlayWeekend) {
+    public void setSegmentDailyProbPlayWeekend(double[] segmentDailyProbPlayWeekend) {
         this.segmentDailyProbPlayWeekend = segmentDailyProbPlayWeekend;
     }
 
@@ -586,8 +591,7 @@ public class ModelParameters {
     /**
      * @param segmentSocialAdoptionParam the segmentSocialAdoptionParam to set
      */
-    public void setSegmentSocialAdoptionParam(
-            double[] segmentProbSimpleSocialAdoption) {
+    public void setSegmentSocialAdoptionParam(double[] segmentProbSimpleSocialAdoption) {
         this.segmentSocialAdoptionParam = segmentProbSimpleSocialAdoption;
     }
 
@@ -830,15 +834,15 @@ public class ModelParameters {
         result += "minPremFriendsToBelongSet=" + this.minPremFriendsToBelongSet + "\n";
 
         switch (this.rewardApproach) {
-            case MORE_LIKELY:
-                result += "rewardApproach=more_likely\n";
-                break;
-            case LESS_LIKELY:
-                result += "rewardApproach=less_likely\n";
-                break;
-            case RANDOM:
-                result += "rewardApproach=random\n";
-                break;
+        case MORE_LIKELY:
+            result += "rewardApproach=more_likely\n";
+            break;
+        case LESS_LIKELY:
+            result += "rewardApproach=less_likely\n";
+            break;
+        case RANDOM:
+            result += "rewardApproach=random\n";
+            break;
         }
 
         result += "seededUsers=" + this.seededUsers + "\n";
@@ -870,11 +874,12 @@ public class ModelParameters {
 
         String result = "";
 
-        result += "nrAgents=" + this.nrAgents + "\n";;
-        result += "ratioAgentPop=" + this.ratioAgentsPop + "\n";;
+        result += "nrAgents=" + this.nrAgents + "\n";
+        ;
+        result += "ratioAgentPop=" + this.ratioAgentsPop + "\n";
+        ;
 
-        SimpleDateFormat formatDate
-                = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
         result += "startDate=" + formatDate.format(this.startDate) + "\n";
 
@@ -893,7 +898,7 @@ public class ModelParameters {
         return result;
     }
 
-    //------------------------- Config file methods -------------------------//
+    // ------------------------- Config file methods -------------------------//
     /**
      * Reads parameters from the configuration file.
      */
@@ -906,28 +911,31 @@ public class ModelParameters {
 
             config.readConfigFile();
 
-            // Get global parameters 
-            
-            
+            // Get global parameters
+
             experimentType = config.getParameterInteger("experimentType");
 
             // if (experimentType == TARGETING) {
             setBrands(this.brands = config.getParameterInteger("brands"));
             setMaxDrivers(this.maxDrivers = config.getParameterInteger("drivers"));
 
-            
-
             this.brandDrivers = new double[this.brands][this.maxDrivers];
-            this.brandName = new String[this.brands];
-            this.preferences = new double[this.maxDrivers];
 
-            setPreferences(config.getParameterDoubleArray("model.preferences"));
+            this.brandName = new String[this.brands];
+            
+            this.preferences = new double[this.maxDrivers];
+            
+            if (config.checkIfExist("model.preferences")) {
+                setPreferences(config.getParameterDoubleArray("model.preferences"));
+            }
 
             for (int i = 0; i < this.brands; i++) {
-                // System.out.print(Arrays.toString(config.getParameterDoubleArray("brand."+ i +".drivers")));
-                // System.out.print(config.getParameterString("brand."+ i +".name"));
-                this.setBrandDrivers(i, config.getParameterDoubleArray("brand."+ i +".drivers")); 
-                this.setBrandNames(i, config.getParameterString("brand."+ i +".name"));
+                if (config.checkIfExist("brand." + i + ".drivers")) {
+                    this.setBrandDrivers(i, config.getParameterDoubleArray("brand." + i + ".drivers"));
+                }
+                if (config.checkIfExist("brand." + i + ".name")) {
+                    this.setBrandNames(i, config.getParameterString("brand." + i + ".name"));
+                }
             }
 
             // }
@@ -960,8 +968,8 @@ public class ModelParameters {
                 this.readGraphFromFile(networkFilesPattern);
             }
 
-            // get the static SN parameter			
-            setStaticSN(false);  // by default
+            // get the static SN parameter
+            setStaticSN(false); // by default
             setStaticSN(config.getParameterBoolean("staticSN"));
 
             if (experimentType == BASS_WEIGHTS) {
@@ -1003,33 +1011,31 @@ public class ModelParameters {
             setSegmentDailyProbNewFriend(config.getParameterDoubleArray("segmentDailyProbNewFriend"));
             setSegmentDailyProbLoseFriend(config.getParameterDoubleArray("segmentDailyProbLoseFriend"));
 
-            // Segments parameters for the Animal game (simple contagion)			
+            // Segments parameters for the Animal game (simple contagion)
             // setSegmentWeeklyProbLeaveSubscription(config.getParameterDoubleArray("segmentWeeklyProbLeaveSubscription"));
             setSegmentDailyProbObtainSubscription(config.getParameterDoubleArray("segmentDailyProbObtainSubscription"));
 
-            // Segments parameters for playing the Animal game daily	
+            // Segments parameters for playing the Animal game daily
             setSegmentDailyProbPlayNoWeekend(config.getParameterDoubleArray("segmentDailyProbPlayNoWeekend"));
             setSegmentDailyProbPlayWeekend(config.getParameterDoubleArray("segmentDailyProbPlayWeekend"));
 
-            // Segments parameters for the Animal game (simple contagion)			
+            // Segments parameters for the Animal game (simple contagion)
             setSegmentSocialAdoptionParam(config.getParameterDoubleArray("segmentSocialAdoptionParam"));
-            
-            
+
             nrAgents = config.getParameterInteger("nrAgents");
             ratioAgentsPop = config.getParameterInteger("ratioAgentPop");
-            
+
             // setSegmentDailyProbBuy(config.getParameterDoubleArray("segmentDailyProbBuy"));
 
         } catch (IOException e) {
 
-            System.err.println(
-                    "Error with SN file when loading parameters for the simulation " + CONFIGFILENAME + "\n"
+            System.err.println("Error with SN file when loading parameters for the simulation " + CONFIGFILENAME + "\n"
                     + e.getMessage());
             e.printStackTrace(new PrintWriter(System.err));
         }
     }
 
-    //----------------------------- I/O methods -----------------------------//
+    // ----------------------------- I/O methods -----------------------------//
     /**
      * Prints simple statistics evolution during the time.
      */
