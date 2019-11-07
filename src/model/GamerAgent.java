@@ -14,10 +14,10 @@ public class GamerAgent implements Steppable {
 
     // ########################################################################
     // Variables
-    // ########################################################################	
+    // ########################################################################
     private static final long serialVersionUID = 1L;
 
-    //--------------------------------- Fixed -------------------------------//
+    // --------------------------------- Fixed -------------------------------//
     // behaviours of the agent
     // A unique gamer Id
     int gamerAgentId;
@@ -25,18 +25,18 @@ public class GamerAgent implements Steppable {
     // A unique segment Id to access to their segments parameters
     int segmentId;
 
-    //------------------------------- Dynamic -------------------------------// 
+    // ------------------------------- Dynamic -------------------------------//
     // Current state of the user (premium, free or non user (initialization))
     int subscriptionState = Model.NON_USER;
 
     double[] preferences;
 
-    int purchasedBrands[];				// array with the brand obtained at each step
+    int purchasedBrands[]; // array with the brand obtained at each step
     int currentStep;
 
     // ########################################################################
     // Constructors
-    // ######################################################################## 		
+    // ########################################################################
     /**
      * Initializes a new instance of the ClientAgent class.
      *
@@ -46,11 +46,7 @@ public class GamerAgent implements Steppable {
      * @param _preferences
      * @param _maxSteps
      */
-    public GamerAgent(int _gamerId,
-            int _segId,
-            int _subscriptionState,
-            int _preferences,
-            int _maxSteps) {
+    public GamerAgent(int _gamerId, int _segId, int _subscriptionState, int _preferences, int _maxSteps) {
 
         this.gamerAgentId = _gamerId;
         this.segmentId = _segId;
@@ -62,7 +58,7 @@ public class GamerAgent implements Steppable {
             this.purchasedBrands[i] = -1;
         }
 
-        //PropertyConfigurator.configure(Model.getLogFileName());
+        // PropertyConfigurator.configure(Model.getLogFileName());
     }
 
     public int[] getPurchasedBrands() {
@@ -81,10 +77,10 @@ public class GamerAgent implements Steppable {
         this.preferences[_preference] = _value;
     }
 
-    // ########################################################################	
-    // Methods/Functions 	
     // ########################################################################
-    //--------------------------- Get/Set methods ---------------------------//
+    // Methods/Functions
+    // ########################################################################
+    // --------------------------- Get/Set methods ---------------------------//
     /**
      * Gets the id of the user gamer.
      *
@@ -115,8 +111,8 @@ public class GamerAgent implements Steppable {
     /**
      * Sets the id of the social group (segment Id)
      *
-     * @param _socialGroupId - the id of the social group (segment Id) it
-     * belongs to.
+     * @param _socialGroupId - the id of the social group (segment Id) it belongs
+     *                       to.
      */
     public void setSegmentId(int _segId) {
         this.segmentId = _segId;
@@ -145,18 +141,20 @@ public class GamerAgent implements Steppable {
      *
      * @param _neighbors - the new list of neighbors
      */
-    /*public void setNeighbors(ArrayList<Integer> _neighbors) {		
-		this.neighbors = _neighbors;		
-	}*/
+    /*
+     * public void setNeighbors(ArrayList<Integer> _neighbors) { this.neighbors =
+     * _neighbors; }
+     */
     /**
      * Gets the new list of neighbors
      *
      * @param _neighbors - the new list of neighbors
      */
-    /*public ArrayList<Integer> getNeighbors() {		
-		return this.neighbors;		
-	}*/
-    //-------------------------- Diffusion methods --------------------------//
+
+    /*
+     * public ArrayList<Integer> getNeighbors() { return this.neighbors; }
+     */
+    // -------------------------- Diffusion methods --------------------------//
     /**
      * TODO check this adoption Models the simple contagion of the premium
      * subscription (cascade but checking all the contacts every day).
@@ -178,22 +176,23 @@ public class GamerAgent implements Steppable {
             if (neighbor.getSubscriptionState() == Model.PREMIUM_USER) {
 
                 // check probability for contagion
-                double probs[] = ((ModelParameters) model.getParametersObject()).
-                        getSegmentSocialAdoptionParam();
+                double probs[] = ((ModelParameters) model.getParametersObject()).getSegmentSocialAdoptionParam();
 
                 double r = model.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE);
 
-                //System.out.println("Another premium neighbour of agent " + this.gamerAgentId + 
-                //		". Prob is " + r + " and the probability is "+ simpleProbs[this.segmentId]);
+                // System.out.println("Another premium neighbour of agent " + this.gamerAgentId
+                // +
+                // ". Prob is " + r + " and the probability is "+ simpleProbs[this.segmentId]);
                 // Check if the agent becomes a premium subscriptor
                 if (r < probs[this.segmentId]) {
 
                     subscriptionState = Model.PREMIUM_USER;
 
                     // update the number of current subscriptors
-                    //model.increasePremium();
-                    //System.out.println("Changed to premium!");
-                    //Model.logger.info("[++sS] simpleAdoptionFromFriends() new premium gamer because of friends (Simple)!");
+                    // model.increasePremium();
+                    // System.out.println("Changed to premium!");
+                    // Model.logger.info("[++sS] simpleAdoptionFromFriends() new premium gamer
+                    // because of friends (Simple)!");
                     return true;
                 }
             }
@@ -204,9 +203,9 @@ public class GamerAgent implements Steppable {
     }
 
     /**
-     * Models the thresholds contagion of the premium subscription. It is based
-     * on the rate of friends of the agents. If the agent has a higher rate of
-     * friends than the threshold --> it is converted
+     * Models the thresholds contagion of the premium subscription. It is based on
+     * the rate of friends of the agents. If the agent has a higher rate of friends
+     * than the threshold --> it is converted
      *
      * @param state - a simulation model object (SimState).
      * @return true if the agent adopted subscription
@@ -232,20 +231,22 @@ public class GamerAgent implements Steppable {
         double rateFriends = 0.;
         rateFriends = (double) noOfSubscribedFriends / neighbors.size();
 
-        double thresholds[] = ((ModelParameters) model.getParametersObject()).
-                getSegmentSocialAdoptionParam();
+        double thresholds[] = ((ModelParameters) model.getParametersObject()).getSegmentSocialAdoptionParam();
 
-        /*System.out.println("The rate of premium neighbour of agent " + this.gamerAgentId + 
-				" is " + rateFriends + " because there were " +
-				noOfSubscribedFriends + " and the size is " + neighbors.size());*/
+        /*
+         * System.out.println("The rate of premium neighbour of agent " +
+         * this.gamerAgentId + " is " + rateFriends + " because there were " +
+         * noOfSubscribedFriends + " and the size is " + neighbors.size());
+         */
         // Check if the agent becomes a premium subscriptor
         if (rateFriends >= thresholds[this.segmentId]) {
             subscriptionState = Model.PREMIUM_USER;
 
             // update the number of current subscriptors
-            //model.increasePremium();
-            //System.out.println("Changed to premium!");
-            //Model.logger.info("[++tS] thresholdAdoptionFromFriends() new premium gamer because of friends (THRESHOLD)!");
+            // model.increasePremium();
+            // System.out.println("Changed to premium!");
+            // Model.logger.info("[++tS] thresholdAdoptionFromFriends() new premium gamer
+            // because of friends (THRESHOLD)!");
             return true;
         }
 
@@ -253,8 +254,8 @@ public class GamerAgent implements Steppable {
     }
 
     /**
-     * Models the Bass model adoption for the premium subscription. It is based
-     * on the rate of friends of the agents and an adoption coefficient.
+     * Models the Bass model adoption for the premium subscription. It is based on
+     * the rate of friends of the agents and an adoption coefficient.
      *
      * @param state - a simulation model object (SimState).
      * @return true if the agent adopted subscription
@@ -280,15 +281,16 @@ public class GamerAgent implements Steppable {
         double rateFriends = (double) noOfSubscribedFriends / neighbors.size();
 
         // get the coefficient of imitation
-        double coefficients[] = ((ModelParameters) model.getParametersObject()).
-                getSegmentSocialAdoptionParam();
+        double coefficients[] = ((ModelParameters) model.getParametersObject()).getSegmentSocialAdoptionParam();
 
         // obtain probability by multiplying coefficient & rate of friends
         double prob = rateFriends * coefficients[this.segmentId];
 
-        /*System.out.println("The rate of premium neighbour of agent " + this.gamerAgentId + 
-				" is " + rateFriends + " because there were " +
-				noOfSubscribedFriends + " and the size is " + neighbors.size());*/
+        /*
+         * System.out.println("The rate of premium neighbour of agent " +
+         * this.gamerAgentId + " is " + rateFriends + " because there were " +
+         * noOfSubscribedFriends + " and the size is " + neighbors.size());
+         */
         double r = model.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE);
 
         // Check if the agent becomes a premium subscriptor
@@ -296,9 +298,10 @@ public class GamerAgent implements Steppable {
             subscriptionState = Model.PREMIUM_USER;
 
             // update the number of current subscriptors
-            //model.increasePremium();
-            //System.out.println("Changed to premium!");
-            //Model.logger.info("[++bS] bassAdoptionFromFriends() new premium gamer because of friends (BASS)!");
+            // model.increasePremium();
+            // System.out.println("Changed to premium!");
+            // Model.logger.info("[++bS] bassAdoptionFromFriends() new premium gamer because
+            // of friends (BASS)!");
             return true;
         }
 
@@ -306,11 +309,10 @@ public class GamerAgent implements Steppable {
     }
 
     /**
-     * Models the Bass model adoption for the premium subscription BUT
-     * considering the weights of the friends.
+     * Models the Bass model adoption for the premium subscription BUT considering
+     * the weights of the friends.
      *
-     * It is based on the rate of friends of the agents and an adoption
-     * coefficient.
+     * It is based on the rate of friends of the agents and an adoption coefficient.
      *
      * @param state - a simulation model object (SimState).
      * @return true if the agent adopted subscription
@@ -329,23 +331,26 @@ public class GamerAgent implements Steppable {
 
             if (neighbor.getSubscriptionState() == Model.PREMIUM_USER) {
 
-                // check if there is a weight between these 2 nodes 
+                // check if there is a weight between these 2 nodes
                 // and if it is still valid (duration)
                 if (model.socialNetwork.getAttributeEdge(this.gamerAgentId, neighbors.get(i), "duration") != null
-                        && (int) model.socialNetwork.getAttributeEdge(this.gamerAgentId, neighbors.get(i), "duration")
-                        >= model.schedule.getSteps()) {
+                        && (int) model.socialNetwork.getAttributeEdge(this.gamerAgentId, neighbors.get(i),
+                                "duration") >= model.schedule.getSteps()) {
 
                     // get the weight to amplify the ratio of subscribed friends
-                    double weight = (double) model.socialNetwork.getAttributeEdge(neighbors.get(i), this.gamerAgentId, "weight");
+                    double weight = (double) model.socialNetwork.getAttributeEdge(neighbors.get(i), this.gamerAgentId,
+                            "weight");
 
                     noOfSubscribedFriends = noOfSubscribedFriends + weight;
 
-                    /*System.out.println("Neighs of " + this.gamerAgentId + 
-								". Duration is " + (int)model.socialNetwork.getAttributeEdge 
-								(this.gamerAgentId, neighbors.get(i), "duration") 
-								+ " and today is " + model.schedule.getSteps());
-						
-						System.out.println("noOfSubscribedFriends is now " + noOfSubscribedFriends);*/
+                    /*
+                     * System.out.println("Neighs of " + this.gamerAgentId + ". Duration is " +
+                     * (int)model.socialNetwork.getAttributeEdge (this.gamerAgentId,
+                     * neighbors.get(i), "duration") + " and today is " +
+                     * model.schedule.getSteps());
+                     * 
+                     * System.out.println("noOfSubscribedFriends is now " + noOfSubscribedFriends);
+                     */
                 } else {
 
                     // no weight, just 1 count
@@ -363,15 +368,16 @@ public class GamerAgent implements Steppable {
         double rateFriends = (double) noOfSubscribedFriends / neighbors.size();
 
         // get the coefficient of imitation
-        double coefficients[] = ((ModelParameters) model.getParametersObject()).
-                getSegmentSocialAdoptionParam();
+        double coefficients[] = ((ModelParameters) model.getParametersObject()).getSegmentSocialAdoptionParam();
 
         // obtain probability by multiplying coefficient & rate of friends
         double prob = rateFriends * coefficients[this.segmentId];
 
-        /*System.out.println("The rate of premium neighbour of agent " + this.gamerAgentId + 
-				" is " + rateFriends + " because there were " +
-				noOfSubscribedFriends + " and p=" + coefficients[this.segmentId]);*/
+        /*
+         * System.out.println("The rate of premium neighbour of agent " +
+         * this.gamerAgentId + " is " + rateFriends + " because there were " +
+         * noOfSubscribedFriends + " and p=" + coefficients[this.segmentId]);
+         */
         double r = model.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE);
 
         // Check if the agent becomes a premium subscriptor
@@ -379,9 +385,10 @@ public class GamerAgent implements Steppable {
             subscriptionState = Model.PREMIUM_USER;
 
             // update the number of current subscriptors
-            //model.increasePremium();
-            //System.out.println("Changed to premium!");
-            //Model.logger.info("[++bS] bassAdoptionFromFriends() new premium gamer because of friends (BASS)!");
+            // model.increasePremium();
+            // System.out.println("Changed to premium!");
+            // Model.logger.info("[++bS] bassAdoptionFromFriends() new premium gamer because
+            // of friends (BASS)!");
             return true;
         }
 
@@ -389,12 +396,11 @@ public class GamerAgent implements Steppable {
     }
 
     /**
-     * Models the Bass model adoption for the premium subscription BUT
-     * considering the weights of the friends of just an initial set of basic
-     * users to be rewarded.
+     * Models the Bass model adoption for the premium subscription BUT considering
+     * the weights of the friends of just an initial set of basic users to be
+     * rewarded.
      *
-     * It is based on the rate of friends of the agents and an adoption
-     * coefficient.
+     * It is based on the rate of friends of the agents and an adoption coefficient.
      *
      * @param state - a simulation model object (SimState).
      * @return true if the agent adopted subscription
@@ -413,7 +419,7 @@ public class GamerAgent implements Steppable {
 
             if (neighbor.getSubscriptionState() == Model.PREMIUM_USER) {
 
-                // check if there is a weight between these 2 nodes 
+                // check if there is a weight between these 2 nodes
                 // we just need to see if the neighbour was included in the set
                 if (model.isAnInitialRewardedBasicUser(neighbors.get(i))) {
 
@@ -422,10 +428,12 @@ public class GamerAgent implements Steppable {
 
                     noOfSubscribedFriends = noOfSubscribedFriends + weight;
 
-                    /*System.out.println("Neigh " + neighbors.get(i) + 
-								" was initially rewarded so its weight is " + weight);
-						
-						System.out.println("noOfSubscribedFriends is now " + noOfSubscribedFriends);*/
+                    /*
+                     * System.out.println("Neigh " + neighbors.get(i) +
+                     * " was initially rewarded so its weight is " + weight);
+                     * 
+                     * System.out.println("noOfSubscribedFriends is now " + noOfSubscribedFriends);
+                     */
                 } else {
 
                     // no weight, just 1 count
@@ -443,15 +451,16 @@ public class GamerAgent implements Steppable {
         double rateFriends = (double) noOfSubscribedFriends / neighbors.size();
 
         // get the coefficient of imitation
-        double coefficients[] = ((ModelParameters) model.getParametersObject()).
-                getSegmentSocialAdoptionParam();
+        double coefficients[] = ((ModelParameters) model.getParametersObject()).getSegmentSocialAdoptionParam();
 
         // obtain probability by multiplying coefficient & rate of friends
         double prob = rateFriends * coefficients[this.segmentId];
 
-        /*System.out.println("The rate of premium neighbour of agent " + this.gamerAgentId + 
-				" is " + rateFriends + " because there were " +
-				noOfSubscribedFriends + " and p=" + coefficients[this.segmentId]);*/
+        /*
+         * System.out.println("The rate of premium neighbour of agent " +
+         * this.gamerAgentId + " is " + rateFriends + " because there were " +
+         * noOfSubscribedFriends + " and p=" + coefficients[this.segmentId]);
+         */
         double r = model.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE);
 
         // Check if the agent becomes a premium subscriptor
@@ -459,9 +468,10 @@ public class GamerAgent implements Steppable {
             subscriptionState = Model.PREMIUM_USER;
 
             // update the number of current subscriptors
-            //model.increasePremium();
-            //System.out.println("Changed to premium!");
-            //Model.logger.info("[++bS] bassAdoptionFromFriends() new premium gamer because of friends (BASS)!");
+            // model.increasePremium();
+            // System.out.println("Changed to premium!");
+            // Model.logger.info("[++bS] bassAdoptionFromFriends() new premium gamer because
+            // of friends (BASS)!");
             return true;
         }
 
@@ -470,9 +480,9 @@ public class GamerAgent implements Steppable {
 
     /**
      * Models the complex model adoption (Chandola 2007) for the premium
-     * subscription. It is based on the need of multiple sources to finally
-     * adopt. Basically, a user converts if there are at least 'a' premium
-     * friends. Otherwise, it does not convert.
+     * subscription. It is based on the need of multiple sources to finally adopt.
+     * Basically, a user converts if there are at least 'a' premium friends.
+     * Otherwise, it does not convert.
      *
      * @param state - a simulation model object (SimState).
      * @return true if the agent adopted subscription
@@ -495,23 +505,23 @@ public class GamerAgent implements Steppable {
         }
 
         // get the coefficients from the parameters of the model
-        double coefficients[] = ((ModelParameters) model.getParametersObject()).
-                getSegmentSocialAdoptionParam();
+        double coefficients[] = ((ModelParameters) model.getParametersObject()).getSegmentSocialAdoptionParam();
 
         double minimumFriends = coefficients[this.segmentId];
 
-        //System.out.println("Agent " + this.gamerAgentId + 
-        //		" has " + noOfSubscribedFriends + " prems of " + neighbors.size()
-        //			+ ". And the minimum is " +  minimumFriends);	
+        // System.out.println("Agent " + this.gamerAgentId +
+        // " has " + noOfSubscribedFriends + " prems of " + neighbors.size()
+        // + ". And the minimum is " + minimumFriends);
         // Check if the agent becomes a premium subscriptor
         if (noOfSubscribedFriends >= minimumFriends) {
 
             subscriptionState = Model.PREMIUM_USER;
 
             // update the number of current subscriptors
-            //model.increasePremium();
-            //System.out.println("--> Changed to premium!" );
-            //Model.logger.info("[++bS] bassAdoptionFromFriends() new premium gamer because of friends (BASS)!");
+            // model.increasePremium();
+            // System.out.println("--> Changed to premium!" );
+            // Model.logger.info("[++bS] bassAdoptionFromFriends() new premium gamer because
+            // of friends (BASS)!");
             return true;
         }
 
@@ -519,8 +529,8 @@ public class GamerAgent implements Steppable {
     }
 
     /**
-     * Models the premium conversion by innovation in the subscription state It
-     * does not consider the social network of agents
+     * Models the premium conversion by innovation in the subscription state It does
+     * not consider the social network of agents
      *
      * @param state - a simulation model object (SimState).
      * @return true if new subscription
@@ -529,9 +539,8 @@ public class GamerAgent implements Steppable {
 
         Model model = (Model) state;
 
-        double[] weeklyProbObtainSubscription
-                = ((ModelParameters) model.getParametersObject()).
-                        getSegmentDailyProbObtainSubscription();
+        double[] weeklyProbObtainSubscription = ((ModelParameters) model.getParametersObject())
+                .getSegmentDailyProbObtainSubscription();
 
         double p = (weeklyProbObtainSubscription[this.segmentId]);
 
@@ -542,9 +551,11 @@ public class GamerAgent implements Steppable {
 
             p = p + ((Model) state).getParametersObject().getObtainSubscriptionIncrease();
 
-            /*System.out.println("Increased prob. of innovation from " + 
-					(weeklyProbObtainSubscription[this.segmentId]) + " to " + p 
-					+" because agent " + this.gamerAgentId + " was initially rewarded.");	*/
+            /*
+             * System.out.println("Increased prob. of innovation from " +
+             * (weeklyProbObtainSubscription[this.segmentId]) + " to " + p
+             * +" because agent " + this.gamerAgentId + " was initially rewarded.");
+             */
         }
 
         double r = model.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE);
@@ -552,9 +563,9 @@ public class GamerAgent implements Steppable {
         if (r < p) {
 
             // update the number of current subscriptors
-            //model.increasePremium();
-            //Model.logger.info("[++] obtainSubscriptionByInnovation() "
-            //		+ "new premium gamer by innovation!");
+            // model.increasePremium();
+            // Model.logger.info("[++] obtainSubscriptionByInnovation() "
+            // + "new premium gamer by innovation!");
             // leaving the subscription
             subscriptionState = Model.PREMIUM_USER;
 
@@ -605,7 +616,8 @@ public class GamerAgent implements Steppable {
 
         for (int i = 0; i < brandsUtilities.length; i++) {
             // System.out.println("brandsUtilities[i] " + brandsUtilities[i]);
-            // System.out.println("deliberationFunction " + util.Functions.deliberationFunction(brandsUtilities[i], brandsUtilities));
+            // System.out.println("deliberationFunction " +
+            // util.Functions.deliberationFunction(brandsUtilities[i], brandsUtilities));
             deliberation[i] = util.Functions.deliberationFunction(brandsUtilities[i], brandsUtilities);
         }
 
@@ -633,9 +645,7 @@ public class GamerAgent implements Steppable {
 
         Model model = (Model) state;
 
-        double[] probNewFriend
-                = ((ModelParameters) model.getParametersObject()).
-                        getSegmentDailyProbNewFriend();
+        double[] probNewFriend = ((ModelParameters) model.getParametersObject()).getSegmentDailyProbNewFriend();
 
         double r = model.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE);
 
@@ -646,12 +656,13 @@ public class GamerAgent implements Steppable {
 
             if (newConnectedNode == -1) {
 
-                //Model.logger.info("[-> ++] obtainNewFriend() tried to create a new friend for node " 
-                //+ gamerAgentId + " but we couldn't!");
+                // Model.logger.info("[-> ++] obtainNewFriend() tried to create a new friend for
+                // node "
+                // + gamerAgentId + " but we couldn't!");
             } else {
 
-                //Model.logger.info("[-> ++] obtainNewFriend() new friend added between node " 
-                //+ gamerAgentId + " and node " + newConnectedNode);
+                // Model.logger.info("[-> ++] obtainNewFriend() new friend added between node "
+                // + gamerAgentId + " and node " + newConnectedNode);
             }
         }
     }
@@ -664,9 +675,7 @@ public class GamerAgent implements Steppable {
 
         Model model = (Model) state;
 
-        double[] probLoseFriend
-                = ((ModelParameters) model.getParametersObject()).
-                        getSegmentDailyProbLoseFriend();
+        double[] probLoseFriend = ((ModelParameters) model.getParametersObject()).getSegmentDailyProbLoseFriend();
 
         double r = model.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE);
 
@@ -677,11 +686,12 @@ public class GamerAgent implements Steppable {
 
             if (newConnectedNode == -1) {
 
-                //Model.logger.info("[-> --] leaveExistingFriend() tried to remove an edge but we couldn't!");
+                // Model.logger.info("[-> --] leaveExistingFriend() tried to remove an edge but
+                // we couldn't!");
             } else {
 
-                //Model.logger.info("[-> --] leaveExistingFriend() " + gamerAgentId + 
-                //		" and node " + newConnectedNode + " are not friends. Edge removed!");			
+                // Model.logger.info("[-> --] leaveExistingFriend() " + gamerAgentId +
+                // " and node " + newConnectedNode + " are not friends. Edge removed!");
             }
 
         }
@@ -698,34 +708,32 @@ public class GamerAgent implements Steppable {
         Model model = (Model) state;
 
         // first get the day of the week to get prob to play
-        //Calendar c = Calendar.getInstance();
-        //c.setTime(model.getCurrentDate());
-        //int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+        // Calendar c = Calendar.getInstance();
+        // c.setTime(model.getCurrentDate());
+        // int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
         int dayOfWeek = model.getDayOfWeek();
 
         if (dayOfWeek == (Calendar.SATURDAY) || dayOfWeek == (Calendar.SUNDAY)) {
 
-            dailyProbPlay = ((ModelParameters) model.getParametersObject()).
-                    getSegmentDailyProbPlayWeekend();
+            dailyProbPlay = ((ModelParameters) model.getParametersObject()).getSegmentDailyProbPlayWeekend();
 
         } else {
 
-            dailyProbPlay = ((ModelParameters) model.getParametersObject()).
-                    getSegmentDailyProbPlayNoWeekend();
+            dailyProbPlay = ((ModelParameters) model.getParametersObject()).getSegmentDailyProbPlayNoWeekend();
 
         }
 
-        // once we have the prob to play we check if it plays today	
+        // once we have the prob to play we check if it plays today
         double r = model.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE);
 
         if (r < dailyProbPlay[this.segmentId]) {
 
             // we have to play today!
-            // Model.logger.info("[P] playToday() being dayOfWeek " + dayOfWeek); 			
+            // Model.logger.info("[P] playToday() being dayOfWeek " + dayOfWeek);
             return true;
         } else {
 
-            // we do not play today!			
+            // we do not play today!
             return false;
         }
 
@@ -753,7 +761,7 @@ public class GamerAgent implements Steppable {
 
     }
 
-    //--------------------------- Steppable method --------------------------//	
+    // --------------------------- Steppable method --------------------------//
     /**
      * Step of the simulation (equals to a day of iteration).
      *
@@ -771,15 +779,18 @@ public class GamerAgent implements Steppable {
             // Calcular la utilidad con cada una de las marcas
             double[] utilities = this.obtainUtility(state);
 
-            // Aplicamos una de las reglas heuisticas de compra y selecciona aleatoriamente una marca a comprar en ese momento.
+            // Aplicamos una de las reglas heuisticas de compra y selecciona aleatoriamente
+            // una marca a comprar en ese momento.
             int brandId = obtainBrand(state, utilities);
 
             // Guardamos el resultado
             this.setPurchasedBrands(this.currentStep, brandId);
-            // System.out.println("The agend with ID " + this.gamerAgentId + " has utility : " + Arrays.toString(utilities) + " buy the brand : " + brandId  + " with ID " + model.getBrands()[brandId].getBrandId());
+            // System.out.println("The agend with ID " + this.gamerAgentId + " has utility :
+            // " + Arrays.toString(utilities) + " buy the brand : " + brandId + " with ID "
+            // + model.getBrands()[brandId].getBrandId());
             // model.getBrands()[brandId];
 
-            // todo [jaume] Modificar las preferencias de los agentes para el posterio step. 
+            // todo [jaume] Modificar las preferencias de los agentes para el posterio step.
             obtainNewFriend(state);
 
             loseExistingFriend(state);
@@ -790,7 +801,7 @@ public class GamerAgent implements Steppable {
     // Todo: Remove it
     public void step1(SimState state) {
 
-        // first we check if we play today		
+        // first we check if we play today
         if (playToday(state)) {
 
             if (subscriptionState == Model.PREMIUM_USER) {
@@ -806,38 +817,38 @@ public class GamerAgent implements Steppable {
 
                     // Checking the type of contagion
                     switch (((Model) state).getParametersObject().getExperimentType()) {
-                        case 0:
-                            // TODO SIMPLE INDEP. CONTAGION (CORRECT??)
-                            changed = this.simpleAdoptionFromFriends(state);
+                    case 0:
+                        // TODO SIMPLE INDEP. CONTAGION (CORRECT??)
+                        changed = this.simpleAdoptionFromFriends(state);
 
-                            break;
+                        break;
 
-                        case 1:
-                            // THRESHOLD CONTAGION
-                            changed = this.thresholdAdoptionFromFriends(state);
+                    case 1:
+                        // THRESHOLD CONTAGION
+                        changed = this.thresholdAdoptionFromFriends(state);
 
-                            break;
+                        break;
 
-                        case 2:
-                            // BASS MODEL (INDEPENDENT DIFFUSION)
-                            changed = this.bassAdoptionFromFriends(state);
-                            break;
+                    case 2:
+                        // BASS MODEL (INDEPENDENT DIFFUSION)
+                        changed = this.bassAdoptionFromFriends(state);
+                        break;
 
-                        case 3:
-                            // BASED ON COMPLEX CONTAGION
-                            changed = this.complexAdoptionFromFriends(state);
-                            break;
+                    case 3:
+                        // BASED ON COMPLEX CONTAGION
+                        changed = this.complexAdoptionFromFriends(state);
+                        break;
 
-                        case 4:
-                            // BASS MODEL BUT USING WEIGHTS (MARKETING ACTIONS)
-                            changed = this.bassAdoptionFromFriendsUsingWeights(state);
-                            break;
+                    case 4:
+                        // BASS MODEL BUT USING WEIGHTS (MARKETING ACTIONS)
+                        changed = this.bassAdoptionFromFriendsUsingWeights(state);
+                        break;
 
-                        case 5:
-                            // BASS MODEL BUT USING WEIGHTS FOR A GIVEN SET OF INITIAL USERS 
-                            // (MARKETING ACTIONS)
-                            changed = this.bassAdoptionFromFriendsUsingWeightsForInitialUsers(state);
-                            break;
+                    case 5:
+                        // BASS MODEL BUT USING WEIGHTS FOR A GIVEN SET OF INITIAL USERS
+                        // (MARKETING ACTIONS)
+                        changed = this.bassAdoptionFromFriendsUsingWeightsForInitialUsers(state);
+                        break;
                     }
                 }
 

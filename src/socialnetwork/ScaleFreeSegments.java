@@ -6,13 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import ec.util.MersenneTwisterFast;
-import model.Model;
-
 import org.graphstream.algorithm.generator.BaseGenerator;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.log4j.PropertyConfigurator;
-
 import util.Functions;
 
 /**
@@ -78,10 +73,9 @@ public class ScaleFreeSegments extends BaseGenerator {
 	 */
 	private int indexNodesSegments[];
 	
-	private Logger logger = LoggerFactory.getLogger(ScaleFreeSegments.class);
-
 	/**
 	 * Gets the indes of nodes of their segments.
+	 * 
 	 * @return
 	 */
 	public int[] getIndexNodesSegments() {

@@ -1,15 +1,11 @@
 package socialnetwork;
 
-import model.Model;
-
 import org.graphstream.algorithm.generator.BaseGenerator;
 
 import ec.util.MersenneTwisterFast;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.log4j.PropertyConfigurator;
-
 import util.Functions;
 
 /**

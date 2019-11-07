@@ -133,7 +133,7 @@ public class ConsoleSimulation {
                             //System.out.print("Monte Carlo run " + k + "; " + simulated[j][i] + " new premiums");
                             System.out.println();
 
-                            System.out.print(" NRUNS " + k + "Step  " + j + " Brand " + i + ": " + simulated2[k][i][j] + " new purchases");
+                            System.out.print(" NRUNS " + k + " Step  " + j + " Brand " + i + ": " + simulated2[k][i][j] + " new purchases");
                             System.out.println();
                         }
                         System.out.println();
