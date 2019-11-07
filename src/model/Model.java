@@ -464,6 +464,7 @@ public class Model extends SimState {
 
         scheduleCounter++;
 
+        // Todo: Remove it
         setAnonymousAgentAposteriori(scheduleCounter);
 
         setNewAnonymousAgentAposteriori(scheduleCounter);
@@ -559,7 +560,9 @@ public class Model extends SimState {
         segmentId = segment.assignSegment();
 
         // this code was introduced and the former replaced 
-        // after finding an important bug! 
+        // after finding an important bug!
+
+        // TODO: Implementar los modelos con productos regaladas al inicio de la simulacion
         int state;
         if (this.initialPrems.contains(nodeId)) {
             state = Model.PREMIUM_USER;
@@ -571,7 +574,7 @@ public class Model extends SimState {
         //logger.info("Agent " + nodeId + " assigned to subscription status " + state); 
         GamerAgent cl = new GamerAgent(nodeId, segmentId, state, params.getMaxDrivers(), MAX_STEPS);
 
-        // TODO [jaume] Estas SON definidas en el archivo de configuracion.
+        // TODO [jaume]
         
         // Inicializamos la preferencias aleatoriamente del agente
         for (int j = 0; j < params.getMaxDrivers(); j++) {
