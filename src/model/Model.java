@@ -574,16 +574,13 @@ public class Model extends SimState {
         //logger.info("Agent " + nodeId + " assigned to subscription status " + state); 
         GamerAgent cl = new GamerAgent(nodeId, segmentId, state, params.getMaxDrivers(), MAX_STEPS);
 
-        // TODO [jaume]
-        
-        // Inicializamos la preferencias aleatoriamente del agente
         for (int j = 0; j < params.getMaxDrivers(); j++) {
             cl.setPreferences(j, Model.getParametersObject().getPreferences()[j]);
         }
 
         return cl;
     }
-
+    // Todo: Remove it
     /**
      * Adds the anonymous agent to schedule (at the beginning of each step),
      * which calculates the statistics.
@@ -600,8 +597,6 @@ public class Model extends SimState {
             private static final long serialVersionUID = -2837885990121299044L;
 
             public void step(SimState state) {
-                //logNrInfectedApriori = calcNrInfectedPremiums();
-                //logAvgDegreeApriori = calcAvgDegreeInfected();
 
                 int currentStep = (int) schedule.getSteps();
                 cumPremiumAgents[currentStep] = calcNrInfectedPremiums();
@@ -633,9 +628,6 @@ public class Model extends SimState {
                     newPurchases[b.getBrandId()][currentStep] = -1;
                 }
 
-                // System.out.println("*** Starting Step: " + schedule.getSteps());
-                //logger.info("*** Starting Step: " +schedule.getSteps() + 
-                //		". Simulated date: " + currentDate.toString());	
             }
         });
 
@@ -655,16 +647,11 @@ public class Model extends SimState {
                 // refresh date
                 currentDay++;
 
-                //calendar.setTime(currentDate);
-                //calendar.add(Calendar.DATE, 1);
-                //currentDate = calendar.getTime();
-                // we will update the number of cumulative and new premiums. 		
                 int currentStep = (int) schedule.getSteps();
 
                 for (int i = 0; i < params.brands; i++) {
+
                     Brand b = brands[i];
-                    //cumPurchases[b.getBrandId()][currentStep] = calcNrPurchasesOfBrand(b);
-                    //newPurchases[b.getBrandId()][currentStep] = -1;
 
                     if (currentStep == 0) {
 
@@ -685,12 +672,6 @@ public class Model extends SimState {
                                         cumPurchases[b.getBrandId()][currentStep]);
 
                     }
-
-//                    System.out.print(">> Purchases obtained at every step by every brand:\n");
-//                    System.out.println();
-//
-//                    System.out.print("Step  " + currentStep + " Brand " + b.getBrandId() + ": " + newPurchases[b.getBrandId()][currentStep] + " new purchases");
-//                    System.out.println();
                 }
 
             }
@@ -698,6 +679,7 @@ public class Model extends SimState {
 
     }
 
+    // Todo: Remove it
     /**
      * Adds the anonymous agent to schedule (at the end of each step), which
      * calculates the statistics.
