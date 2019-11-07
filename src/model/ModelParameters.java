@@ -46,7 +46,7 @@ public class ModelParameters {
 
     int ratioAgentsPop;
 
-    // TODO. SF ONLY!!
+    // NOTE: SF ONLY!!
     // Choose between several social networks:
     // RANDOM_NETWORK_SEGMENTS, random network concentric
     // SCALE_FREE_NETWORK, scale-free (Barabasi)

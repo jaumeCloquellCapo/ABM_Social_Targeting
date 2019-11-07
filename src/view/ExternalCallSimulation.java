@@ -14,36 +14,6 @@ import controller.*;
  */
 
 public class ExternalCallSimulation {		
-		
-	/**
-	 * This test function was for printing and testing objective files as returning method
-	 * for C++. It seems it is faster sending by piping (in 100 runs: 190s vs 230s)
-	 */
-	
-	/*private static void printObjsFile (String fileName){
-		final String DPATH = "./"; 
-		PrintStream streamFile;
-						
-		try {
-			// check if the file exists to append or not
-			String completePath = DPATH + fileName;
-
-			File f1 = new File(DPATH);
-			f1.mkdirs();
-			
-			streamFile = new PrintStream(new FileOutputStream(completePath, false ));
-			
-			// TODO stupid code just to let the exiting code... change it!!!
-			streamFile.print("12	600");
-			
-			streamFile.println();
-			streamFile.close();
-			
-		} catch ( IOException e ) { 
-			System.out.print("writeToFile() " + e); 
-			System.out.println();
-		};				
-	}*/
 	
 	/**
 	 * MAIN

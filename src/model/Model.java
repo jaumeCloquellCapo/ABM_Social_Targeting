@@ -72,25 +72,8 @@ public class Model extends SimState {
 
     Brand[] brands;
 
-    //--------------------------- Clone method ---------------------------//	
-    /**
-     * Clone the object
-     */
-    /* TODO public Object clone() {
-    	Model m = (Model)(super.clone());
-        m.socialNetwork = (GraphStreamer)(socialNetwork.clone());
-        m.segment = (GamersSegments)(segment.clone());			
-        return m;        
-    }*/
     //--------------------------- Get/Set methods ---------------------------//	
     //
-    /*public static String getLogFileName() {
-		return LOGFILENAME;
-	}
-	
-	public static void setLogFileName(String _logFileName) {
-		LOGFILENAME = _logFileName;
-	}*/
     public static String getConfigFileName() {
         return CONFIGFILENAME;
     }
@@ -114,19 +97,6 @@ public class Model extends SimState {
         return socialNetwork;
     }
 
-    /**
-     * @return the currentDate
-     */
-    /*public Date getCurrentDate() {
-		return currentDate;
-	}
-
-	/**
-	 * @param currentDate the currentDate to set
-     */
- /*public void setCurrentDate(Date currentDate) {
-		this.currentDate = currentDate;
-	}*/
     /**
      * Gets the bag of agents.
      *
@@ -210,24 +180,6 @@ public class Model extends SimState {
         this.params = _params;
     }
 
-    /**
-     * DONT USE YET! Triggered when new premium member. It increases the number
-     * of new premium members for the current step arrays.
-     */
-    /*private void increasePremium () {
-		
-		int currentStep = (int) this.schedule.getSteps();		
-		newPremiumAgents[currentStep] ++;		
-	}*/
-    /**
-     * DONT USE YET! Triggered when losing premium member. It decreases the
-     * number of new premium members for the current step arrays
-     */
-    /*private void decreasePremium () {
-		
-		int currentStep = (int) this.schedule.getSteps();		
-		newPremiumAgents[currentStep] --;
-	}*/
     /**
      * This function create an array for allocating the days of the week
      *
@@ -789,6 +741,7 @@ public class Model extends SimState {
 
         for (int i = 0; i < params.brands; i++) {
             Brand b = this.getBrands()[i];
+            
             System.out.print("Brand nº " + i + " :");
             System.out.println();
             System.out.print("  ID " + b.getBrandId());

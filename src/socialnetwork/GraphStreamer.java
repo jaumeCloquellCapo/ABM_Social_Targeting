@@ -79,27 +79,6 @@ public class GraphStreamer {
 		
 		graph = new SingleGraph("SNFromFile");
 		
-		/*if (graph != null)
-			graph.clear();
-		else 
-			graph = new SingleGraph("SNFromFile");
-		
-		FileSourceDGS fileSource = new FileSourceDGS();
-						
-		fileSource.addSink(graph);
-		
-		try {
-			
-			fileSource.readAll(params.getNetworkFilesPattern());
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.err.println("Error when reading SN file");
-			e.printStackTrace();
-		}
-
-		fileSource.removeSink(graph);*/
-		
 		graph.addAttribute("ui.antialias");
 		graph.addAttribute("stylesheet", "graph {padding : 20px;}" 
 				+ "node {fill-mode: dyn-plain; fill-color: black;}"
