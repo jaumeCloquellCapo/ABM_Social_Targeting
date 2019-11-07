@@ -91,7 +91,6 @@ public class ConsoleSimulation {
                 for (int j = 0; j < controller.getNewPuchasesOfEveryBrand().length; j++) {;
                     simulated2[i][j] = results2[j];
                 }
-                // System.out.println("simulated2.size() : " + simulated2.size());
 
                 // convert from arrayList integer to double array
 //                for (int j = 0; j < results.size(); j++) {
@@ -126,15 +125,11 @@ public class ConsoleSimulation {
                 System.out.println();
                 for (int k = 0; k < NRUNS; k++) {
                     for (int j = 0; j < maxSteps; j++) {
-                        
-                        System.out.print("\nMacro-level simulation output for day (step) " + j + ";\n");
-
+                        System.out.println("** NRUNS " + k);
+                        System.out.println("**** Step  " + j);
                         for (int i = 0; i < controller.getModelParameters().getBrands(); i++) {
-                            //System.out.print("Monte Carlo run " + k + "; " + simulated[j][i] + " new premiums");
-                            System.out.println();
-
-                            System.out.print(" NRUNS " + k + " Step  " + j + " Brand " + i + ": " + simulated2[k][i][j] + " new purchases");
-                            System.out.println();
+                            System.out.println("****** Brand " + i + ": " + simulated2[k][i][j]);
+                            //System.out.println();
                         }
                         System.out.println();
                         System.out.println();

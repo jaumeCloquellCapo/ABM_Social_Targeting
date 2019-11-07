@@ -514,7 +514,7 @@ public class Model extends SimState {
         // this code was introduced and the former replaced 
         // after finding an important bug!
 
-        // TODO: Implementar los modelos con productos regaladas al inicio de la simulacion
+        // TODO [Jaume] Implementar los modelos con productos regaladas al inicio de la simulacion
         int state;
         if (this.initialPrems.contains(nodeId)) {
             state = Model.PREMIUM_USER;
