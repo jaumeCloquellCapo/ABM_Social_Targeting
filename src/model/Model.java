@@ -456,6 +456,12 @@ public class Model extends SimState {
         // check the status to count initial premium agents (not the new)
         cumPremiumAgents[0] = calcNrInfectedPremiums();
 
+         // check the status to count initial purchases (not the new)
+        for (int i = 0; i < params.brands; i++) {
+            Brand b = brands[i];
+            cumPurchases[i][0] = calcNrPurchasesOfBrand(b);
+        }
+
         scheduleCounter++;
 
         setAnonymousAgentAposteriori(scheduleCounter);
