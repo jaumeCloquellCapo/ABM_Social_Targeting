@@ -422,7 +422,7 @@ public class Model extends SimState {
         // Add anonymous agent to calculate statistics
 
         // Todo: Remove it
-        setAnonymousAgentApriori(scheduleCounter);
+        //setAnonymousAgentApriori(scheduleCounter);
 
         setNewAnonymousAgentApriori(scheduleCounter);
 
@@ -432,8 +432,8 @@ public class Model extends SimState {
         agents = new Bag();
 
         // start the number of agents with premium subscriptions
-        newPremiumAgents[(int) schedule.getSteps()] = 0;
-        cumPremiumAgents[(int) schedule.getSteps()] = 0;
+        //newPremiumAgents[(int) schedule.getSteps()] = 0;
+        //cumPremiumAgents[(int) schedule.getSteps()] = 0;
 
         // start the number of new purchases of every brand
         for (int i = 0; i < params.brands; i++) {
@@ -504,7 +504,7 @@ public class Model extends SimState {
 
         scheduleCounter++;
 
-        setAnonymousAgentAposteriori(scheduleCounter);
+        //setAnonymousAgentAposteriori(scheduleCounter);
 
         setNewAnonymousAgentAposteriori(scheduleCounter);
 
@@ -660,6 +660,7 @@ public class Model extends SimState {
 //            state = Model.BASIC_USER;
 //        }
         GamerAgent cl = new GamerAgent(nodeId, segmentId, state, params.getMaxDrivers(), MAX_STEPS);
+        
         Random randomno = new Random();
 
         for (int j = 0; j < params.getMaxDrivers(); j++) {
