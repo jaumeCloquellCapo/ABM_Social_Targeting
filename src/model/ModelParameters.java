@@ -118,14 +118,26 @@ public class ModelParameters {
     int brandToGive;
 
     double[][] brandDrivers;
+    
     String[] brandName;
 
     double[] segmentDailyProbBuy; // probability to buy
 
     int targetingStrategy; // formas de regalar los productos a los influencers
+    
     double[] initialPercentagePremium;
 
+    double brandStdev;
+    
     // --------------------------- Get/Set methods ---------------------------//
+    
+    public double getBrandStdev() {
+        return brandStdev;
+    }
+
+    public void setBrandStdev(double brandStdev) {
+        this.brandStdev = brandStdev;
+    }
     public int getBrandToGive() {
         return brandToGive;
     }
@@ -962,6 +974,8 @@ public class ModelParameters {
             setInitialPercentagePremium(config.getParameterDoubleArray("initialPercentagePremium"));
 
             setBrandToGive(this.brandToGive = config.getParameterInteger("brandToGive"));
+            
+            setBrandStdev(this.brandStdev = config.getParameterDouble("brand.stdev"));
 
             this.brandName = new String[this.brands];
 

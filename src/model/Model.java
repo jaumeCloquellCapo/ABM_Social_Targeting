@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.Random;
 import org.graphstream.graph.Node;
 
 import sim.engine.*;
@@ -471,7 +472,8 @@ public class Model extends SimState {
                 break;
 
             case ModelParameters.TARGETING_PREFERENCES:
-                System.out.println("NOT IMPLEMENTED");
+                this.initialPrems = this.generatePremiunsWithBestPreferences();
+                //System.out.println("NOT IMPLEMENTED");
 
                 break;
 
@@ -486,7 +488,8 @@ public class Model extends SimState {
 
             if (this.initialPrems.contains(gamerAgend.gamerAgentId)) {
                 gamerAgend.setSubscriptionState(Model.PREMIUM_USER);
-                // gamerAgend.setPurchasedBrands(0, params.getBrandToGive());
+                // Regalamos en el step 0 el producto al influencer seleccionado
+                gamerAgend.setPurchasedBrands(0, params.getBrandToGive());
             }
 
         }
@@ -540,6 +543,23 @@ public class Model extends SimState {
     private HashSet<Integer> generatePremiunsWithMostDegree() {
         HashSet<Integer> initialPrems = new HashSet<>();
         var degreeMap = socialNetwork.getDegreeMap();
+        var numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
+        for (int i = 0; i < numberOfInitPremiums; i++) {
+            //System.out.println("   " + i + "  "+degreeMap.get(i).getId() + "   " + degreeMap.get(i).getDegree() + "   " + degreeMap.get(i).getAttributeCount());
+            initialPrems.add(Integer.valueOf(degreeMap.get(i).getId()));
+        }
+
+        return initialPrems;
+    }
+
+    private HashSet<Integer> generatePremiunsWithBestPreferences() {
+        HashSet<Integer> initialPrems = new HashSet<>();
+        var degreeMap = socialNetwork.getDegreeMap();
+        for (int i = 0; i < params.nrAgents; i++) {
+            //System.out.println("   " + i + "  "+degreeMap.get(i).getId() + "   " + degreeMap.get(i).getDegree() + "   " + degreeMap.get(i).getAttributeCount());
+            initialPrems.add(Integer.valueOf(degreeMap.get(i).getId()));
+        }
+
         var numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
         for (int i = 0; i < numberOfInitPremiums; i++) {
             //System.out.println("   " + i + "  "+degreeMap.get(i).getId() + "   " + degreeMap.get(i).getDegree() + "   " + degreeMap.get(i).getAttributeCount());
@@ -639,15 +659,16 @@ public class Model extends SimState {
 //        } else {
 //            state = Model.BASIC_USER;
 //        }
-        //logger.info("Agent " + nodeId + " assigned to segment " + segmentId); 
-        //logger.info("Agent " + nodeId + " assigned to subscription status " + state); 
         GamerAgent cl = new GamerAgent(nodeId, segmentId, state, params.getMaxDrivers(), MAX_STEPS);
+        Random randomno = new Random();
 
-        // TODO [jaume] Estas SON definidas en el archivo de configuracion.
-        // Inicializamos la preferencias aleatoriamente del agente
         for (int j = 0; j < params.getMaxDrivers(); j++) {
-            cl.setPreferences(j, Model.getParametersObject().getPreferences()[j]);
+
+            // generamos los valores de las preferencias dando una media y una desviación
+            cl.setPreferences(j, randomno.nextGaussian() * Model.getParametersObject().getBrandStdev() + Model.getParametersObject().getPreferences()[j]);
+
         }
+        // System.out.println(Arrays.toString(cl.getPreferences()));
 
         return cl;
     }
