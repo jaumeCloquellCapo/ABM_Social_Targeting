@@ -115,6 +115,8 @@ public class ModelParameters {
 
     int brands;
 
+    int brandToGive;
+
     double[][] brandDrivers;
     String[] brandName;
 
@@ -124,6 +126,14 @@ public class ModelParameters {
     double[] initialPercentagePremium;
 
     // --------------------------- Get/Set methods ---------------------------//
+    public int getBrandToGive() {
+        return brandToGive;
+    }
+
+    public void setBrandToGive(int brandToGive) {
+        this.brandToGive = brandToGive;
+    }
+
     public double[] getInitialPercentagePremium() {
         return initialPercentagePremium;
     }
@@ -946,10 +956,12 @@ public class ModelParameters {
             this.brandDrivers = new double[this.brands][this.maxDrivers];
 
             setTargetingStrategy(config.getParameterInteger("targetingStrategy"));
-            
+
             this.initialPercentagePremium = new double[this.brands];
-            
+
             setInitialPercentagePremium(config.getParameterDoubleArray("initialPercentagePremium"));
+
+            setBrandToGive(this.brandToGive = config.getParameterInteger("brandToGive"));
 
             this.brandName = new String[this.brands];
 

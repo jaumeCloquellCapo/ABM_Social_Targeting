@@ -486,6 +486,7 @@ public class Model extends SimState {
 
             if (this.initialPrems.contains(gamerAgend.gamerAgentId)) {
                 gamerAgend.setSubscriptionState(Model.PREMIUM_USER);
+                // gamerAgend.setPurchasedBrands(0, params.getBrandToGive());
             }
 
         }
