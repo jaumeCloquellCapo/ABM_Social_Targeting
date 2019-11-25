@@ -204,7 +204,7 @@ public class GUISimulation extends GUIState {
         }
 
         for (int i = 0; i < series2.length; i++) {
-            XYSeries SeriesTmp = new XYSeries(i, false);
+            XYSeries SeriesTmp = new XYSeries(Model.getParametersObject().getBrandNames(i), false);
             series2[i] = SeriesTmp;
             TimeSeriesAttributes TSAttributes
                     = (TimeSeriesAttributes) chart2.addSeries(series2[i], null);

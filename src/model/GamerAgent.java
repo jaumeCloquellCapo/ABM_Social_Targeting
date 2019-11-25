@@ -68,6 +68,10 @@ public class GamerAgent implements Steppable {
     public void setPurchasedBrands(int _index, int brandId) {
         this.purchasedBrands[_index] = brandId;
     }
+    
+    public int getPurchasedBrandsBySpecificStep(int _index) {
+        return this.purchasedBrands[_index];
+    }
 
     public double[] getPreferences() {
         return preferences;
@@ -775,6 +779,11 @@ public class GamerAgent implements Steppable {
         currentStep = (int) model.schedule.getSteps();
 
         if (playToday(state)) {
+            
+             if (subscriptionState == Model.PREMIUM_USER && this.getPurchasedBrandsBySpecificStep(currentStep) >= 0) {
+                 
+                 
+             } else {
 
             // Calcular la utilidad con cada una de las marcas
             double[] utilities = this.obtainUtility(state);
@@ -789,8 +798,8 @@ public class GamerAgent implements Steppable {
             // " + Arrays.toString(utilities) + " buy the brand : " + brandId + " with ID "
             // + model.getBrands()[brandId].getBrandId());
             // model.getBrands()[brandId];
-
-            // todo [jaume] Modificar las preferencias de los agentes para el posterio step.
+             }
+            // todo [jaume] Modificar las preferencias de los agentes para el posterio step. 
             obtainNewFriend(state);
 
             loseExistingFriend(state);

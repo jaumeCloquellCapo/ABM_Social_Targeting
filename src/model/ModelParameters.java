@@ -37,6 +37,12 @@ public class ModelParameters {
     public final static int MORE_LIKELY = 2;
     public final static int LESS_LIKELY = 3;
 
+    // FOR THE TYPE of TARGETING
+    public final static int TARGETING_RANDOM = 1;
+    public final static int TARGETING_DEGREE = 2;
+    public final static int TARGETING_PREFERENCES = 3;
+    public final static int TARGETING_PREFERENCES_DEGREE = 4;
+
     // ########################################################################
     // Variables
     // ########################################################################
@@ -66,7 +72,7 @@ public class ModelParameters {
     int weightDuration; // days the weight effect
     double obtainSubscriptionIncrease; // the increase in p (obtain subscription)
     int minPremFriendsToBelongSet; // the minimum number of friends (premium) to belong to the set of users with
-                                   // reward
+    // reward
     int seededUsers; // the users we are rewarding
     int rewardApproach; // the users we are rewarding
 
@@ -78,7 +84,7 @@ public class ModelParameters {
 
     double[] segmentSizes;
     double[] segmentInitialPercentagePremium; // percentage of premium subscribers see Gamer::{NON_USER, BASIC_USER,
-                                              // PREMIUM_USER}
+    // PREMIUM_USER}
 
     // for the social network
     double[] segmentsConnectivity;
@@ -109,15 +115,55 @@ public class ModelParameters {
 
     int brands;
 
+    int brandToGive;
+
     double[][] brandDrivers;
+    
     String[] brandName;
 
     double[] segmentDailyProbBuy; // probability to buy
 
+    int targetingStrategy; // formas de regalar los productos a los influencers
+    
+    double[] initialPercentagePremium;
+
+    double brandStdev;
+    
     // --------------------------- Get/Set methods ---------------------------//
+    
+    public double getBrandStdev() {
+        return brandStdev;
+    }
+
+    public void setBrandStdev(double brandStdev) {
+        this.brandStdev = brandStdev;
+    }
+    public int getBrandToGive() {
+        return brandToGive;
+    }
+
+    public void setBrandToGive(int brandToGive) {
+        this.brandToGive = brandToGive;
+    }
+
+    public double[] getInitialPercentagePremium() {
+        return initialPercentagePremium;
+    }
+
+    public void setInitialPercentagePremium(double[] initialPercentagePremium) {
+        this.initialPercentagePremium = initialPercentagePremium;
+    }
 
     public double[] getSegmentDailyProbBuy() {
         return segmentDailyProbBuy;
+    }
+
+    public int getTargetingStrategy() {
+        return targetingStrategy;
+    }
+
+    public void setTargetingStrategy(int targetingStrategy) {
+        this.targetingStrategy = targetingStrategy;
     }
 
     public void setSegmentDailyProbBuy(double[] segmentDailyProbBuy) {
@@ -513,8 +559,8 @@ public class ModelParameters {
     }
 
     /**
-     * Gets the segment prob for becoming a premium subscriptor without looking at
-     * friends
+     * Gets the segment prob for becoming a premium subscriptor without looking
+     * at friends
      *
      * @return
      */
@@ -523,8 +569,8 @@ public class ModelParameters {
     }
 
     /**
-     * Sets the segment prob for becoming a premium subscriptor without looking at
-     * friends
+     * Sets the segment prob for becoming a premium subscriptor without looking
+     * at friends
      *
      * @param segmentDailyProbObtainSubscription
      */
@@ -561,7 +607,8 @@ public class ModelParameters {
     }
 
     /**
-     * @param segmentDailyProbPlayNoWeekend the segmentDailyProbPlayNoWeekend to set
+     * @param segmentDailyProbPlayNoWeekend the segmentDailyProbPlayNoWeekend to
+     * set
      */
     public void setSegmentDailyProbPlayNoWeekend(double[] segmentDailyProbPlayNoWeekend) {
         this.segmentDailyProbPlayNoWeekend = segmentDailyProbPlayNoWeekend;
@@ -834,15 +881,15 @@ public class ModelParameters {
         result += "minPremFriendsToBelongSet=" + this.minPremFriendsToBelongSet + "\n";
 
         switch (this.rewardApproach) {
-        case MORE_LIKELY:
-            result += "rewardApproach=more_likely\n";
-            break;
-        case LESS_LIKELY:
-            result += "rewardApproach=less_likely\n";
-            break;
-        case RANDOM:
-            result += "rewardApproach=random\n";
-            break;
+            case MORE_LIKELY:
+                result += "rewardApproach=more_likely\n";
+                break;
+            case LESS_LIKELY:
+                result += "rewardApproach=less_likely\n";
+                break;
+            case RANDOM:
+                result += "rewardApproach=random\n";
+                break;
         }
 
         result += "seededUsers=" + this.seededUsers + "\n";
@@ -912,7 +959,6 @@ public class ModelParameters {
             config.readConfigFile();
 
             // Get global parameters
-
             experimentType = config.getParameterInteger("experimentType");
 
             // if (experimentType == TARGETING) {
@@ -921,10 +967,20 @@ public class ModelParameters {
 
             this.brandDrivers = new double[this.brands][this.maxDrivers];
 
+            setTargetingStrategy(config.getParameterInteger("targetingStrategy"));
+
+            this.initialPercentagePremium = new double[this.brands];
+
+            setInitialPercentagePremium(config.getParameterDoubleArray("initialPercentagePremium"));
+
+            setBrandToGive(this.brandToGive = config.getParameterInteger("brandToGive"));
+            
+            setBrandStdev(this.brandStdev = config.getParameterDouble("brand.stdev"));
+
             this.brandName = new String[this.brands];
-            
+
             this.preferences = new double[this.maxDrivers];
-            
+
             if (config.checkIfExist("model.preferences")) {
                 setPreferences(config.getParameterDoubleArray("model.preferences"));
             }
@@ -1026,7 +1082,6 @@ public class ModelParameters {
             ratioAgentsPop = config.getParameterInteger("ratioAgentPop");
 
             // setSegmentDailyProbBuy(config.getParameterDoubleArray("segmentDailyProbBuy"));
-
         } catch (IOException e) {
 
             System.err.println("Error with SN file when loading parameters for the simulation " + CONFIGFILENAME + "\n"

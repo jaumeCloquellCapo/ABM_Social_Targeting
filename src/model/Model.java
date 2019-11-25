@@ -4,10 +4,19 @@ package model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
+import java.util.LinkedHashMap;
+import java.util.List;
 import org.graphstream.graph.Node;
+import java.util.*;
+import java.lang.*;
 
 import sim.engine.*;
 import sim.util.*;
@@ -124,7 +133,7 @@ public class Model extends SimState {
     public int getCumPremiumsAtStep(int _position) {
         return cumPremiumAgents[_position];
     }
-    
+
     public int getCumPurchasesToBrandAtStep(int _position, int _brand) {
         return cumPurchases[_brand][_position];
     }
@@ -146,7 +155,7 @@ public class Model extends SimState {
     public int getNewPremiumsAtStep(int _position) {
         return newPremiumAgents[_position];
     }
-    
+
     public int getNewPurchasesForBrandAtStep(int _position, int _brand) {
         return newPurchases[_brand][_position];
     }
@@ -281,8 +290,7 @@ public class Model extends SimState {
         // En un principio estos drivers son inicializados aleatoriamente aunque la idea es poder configurarlo mas adelante
         createBrands(params);
 
-        printSumamryBrandScreen();
-
+        // printSumamryBrandScreen();
         segment = new GamersSegments();
 
         // generate int values for sizes to be consistent with the number of agents
@@ -329,13 +337,6 @@ public class Model extends SimState {
         // clear the initial premiums
         this.initialPrems.clear();
 
-        int numberOfInitPremiums = (int) (params.nrAgents * (params.getSegmentInitialPercentagePremium())[0]);
-
-        // the set has the initial premiums
-        while (this.initialPrems.size() < numberOfInitPremiums) {
-            this.initialPrems.add(this.random.nextInt(params.nrAgents));
-        }
-
         final int FIRST_SCHEDULE = 0;
 
         int scheduleCounter = FIRST_SCHEDULE;
@@ -367,8 +368,7 @@ public class Model extends SimState {
         // Add anonymous agent to calculate statistics
 
         // Todo: Remove it
-        setAnonymousAgentApriori(scheduleCounter);
-
+        //setAnonymousAgentApriori(scheduleCounter);
         setNewAnonymousAgentApriori(scheduleCounter);
 
         scheduleCounter++;
@@ -377,9 +377,8 @@ public class Model extends SimState {
         agents = new Bag();
 
         // start the number of agents with premium subscriptions
-        newPremiumAgents[(int) schedule.getSteps()] = 0;
-        cumPremiumAgents[(int) schedule.getSteps()] = 0;
-
+        //newPremiumAgents[(int) schedule.getSteps()] = 0;
+        //cumPremiumAgents[(int) schedule.getSteps()] = 0;
         // start the number of new purchases of every brand
         for (int i = 0; i < params.brands; i++) {
             newPurchases[i][(int) schedule.getSteps()] = 0;
@@ -389,15 +388,54 @@ public class Model extends SimState {
         // changed to have agents with random initial states (shuffle IDs which link them with nodes)		
         segment.beginSegmentAssignation();
 
+        // Todo [jaume] Remplazar este metodo por una función depeniendo del tipo de targeting a utilizar
         for (int i = 0; i < params.nrAgents; i++) {
+            // TODO: [jaume] no podemos asignar premiun o no a un usuario en este paso ya que aún no tiene las preferencias creadas. Por defecto sera de tipo BASIC_USER y luego depeniendo de la politica elegida
+            // se modificará a premiun y se asignara un compra en el step 0
 
-            GamerAgent cl = generateAgent(i);
+            GamerAgent cl = generateAgent(i, Model.BASIC_USER);
 
             // Add agent to the list and schedule
             agents.push(cl);
 
             // Add agent to the schedule
             schedule.scheduleRepeating(Schedule.EPOCH, scheduleCounter, cl);
+        }
+
+        // elegimos a los influencers
+        int strategy = params.getTargetingStrategy();
+
+        switch (strategy) {
+            case ModelParameters.TARGETING_RANDOM:
+                this.initialPrems = this.generateRandomPremiun();
+
+                break;
+
+            case ModelParameters.TARGETING_DEGREE:
+                this.initialPrems = this.generatePremiunsWithMostDegree();
+                break;
+
+            case ModelParameters.TARGETING_PREFERENCES:
+                this.initialPrems = this.generatePremiunsWithBestPreferences();
+                //System.out.println("NOT IMPLEMENTED");
+
+                break;
+
+            case ModelParameters.TARGETING_PREFERENCES_DEGREE:
+                System.out.println("NOT IMPLEMENTED");
+                break;
+
+        }
+
+        for (int i = 0; i < agents.size(); i++) {
+            var gamerAgend = ((GamerAgent) agents.get(i));
+
+            if (this.initialPrems.contains(gamerAgend.gamerAgentId)) {
+                gamerAgend.setSubscriptionState(Model.PREMIUM_USER);
+                // Regalamos en el step 0 el producto al influencer seleccionado
+                gamerAgend.setPurchasedBrands(0, params.getBrandToGive());
+            }
+
         }
 
         // calculate the set of non premium agents to be rewarded
@@ -416,9 +454,7 @@ public class Model extends SimState {
 
         scheduleCounter++;
 
-        // Todo: Remove it
-        setAnonymousAgentAposteriori(scheduleCounter);
-
+        //setAnonymousAgentAposteriori(scheduleCounter);
         setNewAnonymousAgentAposteriori(scheduleCounter);
 
         // logging  test
@@ -429,6 +465,75 @@ public class Model extends SimState {
     }
 
     //-------------------------- Auxiliary methods --------------------------//	
+    /**
+     * Se eligen aleatoriamente un porcentaje aleatorio de agentes premiuns
+     * donde se les regala un producto
+     *
+     * @return
+     */
+    private HashSet<Integer> generateRandomPremiun() {
+
+        HashSet<Integer> initialPrems = new HashSet<>();
+
+        int numberOfInitPremiums = 0;
+        //TODO: Pendiente de la respuesta de profe
+        //for (int i = 0; i < params.brands; i++) {
+        numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
+
+        //}
+        // the set has the initial premiums
+        while (initialPrems.size() < numberOfInitPremiums) {
+            initialPrems.add(this.random.nextInt(params.nrAgents));
+        }
+
+        return initialPrems;
+    }
+
+    private HashSet<Integer> generatePremiunsWithMostDegree() {
+        HashSet<Integer> initialPrems = new HashSet<>();
+
+        var degreeMap = socialNetwork.getDegreeMap();
+
+        var numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
+
+        for (int i = 0; i < numberOfInitPremiums; i++) {
+            //System.out.println("   " + i + "  "+degreeMap.get(i).getId() + "   " + degreeMap.get(i).getDegree() + "   " + degreeMap.get(i).getAttributeCount());
+            initialPrems.add(Integer.valueOf(degreeMap.get(i).getId()));
+        }
+
+        return initialPrems;
+    }
+
+    private HashSet<Integer> generatePremiunsWithBestPreferences() {
+        HashSet<Integer> initialPrems = new HashSet<>();
+
+        HashMap<Integer, Double> map = new HashMap<Integer, Double>();
+
+        for (int i = 0; i < params.nrAgents; i++) {
+            var aux = (GamerAgent) agents.get(i);
+            map.put(i, util.Functions.utilityFunction(brands[params.getBrandToGive()].getDrivers(), aux.getPreferences()));
+        }
+
+        Map<Integer, Double> mapSorted = util.Functions.sortHashMapByValue(map);
+
+        var numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
+        
+        int i = 0;
+        
+        for (Map.Entry<Integer, Double> en : mapSorted.entrySet()) {
+            //System.out.println("Key = " + en.getKey()
+            //        + ", Value = " + en.getValue() + ", i = " + i + ", max = " + numberOfInitPremiums);
+            initialPrems.add(en.getKey());
+            i++;
+            if (i == numberOfInitPremiums) {
+                break;
+            }
+        }
+
+        return initialPrems;
+    }
+    // function to sort hashmap by values 
+
     /**
      * Generates a set with the seeded users rewarded by marketing policies
      *
@@ -506,29 +611,29 @@ public class Model extends SimState {
      * @param i
      * @return
      */
-    private GamerAgent generateAgent(int nodeId) {
+    private GamerAgent generateAgent(int nodeId, int state) {
         int segmentId;
 
         segmentId = segment.assignSegment();
 
         // this code was introduced and the former replaced 
-        // after finding an important bug!
-
-        // TODO [Jaume] Implementar los modelos con productos regaladas al inicio de la simulacion
-        int state;
-        if (this.initialPrems.contains(nodeId)) {
-            state = Model.PREMIUM_USER;
-        } else {
-            state = Model.BASIC_USER;
-        }
-
-        //logger.info("Agent " + nodeId + " assigned to segment " + segmentId); 
-        //logger.info("Agent " + nodeId + " assigned to subscription status " + state); 
+        // after finding an important bug! 
+//        int state;
+//        if (this.initialPrems.contains(nodeId)) {
+//            state = Model.PREMIUM_USER;
+//        } else {
+//            state = Model.BASIC_USER;
+//        }
         GamerAgent cl = new GamerAgent(nodeId, segmentId, state, params.getMaxDrivers(), MAX_STEPS);
 
+        Random randomno = new Random();
+
         for (int j = 0; j < params.getMaxDrivers(); j++) {
-            cl.setPreferences(j, Model.getParametersObject().getPreferences()[j]);
+            // generamos los valores de las preferencias dando una media y una desviación
+            cl.setPreferences(j, randomno.nextGaussian() * Model.getParametersObject().getBrandStdev() + Model.getParametersObject().getPreferences()[j]);
+
         }
+        System.out.println(Arrays.toString(cl.getPreferences()));
 
         return cl;
     }
