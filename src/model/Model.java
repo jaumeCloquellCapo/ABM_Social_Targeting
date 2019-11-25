@@ -17,6 +17,7 @@ import java.util.List;
 import org.graphstream.graph.Node;
 import java.util.*;
 import java.lang.*;
+import java.util.stream.IntStream;
 
 import sim.engine.*;
 import sim.util.*;
@@ -416,13 +417,11 @@ public class Model extends SimState {
                 break;
 
             case ModelParameters.TARGETING_PREFERENCES:
-                this.initialPrems = this.generatePremiunsWithBestPreferences();
-                //System.out.println("NOT IMPLEMENTED");
-
+                this.initialPrems = this.generatePremiunsWithMostTargeting();
                 break;
 
             case ModelParameters.TARGETING_PREFERENCES_DEGREE:
-                System.out.println("NOT IMPLEMENTED");
+                this.initialPrems = this.generatePremiunsWithMostTargetingAndDegree();
                 break;
 
         }
@@ -446,7 +445,7 @@ public class Model extends SimState {
         // check the status to count initial premium agents (not the new)
         cumPremiumAgents[0] = calcNrInfectedPremiums();
 
-         // check the status to count initial purchases (not the new)
+        // check the status to count initial purchases (not the new)
         for (int i = 0; i < params.brands; i++) {
             Brand b = brands[i];
             cumPurchases[i][0] = calcNrPurchasesOfBrand(b);
@@ -492,20 +491,48 @@ public class Model extends SimState {
     private HashSet<Integer> generatePremiunsWithMostDegree() {
         HashSet<Integer> initialPrems = new HashSet<>();
 
-        var degreeMap = socialNetwork.getDegreeMap();
+        var degreeMap = this.orderNodesByDegree();
 
         var numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
 
         for (int i = 0; i < numberOfInitPremiums; i++) {
             //System.out.println("   " + i + "  "+degreeMap.get(i).getId() + "   " + degreeMap.get(i).getDegree() + "   " + degreeMap.get(i).getAttributeCount());
-            initialPrems.add(Integer.valueOf(degreeMap.get(i).getId()));
+            initialPrems.add(Integer.valueOf(degreeMap[i]));
         }
 
         return initialPrems;
     }
 
-    private HashSet<Integer> generatePremiunsWithBestPreferences() {
+    private int[] orderNodesByDegree() {
+        int[] initialPrems = new int[params.nrAgents];
+
+        var degreeMap = socialNetwork.getDegreeMap();
+
+        // var numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
+        for (int i = 0; i < params.nrAgents; i++) {
+            //System.out.println("   " + i + "  "+degreeMap.get(i).getId() + "   " + degreeMap.get(i).getDegree() + "   " + degreeMap.get(i).getAttributeCount());
+            initialPrems[i] = Integer.valueOf(degreeMap.get(i).getId());
+        }
+
+        return initialPrems;
+    }
+
+    private HashSet<Integer> generatePremiunsWithMostTargeting() {
         HashSet<Integer> initialPrems = new HashSet<>();
+
+        var degreeMap = this.orderNodesByTargeting();
+
+        var numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
+
+        for (int i = 0; i < numberOfInitPremiums; i++) {
+            initialPrems.add(Integer.valueOf(degreeMap[i]));
+        }
+
+        return initialPrems;
+    }
+
+    private int[] orderNodesByTargeting() {
+        int[] initialPrems = new int[params.nrAgents];
 
         HashMap<Integer, Double> map = new HashMap<Integer, Double>();
 
@@ -514,26 +541,64 @@ public class Model extends SimState {
             map.put(i, util.Functions.utilityFunction(brands[params.getBrandToGive()].getDrivers(), aux.getPreferences()));
         }
 
-        Map<Integer, Double> mapSorted = util.Functions.sortHashMapByValue(map);
+        Map<Integer, Double> mapSorted = util.Functions.sortHashMapByValue(map, true);
 
         var numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
-        
+
         int i = 0;
-        
+
         for (Map.Entry<Integer, Double> en : mapSorted.entrySet()) {
             //System.out.println("Key = " + en.getKey()
             //        + ", Value = " + en.getValue() + ", i = " + i + ", max = " + numberOfInitPremiums);
-            initialPrems.add(en.getKey());
+            initialPrems[i] = en.getKey();
             i++;
-            if (i == numberOfInitPremiums) {
-                break;
-            }
         }
 
         return initialPrems;
     }
-    // function to sort hashmap by values 
 
+    private HashSet<Integer> generatePremiunsWithMostTargetingAndDegree() {
+        HashSet<Integer> initialPrems = new HashSet<>();
+
+        var degreeMap = this.orderByDegreeAndTargeting();
+
+        var numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
+
+        for (int i = 0; i < numberOfInitPremiums; i++) {
+            initialPrems.add(Integer.valueOf(degreeMap[i]));
+        }
+
+        return initialPrems;
+    }
+
+    private int[] orderByDegreeAndTargeting() {
+
+        int[] initialPrems = new int[params.nrAgents];
+
+        HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+
+        var bestDegre = this.orderNodesByDegree();
+        var bestTarg = this.orderNodesByTargeting();
+        
+        // para calcular que elementos tienen el mejor tarjeting y grado lo que hacemos es comparar la posicion de ellos respecto el resto. Si 
+        // el nodo 1 estan en la posicion o en grado (es muy influencer) pero tiene poco targeting (posicion 4) entonces 0 + 4 = 4. Este  valor representa su importancia
+        for (int i = 0; i < params.nrAgents; i++) {
+            var a = util.Functions.findIndex(bestDegre, i);
+            var b = util.Functions.findIndex(bestTarg, i);
+            map.put(i, a + b);
+        }
+
+        int i = 0;
+        for (Map.Entry<Integer, Integer> entry : util.Functions.sortHashMapByValue(map, false).entrySet()) {
+            System.out.println(entry.getKey() + " : " + entry.getValue());
+            initialPrems[i] = entry.getKey();
+            i++;
+        }
+
+        return initialPrems;
+    }
+
+    // function to sort hashmap by values 
     /**
      * Generates a set with the seeded users rewarded by marketing policies
      *
@@ -616,14 +681,6 @@ public class Model extends SimState {
 
         segmentId = segment.assignSegment();
 
-        // this code was introduced and the former replaced 
-        // after finding an important bug! 
-//        int state;
-//        if (this.initialPrems.contains(nodeId)) {
-//            state = Model.PREMIUM_USER;
-//        } else {
-//            state = Model.BASIC_USER;
-//        }
         GamerAgent cl = new GamerAgent(nodeId, segmentId, state, params.getMaxDrivers(), MAX_STEPS);
 
         Random randomno = new Random();
@@ -633,10 +690,11 @@ public class Model extends SimState {
             cl.setPreferences(j, randomno.nextGaussian() * Model.getParametersObject().getBrandStdev() + Model.getParametersObject().getPreferences()[j]);
 
         }
-        System.out.println(Arrays.toString(cl.getPreferences()));
+        // System.out.println(Arrays.toString(cl.getPreferences()));
 
         return cl;
     }
+
     // Todo: Remove it
     /**
      * Adds the anonymous agent to schedule (at the beginning of each step),
@@ -846,7 +904,7 @@ public class Model extends SimState {
 
         for (int i = 0; i < params.brands; i++) {
             Brand b = this.getBrands()[i];
-            
+
             System.out.print("Brand nº " + i + " :");
             System.out.println();
             System.out.print("  ID " + b.getBrandId());

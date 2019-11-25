@@ -26,6 +26,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.TreeMap;
+import java.util.stream.IntStream;
 import model.Model;
 
 /**
@@ -64,26 +66,25 @@ public class Functions {
      */
     public static final double TOTAL_AMOUNT_NORMALIZABLE_VALUE = 1.0;
     
+     public static int findIndex(int[] a, int target) {
+        return IntStream.range(0, a.length)
+                .filter(i -> target == a[i])
+                .findFirst()
+                .orElse(-1);	// return -1 if target is not found
+    }
 
-    public static HashMap<Integer, Double> sortHashMapByValue(HashMap<Integer, Double> hm) {
-        // Create a list from elements of HashMap 
-        List<Map.Entry<Integer, Double>> list
-                = new LinkedList<Map.Entry<Integer, Double>>(hm.entrySet());
+    public static <K, V extends Comparable> Map<K, V> sortHashMapByValue(Map<K, V> tempMap, Boolean descending) {
+        TreeMap<K, V> map = new TreeMap<>(buildComparator(tempMap, descending));
+        map.putAll(tempMap);
+        return map;
+    }
 
-        // Sort the list 
-        Collections.sort(list, new Comparator<Map.Entry<Integer, Double>>() {
-            public int compare(Map.Entry<Integer, Double> o1,
-                    Map.Entry<Integer, Double> o2) {
-                return -(o1.getValue()).compareTo(o2.getValue());
-            }
-        });
-
-        // put data from sorted list to hashmap  
-        HashMap<Integer, Double> temp = new LinkedHashMap<Integer, Double>();
-        for (Map.Entry<Integer, Double> aa : list) {
-            temp.put(aa.getKey(), aa.getValue());
+    public static <K, V extends Comparable> Comparator<? super K> buildComparator(final Map<K, V> tempMap, Boolean descending) {
+        if (descending) {
+                   return (o1, o2) -> -tempMap.get(o1).compareTo(tempMap.get(o2));
+        } else {
+                   return (o1, o2) -> tempMap.get(o1).compareTo(tempMap.get(o2));
         }
-        return temp;
     }
 
     /**
