@@ -409,7 +409,6 @@ public class Model extends SimState {
         switch (strategy) {
             case ModelParameters.TARGETING_RANDOM:
                 this.initialPrems = this.generateRandomPremiun();
-
                 break;
 
             case ModelParameters.TARGETING_DEGREE:
@@ -590,7 +589,7 @@ public class Model extends SimState {
 
         int i = 0;
         for (Map.Entry<Integer, Integer> entry : util.Functions.sortHashMapByValue(map, false).entrySet()) {
-            System.out.println(entry.getKey() + " : " + entry.getValue());
+            // System.out.println(entry.getKey() + " : " + entry.getValue());
             initialPrems[i] = entry.getKey();
             i++;
         }
