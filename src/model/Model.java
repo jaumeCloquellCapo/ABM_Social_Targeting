@@ -426,7 +426,7 @@ public class Model extends SimState {
         }
 
         for (int i = 0; i < agents.size(); i++) {
-            var gamerAgend = ((GamerAgent) agents.get(i));
+            GamerAgent gamerAgend = ((GamerAgent) agents.get(i));
 
             if (this.initialPrems.contains(gamerAgend.gamerAgentId)) {
                 gamerAgend.setSubscriptionState(Model.PREMIUM_USER);
@@ -490,9 +490,9 @@ public class Model extends SimState {
     private HashSet<Integer> generatePremiunsWithMostDegree() {
         HashSet<Integer> initialPrems = new HashSet<>();
 
-        var degreeMap = this.orderNodesByDegree();
+        int[] degreeMap = this.orderNodesByDegree();
 
-        var numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
+        int numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
 
         for (int i = 0; i < numberOfInitPremiums; i++) {
             //System.out.println("   " + i + "  "+degreeMap.get(i).getId() + "   " + degreeMap.get(i).getDegree() + "   " + degreeMap.get(i).getAttributeCount());
@@ -505,7 +505,7 @@ public class Model extends SimState {
     private int[] orderNodesByDegree() {
         int[] initialPrems = new int[params.nrAgents];
 
-        var degreeMap = socialNetwork.getDegreeMap();
+        ArrayList<Node> degreeMap = socialNetwork.getDegreeMap();
 
         // var numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
         for (int i = 0; i < params.nrAgents; i++) {
@@ -519,9 +519,9 @@ public class Model extends SimState {
     private HashSet<Integer> generatePremiunsWithMostTargeting() {
         HashSet<Integer> initialPrems = new HashSet<>();
 
-        var degreeMap = this.orderNodesByTargeting();
+        int[] degreeMap = this.orderNodesByTargeting();
 
-        var numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
+        int numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
 
         for (int i = 0; i < numberOfInitPremiums; i++) {
             initialPrems.add(Integer.valueOf(degreeMap[i]));
@@ -536,13 +536,13 @@ public class Model extends SimState {
         HashMap<Integer, Double> map = new HashMap<Integer, Double>();
 
         for (int i = 0; i < params.nrAgents; i++) {
-            var aux = (GamerAgent) agents.get(i);
+            GamerAgent aux = (GamerAgent) agents.get(i);
             map.put(i, util.Functions.utilityFunction(brands[params.getBrandToGive()].getDrivers(), aux.getPreferences()));
         }
 
         Map<Integer, Double> mapSorted = util.Functions.sortHashMapByValue(map, true);
 
-        var numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
+        int numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
 
         int i = 0;
 
@@ -559,9 +559,9 @@ public class Model extends SimState {
     private HashSet<Integer> generatePremiunsWithMostTargetingAndDegree() {
         HashSet<Integer> initialPrems = new HashSet<>();
 
-        var degreeMap = this.orderByDegreeAndTargeting();
+        int[] degreeMap = this.orderByDegreeAndTargeting();
 
-        var numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
+        int numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
 
         for (int i = 0; i < numberOfInitPremiums; i++) {
             initialPrems.add(Integer.valueOf(degreeMap[i]));
@@ -576,14 +576,14 @@ public class Model extends SimState {
 
         HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
 
-        var bestDegre = this.orderNodesByDegree();
-        var bestTarg = this.orderNodesByTargeting();
+        int[] bestDegre = this.orderNodesByDegree();
+        int[] bestTarg = this.orderNodesByTargeting();
         
         // para calcular que elementos tienen el mejor tarjeting y grado lo que hacemos es comparar la posicion de ellos respecto el resto. Si 
         // el nodo 1 estan en la posicion o en grado (es muy influencer) pero tiene poco targeting (posicion 4) entonces 0 + 4 = 4. Este  valor representa su importancia
         for (int i = 0; i < params.nrAgents; i++) {
-            var a = util.Functions.findIndex(bestDegre, i);
-            var b = util.Functions.findIndex(bestTarg, i);
+            int a = util.Functions.findIndex(bestDegre, i);
+            int b = util.Functions.findIndex(bestTarg, i);
             map.put(i, a + b);
         }
 
