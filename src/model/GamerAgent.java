@@ -3,6 +3,8 @@ package model;
 import sim.engine.*;
 
 import java.util.*;
+import org.apache.commons.lang3.CharSetUtils;
+import static util.Functions.sumDoubleArray;
 
 /**
  * Defines a gamer for ABM model.
@@ -68,7 +70,7 @@ public class GamerAgent implements Steppable {
     public void setPurchasedBrands(int _index, int brandId) {
         this.purchasedBrands[_index] = brandId;
     }
-    
+
     public int getPurchasedBrandsBySpecificStep(int _index) {
         return this.purchasedBrands[_index];
     }
@@ -115,8 +117,8 @@ public class GamerAgent implements Steppable {
     /**
      * Sets the id of the social group (segment Id)
      *
-     * @param _socialGroupId - the id of the social group (segment Id) it belongs
-     *                       to.
+     * @param _socialGroupId - the id of the social group (segment Id) it
+     * belongs to.
      */
     public void setSegmentId(int _segId) {
         this.segmentId = _segId;
@@ -207,9 +209,9 @@ public class GamerAgent implements Steppable {
     }
 
     /**
-     * Models the thresholds contagion of the premium subscription. It is based on
-     * the rate of friends of the agents. If the agent has a higher rate of friends
-     * than the threshold --> it is converted
+     * Models the thresholds contagion of the premium subscription. It is based
+     * on the rate of friends of the agents. If the agent has a higher rate of
+     * friends than the threshold --> it is converted
      *
      * @param state - a simulation model object (SimState).
      * @return true if the agent adopted subscription
@@ -258,8 +260,8 @@ public class GamerAgent implements Steppable {
     }
 
     /**
-     * Models the Bass model adoption for the premium subscription. It is based on
-     * the rate of friends of the agents and an adoption coefficient.
+     * Models the Bass model adoption for the premium subscription. It is based
+     * on the rate of friends of the agents and an adoption coefficient.
      *
      * @param state - a simulation model object (SimState).
      * @return true if the agent adopted subscription
@@ -313,10 +315,11 @@ public class GamerAgent implements Steppable {
     }
 
     /**
-     * Models the Bass model adoption for the premium subscription BUT considering
-     * the weights of the friends.
+     * Models the Bass model adoption for the premium subscription BUT
+     * considering the weights of the friends.
      *
-     * It is based on the rate of friends of the agents and an adoption coefficient.
+     * It is based on the rate of friends of the agents and an adoption
+     * coefficient.
      *
      * @param state - a simulation model object (SimState).
      * @return true if the agent adopted subscription
@@ -400,11 +403,12 @@ public class GamerAgent implements Steppable {
     }
 
     /**
-     * Models the Bass model adoption for the premium subscription BUT considering
-     * the weights of the friends of just an initial set of basic users to be
-     * rewarded.
+     * Models the Bass model adoption for the premium subscription BUT
+     * considering the weights of the friends of just an initial set of basic
+     * users to be rewarded.
      *
-     * It is based on the rate of friends of the agents and an adoption coefficient.
+     * It is based on the rate of friends of the agents and an adoption
+     * coefficient.
      *
      * @param state - a simulation model object (SimState).
      * @return true if the agent adopted subscription
@@ -484,9 +488,9 @@ public class GamerAgent implements Steppable {
 
     /**
      * Models the complex model adoption (Chandola 2007) for the premium
-     * subscription. It is based on the need of multiple sources to finally adopt.
-     * Basically, a user converts if there are at least 'a' premium friends.
-     * Otherwise, it does not convert.
+     * subscription. It is based on the need of multiple sources to finally
+     * adopt. Basically, a user converts if there are at least 'a' premium
+     * friends. Otherwise, it does not convert.
      *
      * @param state - a simulation model object (SimState).
      * @return true if the agent adopted subscription
@@ -533,8 +537,8 @@ public class GamerAgent implements Steppable {
     }
 
     /**
-     * Models the premium conversion by innovation in the subscription state It does
-     * not consider the social network of agents
+     * Models the premium conversion by innovation in the subscription state It
+     * does not consider the social network of agents
      *
      * @param state - a simulation model object (SimState).
      * @return true if new subscription
@@ -581,12 +585,12 @@ public class GamerAgent implements Steppable {
     }
 
     /**
-     * Function to get a list of the utility value of every brand
+     * Calc utility of all the brand
      *
-     * @param state
+     * @param model
      * @return
      */
-    public double[] obtainUtility(SimState state) {
+    public double[] Utility(SimState state) {
 
         Model model = (Model) state;
 
@@ -602,12 +606,189 @@ public class GamerAgent implements Steppable {
     }
 
     /**
+     * Decision making and heuristic rules: Repetition
+     *
+     * @param state
+     * @return product ID
+     */
+    public int Repetition(SimState state) {
+
+        return this.purchasedBrands[this.currentStep - 1];
+
+    }
+
+    /**
+     * Decision making and heuristic rules: Deliberation
+     *
+     * @param state
+     * @return product ID
+     */
+    public double[] Deliberation(SimState state, double[] biasedProductUtilities) {
+        Model model = (Model) state;
+
+        double result[] = new double[model.brands.length];
+
+        double[] biasedProductsUtilities = this.BiasedProductUtility(model);
+
+        for (int i = 0; i < model.brands.length; i++) {
+
+            result[i] = util.Functions.deliberationFunction(biasedProductsUtilities[i], biasedProductsUtilities);
+        }
+
+        return result;
+
+    }
+
+    /**
+     * Decision making and heuristic rules: Deliberation
+     *
+     * @param state
+     * @return product ID
+     */
+    public double[] Imitation(SimState state, double[] utilities) {
+        Model model = (Model) state;
+
+        double result[] = new double[model.brands.length];
+
+        for (int i = 0; i < model.brands.length; i++) {
+
+            result[i] = util.Functions.imitationFunction(utilities[i], utilities);
+        }
+
+        // Return the sum of all the values calculated
+        return result;
+
+    }
+
+    /**
+     * Decision making and heuristic rules: Deliberation
+     *
+     * @param state
+     * @return product ID
+     */
+    public double[] SocialComparison(SimState state, double[] biasedProductUtilities) {
+        Model model = (Model) state;
+
+        double result[] = new double[model.brands.length];
+
+        double[] biasedProductsUtilities = this.BiasedProductUtility(model);
+
+        for (int i = 0; i < model.brands.length; i++) {
+            result[i] = util.Functions.socialComparisonFunction(biasedProductsUtilities[i], biasedProductsUtilities);
+        }
+
+        // Return the sum of all the values calculated
+        return result;
+
+    }
+
+    /**
+     * Calc biased temporal utility of all the brand
+     *
+     * @param model
+     * @return
+     */
+    public double[] BiasedProductUtility(SimState state) {
+
+        Model model = (Model) state;
+
+        double biasedProductUtility[] = new double[model.brands.length];
+
+        double[] utilities = this.Utility(model);
+
+        for (int i = 0; i < model.brands.length; i++) {
+
+            double fractionDirectContactsPurchaseBrand = this.fractionDirectContactsPurchaseBrand(state, i);
+
+            biasedProductUtility[i] = util.Functions.biasedProductUtilityFunction(utilities[i], fractionDirectContactsPurchaseBrand, 0.2); // TODO: Replace 
+        }
+
+        return biasedProductUtility;
+
+    }
+
+    public double[] UncertaintyAboutDecision(SimState state) {
+
+        Model model = (Model) state;
+
+        double uncertaintyAboutDecision[] = new double[model.brands.length];
+
+        for (int i = 0; i < model.brands.length; i++) {
+
+            double fractionDirectContactsNotPurchaseBrand = this.fractionDirectContactsNotPurchaseBrand(state, i);
+            uncertaintyAboutDecision[i] = util.Functions.UncertaintyAboutDecisionFunction(fractionDirectContactsNotPurchaseBrand, 0.4); // TODO: Replace 
+        }
+
+        return uncertaintyAboutDecision;
+
+    }
+
+    /**
+     * Fraction of direct contacts of agent i in the social network who consumed
+     * product productId in the last choise
+     *
+     * @param state
+     * @param productId
+     * @return
+     */
+    public double fractionDirectContactsPurchaseBrand(SimState state, int productId) {
+
+        Model model = (Model) state;
+
+        int count = 0;
+
+        ArrayList<Integer> neighbors = (ArrayList<Integer>) model.socialNetwork.getNeighborsOfNode(this.gamerAgentId);
+        // Iterate over neighbors
+        for (int i = 0; i < neighbors.size(); i++) {
+            GamerAgent neighbor = (GamerAgent) (model.getAgents()).get(neighbors.get(i));
+            if (neighbor.getPurchasedBrandsBySpecificStep(this.currentStep - 1) == productId) {
+                count = count + 1;
+            }
+        }
+
+        return (double) count / neighbors.size();
+
+    }
+
+    /**
+     * Fraction of direct contacts of agent i in the social network who not
+     * consumed product productId in the last choise
+     *
+     * @param state
+     * @param productId
+     * @return
+     */
+    public double fractionDirectContactsNotPurchaseBrand(SimState state, int productId) {
+
+        Model model = (Model) state;
+
+        int count = 0;
+
+        ArrayList<Integer> neighbors = (ArrayList<Integer>) model.socialNetwork.getNeighborsOfNode(this.gamerAgentId);
+        // Iterate over neighbors
+        for (int i = 0; i < neighbors.size(); i++) {
+            GamerAgent neighbor = (GamerAgent) (model.getAgents()).get(neighbors.get(i));
+            // System.out.println("this.currentStep " + this.currentStep + " compro el producto  " + neighbor.getPurchasedBrandsBySpecificStep(this.currentStep - 1);
+            int p = neighbor.getPurchasedBrandsBySpecificStep(this.currentStep - 1);
+            // System.out.println(p);
+            // TODO: y si el agente no ha comprado ningun producto en el anterio step ? 
+            if (p != productId && p >= 0) {
+                count = count + 1;
+            }
+        }
+
+        return (double) count / neighbors.size();
+
+    }
+
+    /**
      * Function to get a product
      *
      * @param state
+     * @param probs
      * @return
      */
-    public int obtainBrand(SimState state, double[] brandsUtilities) {
+    public int obtainBrand(SimState state, double[] probs) {
 
         Model model = (Model) state;
 
@@ -618,18 +799,16 @@ public class GamerAgent implements Steppable {
 
         double r = model.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE);
 
-        for (int i = 0; i < brandsUtilities.length; i++) {
-            // System.out.println("brandsUtilities[i] " + brandsUtilities[i]);
-            // System.out.println("deliberationFunction " +
-            // util.Functions.deliberationFunction(brandsUtilities[i], brandsUtilities));
-            deliberation[i] = util.Functions.deliberationFunction(brandsUtilities[i], brandsUtilities);
+        for (int i = 0; i < probs.length; i++) {
+            // deliberation[i] = util.Functions.deliberationFunction(probs[i], probs);
+            deliberation[i] = probs[i] / sumDoubleArray(probs);
         }
 
         // Array con el listado de probabilidad de compra
         double[] probBuy = util.Functions.sumOfDigitsFrom1ToN(deliberation);
         // System.out.println("sumOfDigitsFrom1ToN " + Arrays.toString(probBuy));
 
-        for (brandId = 0; brandId < brandsUtilities.length; brandId++) {
+        for (brandId = 0; brandId < probs.length; brandId++) {
             if (r < probBuy[brandId]) {
                 break;
             }
@@ -775,30 +954,63 @@ public class GamerAgent implements Steppable {
     public void step(SimState state) {
 
         Model model = (Model) state;
+        double u = 0.4;
+        double o = 0.8;
 
         currentStep = (int) model.schedule.getSteps();
 
         if (playToday(state)) {
-            
-             if (subscriptionState == Model.PREMIUM_USER && this.getPurchasedBrandsBySpecificStep(currentStep) >= 0) {
-                 
-                 
-             } else {
-
-            // Calcular la utilidad con cada una de las marcas
-            double[] utilities = this.obtainUtility(state);
-
-            // Aplicamos una de las reglas heuisticas de compra y selecciona aleatoriamente
-            // una marca a comprar en ese momento.
+            // Calculamos un array de utilidades por cada marca
+            double[] utilities = this.Utility(state);
             int brandId = obtainBrand(state, utilities);
+            // if (subscriptionState == Model.PREMIUM_USER && currentStep == 0) {
+            // Do nothing
+            //} else {
+            if (this.currentStep > 0 && this.getPurchasedBrandsBySpecificStep(this.currentStep - 1) > -1) {
+                // Seleccionamos una marca
+                double[] biasedProductUtilities = this.BiasedProductUtility(state);
+                double[] uncertaintyAboutDecisions = this.UncertaintyAboutDecision(state);
 
+                double[] probs = new double[model.brands.length];
+
+                System.out.println("biasedProductUtilities ==> " + biasedProductUtilities[brandId]);
+                System.out.println("uncertaintyAboutDecisions ==> " + uncertaintyAboutDecisions[brandId]);
+                System.out.println("***********");
+
+                // solo puedo aplicar las heuristicas si hice una compra en el step -1
+                if (this.getPurchasedBrandsBySpecificStep(this.currentStep - 1) > -1) {
+                    //for (int i = 0; i < model.brands.length; i++) {
+                    if (biasedProductUtilities[brandId] >= u && uncertaintyAboutDecisions[brandId] <= o) {
+
+                        brandId = this.Repetition(state);
+
+                    } else if (biasedProductUtilities[brandId] < u && uncertaintyAboutDecisions[brandId] <= o) {
+
+                        probs = Deliberation(state, biasedProductUtilities);
+                        brandId = obtainBrand(state, probs);
+
+                    } else if (biasedProductUtilities[brandId] >= u && uncertaintyAboutDecisions[brandId] > o) {
+
+                        probs = Imitation(state, utilities);
+                        brandId = obtainBrand(state, probs);
+
+                    } else if (biasedProductUtilities[brandId] < u && uncertaintyAboutDecisions[brandId] > o) {
+
+                        probs = Imitation(state, biasedProductUtilities);
+                        brandId = obtainBrand(state, probs);
+
+                    }
+                }
+
+                //}
+                // System.out.println("The agend with ID " + this.gamerAgentId + " has utility :
+                // " + Arrays.toString(utilities) + " buy the brand : " + brandId + " with ID "
+                // + model.getBrands()[brandId].getBrandId());
+                // model.getBrands()[brandId];
+            }
             // Guardamos el resultado
             this.setPurchasedBrands(this.currentStep, brandId);
-            // System.out.println("The agend with ID " + this.gamerAgentId + " has utility :
-            // " + Arrays.toString(utilities) + " buy the brand : " + brandId + " with ID "
-            // + model.getBrands()[brandId].getBrandId());
-            // model.getBrands()[brandId];
-             }
+
             // todo [jaume] Modificar las preferencias de los agentes para el posterio step. 
             obtainNewFriend(state);
 
@@ -826,38 +1038,38 @@ public class GamerAgent implements Steppable {
 
                     // Checking the type of contagion
                     switch (((Model) state).getParametersObject().getExperimentType()) {
-                    case 0:
-                        // TODO SIMPLE INDEP. CONTAGION (CORRECT??)
-                        changed = this.simpleAdoptionFromFriends(state);
+                        case 0:
+                            // TODO SIMPLE INDEP. CONTAGION (CORRECT??)
+                            changed = this.simpleAdoptionFromFriends(state);
 
-                        break;
+                            break;
 
-                    case 1:
-                        // THRESHOLD CONTAGION
-                        changed = this.thresholdAdoptionFromFriends(state);
+                        case 1:
+                            // THRESHOLD CONTAGION
+                            changed = this.thresholdAdoptionFromFriends(state);
 
-                        break;
+                            break;
 
-                    case 2:
-                        // BASS MODEL (INDEPENDENT DIFFUSION)
-                        changed = this.bassAdoptionFromFriends(state);
-                        break;
+                        case 2:
+                            // BASS MODEL (INDEPENDENT DIFFUSION)
+                            changed = this.bassAdoptionFromFriends(state);
+                            break;
 
-                    case 3:
-                        // BASED ON COMPLEX CONTAGION
-                        changed = this.complexAdoptionFromFriends(state);
-                        break;
+                        case 3:
+                            // BASED ON COMPLEX CONTAGION
+                            changed = this.complexAdoptionFromFriends(state);
+                            break;
 
-                    case 4:
-                        // BASS MODEL BUT USING WEIGHTS (MARKETING ACTIONS)
-                        changed = this.bassAdoptionFromFriendsUsingWeights(state);
-                        break;
+                        case 4:
+                            // BASS MODEL BUT USING WEIGHTS (MARKETING ACTIONS)
+                            changed = this.bassAdoptionFromFriendsUsingWeights(state);
+                            break;
 
-                    case 5:
-                        // BASS MODEL BUT USING WEIGHTS FOR A GIVEN SET OF INITIAL USERS
-                        // (MARKETING ACTIONS)
-                        changed = this.bassAdoptionFromFriendsUsingWeightsForInitialUsers(state);
-                        break;
+                        case 5:
+                            // BASS MODEL BUT USING WEIGHTS FOR A GIVEN SET OF INITIAL USERS
+                            // (MARKETING ACTIONS)
+                            changed = this.bassAdoptionFromFriendsUsingWeightsForInitialUsers(state);
+                            break;
                     }
                 }
 

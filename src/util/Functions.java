@@ -65,8 +65,8 @@ public class Functions {
      * The goal value that the elements to be normalized should satisfy.
      */
     public static final double TOTAL_AMOUNT_NORMALIZABLE_VALUE = 1.0;
-    
-     public static int findIndex(int[] a, int target) {
+
+    public static int findIndex(int[] a, int target) {
         return IntStream.range(0, a.length)
                 .filter(i -> target == a[i])
                 .findFirst()
@@ -81,9 +81,9 @@ public class Functions {
 
     public static <K, V extends Comparable> Comparator<? super K> buildComparator(final Map<K, V> tempMap, Boolean descending) {
         if (descending) {
-                   return (o1, o2) -> -tempMap.get(o1).compareTo(tempMap.get(o2));
+            return (o1, o2) -> -tempMap.get(o1).compareTo(tempMap.get(o2));
         } else {
-                   return (o1, o2) -> tempMap.get(o1).compareTo(tempMap.get(o2));
+            return (o1, o2) -> tempMap.get(o1).compareTo(tempMap.get(o2));
         }
     }
 
@@ -156,6 +156,54 @@ public class Functions {
         return sumDoubleArray(utility);
     }
 
+    public static double deliberationFunction(double biasedProductUtility, double[] biasedProductUtilities) {
+
+        double aux[] = new double[biasedProductUtilities.length];
+
+        Arrays.setAll(aux, i -> Math.exp(biasedProductUtilities[i]));
+
+        return Math.exp(biasedProductUtility) / sumDoubleArray(aux);
+    }
+
+    public static double imitationFunction(double utility, double[] utilities) {
+
+        double aux[] = new double[utilities.length];
+
+        Arrays.setAll(aux, i -> Math.exp(2 * utilities[i]));
+
+        return Math.exp(2 * utility) / sumDoubleArray(aux);
+    }
+    
+    public static double socialComparisonFunction(double biasedProductUtility, double[] biasedProductUtilities) {
+
+
+        double aux[] = new double[biasedProductUtilities.length];
+
+        Arrays.setAll(aux, i -> Math.exp(biasedProductUtilities[i]));
+
+        return Math.exp(biasedProductUtility) / sumDoubleArray(aux);
+    }
+
+    /**
+     *
+     * @param utility: Array with the utility of the agend
+     * @param directContacts
+     * @param b
+     * @param fractionsDirectContacts
+     * @return
+     */
+    public static double biasedProductUtilityFunction(double utility, double fractionsDirectContacts, double b) {
+
+        double biasedProductUtility = (1 - b) * utility + b * fractionsDirectContacts;
+
+        // Return the sum of all the values calculated
+        return biasedProductUtility;
+    }
+
+    public static double UncertaintyAboutDecisionFunction(double fractionsDirectContacts, double b) {
+        return b * (1 - fractionsDirectContacts);
+    }
+
     /**
      * Calculates the probability to buy of product (Deliberation)
      *
@@ -163,14 +211,14 @@ public class Functions {
      * @param productUtility
      * @return
      */
-    public static double deliberationFunction(double brandUtility, double[] utilities) {
+    /*public static double deliberationFunction(double brandUtility, double[] utilities) {
 
         double a = brandUtility;
 
         double b = sumDoubleArray(utilities);
 
         return a / b;
-    }
+    }*/
 
     public static double[] sumOfDigitsFrom1ToN(double[] n) {
 
