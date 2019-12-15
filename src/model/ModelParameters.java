@@ -118,19 +118,48 @@ public class ModelParameters {
     int brandToGive;
 
     double[][] brandDrivers;
-    
+
     String[] brandName;
 
     double[] segmentDailyProbBuy; // probability to buy
 
     int targetingStrategy; // formas de regalar los productos a los influencers
-    
+
     double[] initialPercentagePremium;
 
     double brandStdev;
-    
+
+    double minimunSatisfactionAgend;
+
+    double uncertaintyToleranceLevel;
+
+    double socialPeerfInfluence;
+
     // --------------------------- Get/Set methods ---------------------------//
-    
+    public double getSocialPeerfInfluence() {
+        return socialPeerfInfluence;
+    }
+
+    public void setSocialPeerfInfluence(double socialPeerfInfluence) {
+        this.socialPeerfInfluence = socialPeerfInfluence;
+    }
+
+    public double getMinimunSatisfactionAgend() {
+        return minimunSatisfactionAgend;
+    }
+
+    public void setMinimunSatisfactionAgend(double minimunSatisfactionAgend) {
+        this.minimunSatisfactionAgend = minimunSatisfactionAgend;
+    }
+
+    public double getUncertaintyToleranceLevel() {
+        return uncertaintyToleranceLevel;
+    }
+
+    public void setUncertaintyToleranceLevel(double uncertaintyToleranceLevel) {
+        this.uncertaintyToleranceLevel = uncertaintyToleranceLevel;
+    }
+
     public double getBrandStdev() {
         return brandStdev;
     }
@@ -138,6 +167,7 @@ public class ModelParameters {
     public void setBrandStdev(double brandStdev) {
         this.brandStdev = brandStdev;
     }
+
     public int getBrandToGive() {
         return brandToGive;
     }
@@ -974,9 +1004,15 @@ public class ModelParameters {
             setInitialPercentagePremium(config.getParameterDoubleArray("initialPercentagePremium"));
 
             setBrandToGive(this.brandToGive = config.getParameterInteger("brandToGive"));
-            
+
             setBrandStdev(this.brandStdev = config.getParameterDouble("brand.stdev"));
 
+            setMinimunSatisfactionAgend(this.minimunSatisfactionAgend = config.getParameterDouble("minimunSatisfactionAgend"));
+
+            setUncertaintyToleranceLevel(this.uncertaintyToleranceLevel = config.getParameterDouble("uncertaintyToleranceLevel"));
+
+            setSocialPeerfInfluence(this.socialPeerfInfluence = config.getParameterDouble("socialPeerfInfluence"));
+            
             this.brandName = new String[this.brands];
 
             this.preferences = new double[this.maxDrivers];

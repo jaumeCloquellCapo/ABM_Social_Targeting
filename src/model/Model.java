@@ -578,7 +578,7 @@ public class Model extends SimState {
 
         int[] bestDegre = this.orderNodesByDegree();
         int[] bestTarg = this.orderNodesByTargeting();
-        
+
         // para calcular que elementos tienen el mejor tarjeting y grado lo que hacemos es comparar la posicion de ellos respecto el resto. Si 
         // el nodo 1 estan en la posicion o en grado (es muy influencer) pero tiene poco targeting (posicion 4) entonces 0 + 4 = 4. Este  valor representa su importancia
         for (int i = 0; i < params.nrAgents; i++) {
@@ -680,13 +680,17 @@ public class Model extends SimState {
 
         segmentId = segment.assignSegment();
 
-        GamerAgent cl = new GamerAgent(nodeId, segmentId, state, params.getMaxDrivers(), MAX_STEPS);
+        GamerAgent cl = new GamerAgent(nodeId, segmentId, state, params.getMaxDrivers(), MAX_STEPS, params.brands);
 
         Random randomno = new Random();
 
         for (int j = 0; j < params.getMaxDrivers(); j++) {
             // generamos los valores de las preferencias dando una media y una desviación
             cl.setPreferences(j, randomno.nextGaussian() * Model.getParametersObject().getBrandStdev() + Model.getParametersObject().getPreferences()[j]);
+            // calculamos la utilidad de cada agente respecto al número de marcas
+            for (int brand = 0; brand < this.brands.length; brand++) {
+                cl.setUtility(brand, util.Functions.utilityFunction(this.getBrands()[brand].getDrivers(), cl.getPreferences()));
+            }
 
         }
         // System.out.println(Arrays.toString(cl.getPreferences()));
