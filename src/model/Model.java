@@ -437,9 +437,10 @@ public class Model extends SimState {
         }
 
         // calculate the set of non premium agents to be rewarded
-        if (params.getExperimentType() == ModelParameters.BASS_WEIGHTS_INITIAL_BASICS) {
-            createRewardedUsers();
-        }
+        
+        // if (params.getExperimentType() == ModelParameters.BASS_WEIGHTS_INITIAL_BASICS) {
+        //    createRewardedUsers();
+        // }
 
         // check the status to count initial premium agents (not the new)
         cumPremiumAgents[0] = calcNrInfectedPremiums();

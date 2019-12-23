@@ -192,9 +192,6 @@ public class Functions {
      * @return
      */
     public static double biasedProductUtilityFunction(double utility, double fractionsDirectContacts, double b) {
-
-        // Return the sum of all the values calculated
-        // System.out.println(" b: " + b + " utility: " + utility + " fractionsDirectContacts: " + fractionsDirectContacts);
         return (1 - b) * utility + b * fractionsDirectContacts;
     }
 

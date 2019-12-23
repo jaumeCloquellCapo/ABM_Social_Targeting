@@ -987,57 +987,64 @@ public class GamerAgent implements Steppable {
         currentStep = (int) model.schedule.getSteps();
 
         if (playToday(state)) {
-            // Calculamos un array de utilidades por cada marca
-            // double[] utilities = this.Utility(state);
 
-            int brandId = obtainBrand(state, this.utility);
+            if (subscriptionState == Model.PREMIUM_USER && this.currentStep <= 0) {
+                
+                // en el step 0 no hacemos nada con los influnecers. Consideramos que si les hemos regalado un producto, no van a comprar ese día
 
-            // if (subscriptionState == Model.PREMIUM_USER && currentStep == 0) {
-            // Do nothing
-            //} else {
-            // Si en el step t -1 compramos un producto
-            if (this.currentStep > 0 && this.getPurchasedBrandsBySpecificStep(this.currentStep - 1) > -1) {
+            } else {
 
-                brandId = this.getPurchasedBrandsBySpecificStep(this.currentStep - 1); // Recuperamos el producto que compramos en el step t -1
+                // Calculamos un array de utilidades por cada marca
+                // double[] utilities = this.Utility(state);
+                int brandId = obtainBrand(state, this.utility);
 
-                // Calculamos los umbrales
-                double[] biasedProductUtilities = this.BiasedProductUtility(state);
-                double[] uncertaintyAboutDecisions = this.UncertaintyAboutDecision(state);
-                System.out.println("------------------");
+                // if (subscriptionState == Model.PREMIUM_USER && currentStep == 0) {
+                // Do nothing
+                //} else {
+                // Si en el step t -1 compramos un producto
+                if (this.currentStep > 0 && this.getPurchasedBrandsBySpecificStep(this.currentStep - 1) > -1) {
 
-                System.out.println("biasedProductUtilities[brandId] ==" + biasedProductUtilities[brandId]);
-                System.out.println("uncertaintyAboutDecisions[brandId] ==" + uncertaintyAboutDecisions[brandId]);
+                    brandId = this.getPurchasedBrandsBySpecificStep(this.currentStep - 1); // Recuperamos el producto que compramos en el step t -1
 
-                double[] probs = new double[model.getParametersObject().brands];
+                    // Calculamos los umbrales
+                    double[] biasedProductUtilities = this.BiasedProductUtility(state);
+                    double[] uncertaintyAboutDecisions = this.UncertaintyAboutDecision(state);
+                    System.out.println("------------------");
 
-                // solo puedo aplicar las heuristicas si hice una compra en el step -1
-                if (biasedProductUtilities[brandId] >= model.getParametersObject().getMinimunSatisfactionAgend() && uncertaintyAboutDecisions[brandId] <= model.getParametersObject().getUncertaintyToleranceLevel()) {
-                    System.out.println("Repetition");
-                    brandId = this.Repetition(state);
+                    System.out.println("biasedProductUtilities[brandId] ==" + biasedProductUtilities[brandId]);
+                    System.out.println("uncertaintyAboutDecisions[brandId] ==" + uncertaintyAboutDecisions[brandId]);
 
-                } else if (biasedProductUtilities[brandId] < model.getParametersObject().getMinimunSatisfactionAgend() && uncertaintyAboutDecisions[brandId] <= model.getParametersObject().getUncertaintyToleranceLevel()) {
-                    System.out.println("Deliberation");
-                    probs = Deliberation(state, biasedProductUtilities);
-                    brandId = obtainBrand(state, probs);
+                    double[] probs = new double[model.getParametersObject().brands];
 
-                } else if (biasedProductUtilities[brandId] >= model.getParametersObject().getMinimunSatisfactionAgend() && uncertaintyAboutDecisions[brandId] > model.getParametersObject().getUncertaintyToleranceLevel()) {
-                    System.out.println("Imitation");
-                    probs = Imitation(state, this.getUtility());
-                    brandId = obtainBrand(state, probs);
+                    // solo puedo aplicar las heuristicas si hice una compra en el step -1
+                    if (biasedProductUtilities[brandId] >= model.getParametersObject().getMinimunSatisfactionAgend() && uncertaintyAboutDecisions[brandId] <= model.getParametersObject().getUncertaintyToleranceLevel()) {
+                        System.out.println("Repetition");
+                        brandId = this.Repetition(state);
 
-                } else if (biasedProductUtilities[brandId] < model.getParametersObject().getMinimunSatisfactionAgend() && uncertaintyAboutDecisions[brandId] > model.getParametersObject().getUncertaintyToleranceLevel()) {
-                    System.out.println("SocialComparison");
-                    probs = SocialComparison(state, biasedProductUtilities);
-                    brandId = obtainBrand(state, probs);
+                    } else if (biasedProductUtilities[brandId] < model.getParametersObject().getMinimunSatisfactionAgend() && uncertaintyAboutDecisions[brandId] <= model.getParametersObject().getUncertaintyToleranceLevel()) {
+                        System.out.println("Deliberation");
+                        probs = Deliberation(state, biasedProductUtilities);
+                        brandId = obtainBrand(state, probs);
 
+                    } else if (biasedProductUtilities[brandId] >= model.getParametersObject().getMinimunSatisfactionAgend() && uncertaintyAboutDecisions[brandId] > model.getParametersObject().getUncertaintyToleranceLevel()) {
+                        System.out.println("Imitation");
+                        probs = Imitation(state, this.getUtility());
+                        brandId = obtainBrand(state, probs);
+
+                    } else if (biasedProductUtilities[brandId] < model.getParametersObject().getMinimunSatisfactionAgend() && uncertaintyAboutDecisions[brandId] > model.getParametersObject().getUncertaintyToleranceLevel()) {
+                        System.out.println("SocialComparison");
+                        probs = SocialComparison(state, biasedProductUtilities);
+                        brandId = obtainBrand(state, probs);
+
+                    }
                 }
+                // Guardamos el resultado
+                this.setPurchasedBrands(this.currentStep, brandId);
+
+                obtainNewFriend(state);
+
+                loseExistingFriend(state);
             }
-            // Guardamos el resultado
-            this.setPurchasedBrands(this.currentStep, brandId);
-
-            obtainNewFriend(state);
-
-            loseExistingFriend(state);
         }
 
     }
