@@ -694,6 +694,7 @@ public class Model extends SimState {
             cl.setPreferences(j, randomno.nextGaussian() * Model.getParametersObject().getBrandStdev() + Model.getParametersObject().getPreferences()[j]);
             // calculamos la utilidad de cada agente para cada marca
             for (int brand = 0; brand < this.brands.length; brand++) {
+                
                 cl.setUtility(brand, util.Functions.utilityFunction(this.getBrands()[brand].getDrivers(), cl.getPreferences()));
             }
 
