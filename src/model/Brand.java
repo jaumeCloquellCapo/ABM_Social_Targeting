@@ -43,7 +43,13 @@ public class Brand {
      * @param _value
      */
     public void setDrivers(int driver, double _value) {
-        this.drivers[driver] = _value;
+        double aux = (double) Math.round(_value * 100) / 100;
+        
+        if (aux < 0.0 || aux > 1.0) {
+            System.err.println("Error :Invalid driver: "+ _value);
+        }
+        
+        this.drivers[driver] = aux;
     }
 
     /**

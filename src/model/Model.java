@@ -39,6 +39,12 @@ public class Model extends SimState {
 
     static boolean INCLUDEZERO = true;
     static boolean INCLUDEONE = true;
+    // Constantes del los tipo de decisiones
+    static int REPETITION = 1;
+    static int DELIBERATION = 2;
+    static int IMITATION = 3;
+    static int SOCIALCOMPARISION = 4;
+    static int UTILITY = 0;
 
     // LOGGING
     //public static Logger logger = LoggerFactory.getLogger(Model.class);
@@ -437,10 +443,9 @@ public class Model extends SimState {
         }
 
         // calculate the set of non premium agents to be rewarded
-        if (params.getExperimentType() == ModelParameters.BASS_WEIGHTS_INITIAL_BASICS) {
-            createRewardedUsers();
-        }
-
+        // if (params.getExperimentType() == ModelParameters.BASS_WEIGHTS_INITIAL_BASICS) {
+        //    createRewardedUsers();
+        // }
         // check the status to count initial premium agents (not the new)
         cumPremiumAgents[0] = calcNrInfectedPremiums();
 
@@ -687,7 +692,7 @@ public class Model extends SimState {
         for (int j = 0; j < params.getMaxDrivers(); j++) {
             // generamos los valores de las preferencias dando una media y una desviación
             cl.setPreferences(j, randomno.nextGaussian() * Model.getParametersObject().getBrandStdev() + Model.getParametersObject().getPreferences()[j]);
-            // calculamos la utilidad de cada agente respecto al número de marcas
+            // calculamos la utilidad de cada agente para cada marca
             for (int brand = 0; brand < this.brands.length; brand++) {
                 cl.setUtility(brand, util.Functions.utilityFunction(this.getBrands()[brand].getDrivers(), cl.getPreferences()));
             }

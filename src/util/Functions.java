@@ -152,8 +152,10 @@ public class Functions {
 
         Arrays.setAll(utility, i -> 1 - Math.abs(drivers[i] - preferences[i]));
 
+        double result = (double) sumDoubleArray(utility) / drivers.length;
+
         // Return the sum of all the values calculated
-        return sumDoubleArray(utility);
+        return result;
     }
 
     public static double deliberationFunction(double biasedProductUtility, double[] biasedProductUtilities) {
@@ -173,9 +175,8 @@ public class Functions {
 
         return Math.exp(2 * utility) / sumDoubleArray(aux);
     }
-    
-    public static double socialComparisonFunction(double biasedProductUtility, double[] biasedProductUtilities) {
 
+    public static double socialComparisonFunction(double biasedProductUtility, double[] biasedProductUtilities) {
 
         double aux[] = new double[biasedProductUtilities.length];
 
@@ -193,11 +194,7 @@ public class Functions {
      * @return
      */
     public static double biasedProductUtilityFunction(double utility, double fractionsDirectContacts, double b) {
-
-        double biasedProductUtility = (1 - b) * utility + b * fractionsDirectContacts;
-
-        // Return the sum of all the values calculated
-        return biasedProductUtility;
+        return (1 - b) * utility + b * fractionsDirectContacts;
     }
 
     public static double UncertaintyAboutDecisionFunction(double fractionsDirectContacts, double b) {
@@ -219,7 +216,6 @@ public class Functions {
 
         return a / b;
     }*/
-
     public static double[] sumOfDigitsFrom1ToN(double[] n) {
 
         double result[] = new double[n.length];
