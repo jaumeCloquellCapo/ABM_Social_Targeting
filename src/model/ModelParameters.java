@@ -749,7 +749,7 @@ public class ModelParameters {
 
         values += exportInitialPremiums();
 
-        values += exportConnectivity();
+        // values += exportConnectivity();
         values += exportProbNewFriend();
         values += exportProbLoseFriend();
 

@@ -248,6 +248,7 @@ public class GUISimulation extends GUIState {
                 y2 = new double[Model.getParametersObject().getBrands()];
 
                 x[0] = (int) model.schedule.getSteps() - 1;
+               
 
                 for (int i = 0; i < Model.getParametersObject().getBrands(); i++) {
                     y1[i] = model.getCumPurchasesToBrandAtStep(x[0], i);

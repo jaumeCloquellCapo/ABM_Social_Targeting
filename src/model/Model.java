@@ -324,6 +324,8 @@ public class Model extends SimState {
         socialNetwork = new GraphStreamer(params.nrAgents, params);
         socialNetwork.setGraph(params);
 
+        System.out.println(this.params.export());
+
         //logger.info("AnimalGameSimulation() end");
     }
 
@@ -694,7 +696,7 @@ public class Model extends SimState {
             cl.setPreferences(j, randomno.nextGaussian() * Model.getParametersObject().getBrandStdev() + Model.getParametersObject().getPreferences()[j]);
             // calculamos la utilidad de cada agente para cada marca
             for (int brand = 0; brand < this.brands.length; brand++) {
-                
+
                 cl.setUtility(brand, util.Functions.utilityFunction(this.getBrands()[brand].getDrivers(), cl.getPreferences()));
             }
 

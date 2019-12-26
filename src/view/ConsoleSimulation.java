@@ -3,6 +3,8 @@ package view;
 import java.io.IOException;
 import calibration.HistoricalData;
 import controller.Controller;
+import java.io.PrintWriter;
+import view.RunStats;
 
 //----------------------------- MAIN FUNCTION -----------------------------//
 /**
@@ -13,7 +15,7 @@ import controller.Controller;
 public class ConsoleSimulation {
 
     public static void main(String[] args) {
-        
+
         System.out.println("Agent-based Mk DSS running software.\n******************* "
                 + "\nLinked to paper 'Building Agent-Based Decision Support Systems \nfor "
                 + "Word-Of-Mouth Programs. A Freemium Application'. \nCo-authored by M. Chica and W. Rand "
@@ -27,7 +29,6 @@ public class ConsoleSimulation {
 
         } else if (args.length == 9) {
 
-            
             Controller controller = null;
 
             long seed = Long.parseLong(args[4]);
@@ -36,6 +37,7 @@ public class ConsoleSimulation {
             int NRUNS = Integer.parseInt(args[6]);
 
             HistoricalData data = null;
+
             long maxSteps = 0;
 
             if ("-hist".compareTo(args[0]) == 0) {
@@ -51,7 +53,6 @@ public class ConsoleSimulation {
                         + " ; \nand config file " + fileName
                         + "\n\nRunning Agent-based DSS. Please wait...");
 
-  
                 try {
 
                     data = new HistoricalData(dataFile);
@@ -79,24 +80,17 @@ public class ConsoleSimulation {
 
             controller = new Controller(fileName, seed, maxSteps);
 
-            int simulated2[][][] = new int[NRUNS][controller.getModelParameters().getBrands()][(int) maxSteps];
+            RunStats stats = new RunStats(NRUNS, (int) maxSteps, controller.getModelParameters().getBrands());
 
             for (int i = 0; i < NRUNS; i++) {
                 controller.runModel();
-
-                // ArrayList<Integer> results = controller.getNewPremiumsArray();
-
-                int[][] results2 = controller.getNewPuchasesOfEveryBrand(); // nrums - brand - step
-
+                int[][] results2 = controller.getNewPuchasesOfEveryBrand();
                 for (int j = 0; j < controller.getNewPuchasesOfEveryBrand().length; j++) {;
-                    simulated2[i][j] = results2[j];
+                    stats.setData(i, j, results2[j]);
                 }
-
-                // convert from arrayList integer to double array
-//                for (int j = 0; j < results.size(); j++) {
-//                    simulated[i][j] = results.get(j);
-//                }
             }
+
+            stats.calcAllStats();
 
             System.out.print("\nFinished!! Agent-based DSS Simulation ended successfully. "
                     + "\nCheck macro-level simulation output for new premium adoptions:"
@@ -121,21 +115,25 @@ public class ConsoleSimulation {
 //                writer.close();
             } else {
 
-                System.out.print(">> Purchases obtained at every step by the macro-level simulation:\n");
-                System.out.println();
-                for (int k = 0; k < NRUNS; k++) {
-                    for (int j = 0; j < maxSteps; j++) {
-                        System.out.println("** NRUNS " + k);
-                        System.out.println("**** Step  " + j);
-                        for (int i = 0; i < controller.getModelParameters().getBrands(); i++) {
-                            System.out.println("****** Brand " + i + ": " + simulated2[k][i][j]);
-                            //System.out.println();
-                        }
-                        System.out.println();
-                        System.out.println();
-
-                    }
-                }
+//                System.out.print(">> Purchases obtained at every step by the macro-level simulation:\n");
+//                System.out.println();
+//                for (int k = 0; k < NRUNS; k++) {
+//                    for (int j = 0; j < maxSteps; j++) {
+//                        System.out.println("** NRUNS " + k);
+//                        System.out.println("**** Step  " + j);
+//                        for (int i = 0; i < controller.getModelParameters().getBrands(); i++) {
+//                            System.out.println("****** Brand " + i + ": " + stats.getData()[k][i][j]);
+//                            //System.out.println();
+//                        }
+//                        System.out.println();
+//                        System.out.println();
+//
+//                    }
+//                }
+                PrintWriter out = new PrintWriter(System.out, true);
+                // stats.printSummaryStats(out, true);
+                
+                 stats.printAllStats(out, true);
 
             }
 

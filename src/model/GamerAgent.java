@@ -1050,25 +1050,25 @@ public class GamerAgent implements Steppable {
 
                     // solo puedo aplicar las heuristicas si hice una compra en el step -1
                     if (biasedProductUtilities[brandId] >= model.getParametersObject().getMinimunSatisfactionAgend() && uncertaintyAboutDecisions[brandId] <= model.getParametersObject().getUncertaintyToleranceLevel()) {
-                        System.out.println("Repetition");
+                        // System.out.println("Repetition");
                         this.setStrategy(this.currentStep, model.REPETITION);
                         this.setPurchasedBrands(this.currentStep, brandId);
                         brandId = this.Repetition(state);
 
                     } else if (biasedProductUtilities[brandId] < model.getParametersObject().getMinimunSatisfactionAgend() && uncertaintyAboutDecisions[brandId] <= model.getParametersObject().getUncertaintyToleranceLevel()) {
-                        System.out.println("  Deliberation");
+                        // System.out.println("  Deliberation");
                         this.setStrategy(this.currentStep, model.DELIBERATION);
                         probs = Deliberation(state, biasedProductUtilities);
                         brandId = obtainBrand(state, probs);
 
                     } else if (biasedProductUtilities[brandId] >= model.getParametersObject().getMinimunSatisfactionAgend() && uncertaintyAboutDecisions[brandId] > model.getParametersObject().getUncertaintyToleranceLevel()) {
-                        System.out.println("**Imitation");
+                        // System.out.println("**Imitation");
                         this.setStrategy(this.currentStep, model.IMITATION);
                         probs = Imitation(state, this.getUtility());
                         brandId = obtainBrand(state, probs);
 
                     } else if (biasedProductUtilities[brandId] < model.getParametersObject().getMinimunSatisfactionAgend() && uncertaintyAboutDecisions[brandId] > model.getParametersObject().getUncertaintyToleranceLevel()) {
-                        System.out.println("--SocialComparison");
+                        // System.out.println("--SocialComparison");
                         this.setStrategy(this.currentStep, model.SOCIALCOMPARISION);
                         probs = SocialComparison(state, biasedProductUtilities);
                         brandId = obtainBrand(state, probs);
