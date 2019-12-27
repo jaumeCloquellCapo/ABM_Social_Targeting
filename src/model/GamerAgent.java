@@ -35,7 +35,7 @@ public class GamerAgent implements Steppable {
     double[] preferences;
 
     int purchasedBrands[]; // array with the brand obtained at each step
-    int strategy[]; // array with strategy used
+    int[] evolutionStrategies; // array with evolutionStrategies used
     int currentStep;
     double utility[];
 
@@ -58,11 +58,11 @@ public class GamerAgent implements Steppable {
         this.subscriptionState = _subscriptionState;
         this.preferences = new double[(_preferences)];
         this.purchasedBrands = new int[_maxSteps];
-        this.strategy = new int[_maxSteps];
+        this.evolutionStrategies = new int[_maxSteps];
 
         for (int i = 0; i < _maxSteps; i++) {
             this.purchasedBrands[i] = -1;
-            this.strategy[i] = -1;
+            this.evolutionStrategies[i] = 0;
         }
 
         this.utility = new double[brands];
@@ -93,7 +93,7 @@ public class GamerAgent implements Steppable {
     }
 
     public void setStrategy(int _index, int strategy) {
-        this.strategy[_index] = strategy;
+        this.evolutionStrategies[_index] = strategy;
     }
 
     public int getPurchasedBrandsBySpecificStep(int _index) {
@@ -133,6 +133,18 @@ public class GamerAgent implements Steppable {
     public void setGamerAgentId(int _gamerAgentId) {
         this.gamerAgentId = _gamerAgentId;
     }
+    
+    public int getCurrentStratey(int _step) {
+        return this.evolutionStrategies[_step];
+    }
+    
+    public boolean hasChangedStrategyAtStep (int _step) {
+		
+		if ( (_step > 0) && (evolutionStrategies [_step] != evolutionStrategies [(_step - 1)]) ) 
+			return true;
+		else 
+			return false;		
+	}
 
     /**
      * Gets the id of the social group.(segment Id)

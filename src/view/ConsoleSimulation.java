@@ -3,8 +3,11 @@ package view;
 import java.io.IOException;
 import calibration.HistoricalData;
 import controller.Controller;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import view.RunStats;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 //----------------------------- MAIN FUNCTION -----------------------------//
 /**
@@ -14,7 +17,7 @@ import view.RunStats;
  */
 public class ConsoleSimulation {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
 
         System.out.println("Agent-based Mk DSS running software.\n******************* "
                 + "\nLinked to paper 'Building Agent-Based Decision Support Systems \nfor "
@@ -84,10 +87,21 @@ public class ConsoleSimulation {
 
             for (int i = 0; i < NRUNS; i++) {
                 controller.runModel();
-                int[][] results2 = controller.getNewPuchasesOfEveryBrand();
-                for (int j = 0; j < controller.getNewPuchasesOfEveryBrand().length; j++) {;
-                    stats.setData(i, j, results2[j]);
+                // int[][] compras = controller.getNewPuchasesOfEveryBrand();   
+                for (int j = 0; j < controller.getModelParameters().getBrands(); j++) {
+                    stats.setDataPurchases(i, j, controller.getNewPuchasesOfEveryBrand()[j]);
+
                 }
+                stats.setDeliberation_strategy_Agents(i, controller.getDeliberation_strategy_Agents());
+                stats.setImitation_strategy_Agents(i, controller.getImitation_strategy_Agents());
+                stats.setRepetition_strategy_Agents(i, controller.getRepetition_strategy_Agents());
+                stats.setSocial_strategy_Agents(i, controller.getSocial_strategy_Agents());
+                stats.setUtility_strategy_Agents(i, controller.getUtility_strategy_Agents());
+
+//                for (int j = 0; j < results2.length; j++) {;
+//                    stats.setDataPurchases(i, j, results2[j]);
+//                    //stats.setStrategyChanges(i, j, results2[j]);
+//                }
             }
 
             stats.calcAllStats();
@@ -130,10 +144,20 @@ public class ConsoleSimulation {
 //
 //                    }
 //                }
-                PrintWriter out = new PrintWriter(System.out, true);
-                // stats.printSummaryStats(out, true);
-                
-                 stats.printAllStats(out, true);
+                String outputFile = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+
+                File fileAllMC = new File("./logs/" + "AllMCruns_" + outputFile + ".txt");
+                File fileSummaryMC = new File("./logs/" + "SummaryMCruns_" + outputFile + ".txt");
+                //File fileAllMCLQ = new File("./logs/" + "AllMCrunsLQ_" + outputFile + ".txt");
+                //File fileSummaryMCLQ = new File("./logs/" + "SummaryMCrunsLQ_" + outputFile + ".txt");
+                //File fileTimeSeriesMC = new File("./logs/" + "TimeSeriesMCruns_" + outputFile + ".txt");
+                PrintWriter printWriter;
+
+                //PrintWriter out = new PrintWriter(System.out, true);
+                printWriter = new PrintWriter(fileAllMC);
+                stats.printAllStats(printWriter, true);
+                printWriter = new PrintWriter(fileSummaryMC);
+                stats.printSummaryStats(printWriter, true);
 
             }
 

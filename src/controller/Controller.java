@@ -24,15 +24,45 @@ public class Controller {
     protected ArrayList<Integer> newPremiumsArray;
     protected int[][] newPurchasesArray;
 
+    int repetition_strategy_Agents[]; 			// a counter of the k_I agents during the simulation
+    int deliberation_strategy_Agents[]; 			// a counter of the k_T agents during the simulation
+    int imitation_strategy_Agents[];			// a counter of the k_U agents during the simulation
+    int social_strategy_Agents[]; 			// a counter of the k_T agents during the simulation
+    int utility_strategy_Agents[];			// a counter of the k_U agents during the simulation
+    int strategyChanges[];		// array with the total number of evolutionStrategies changes during the simulation
+
+    public int[] getRepetition_strategy_Agents() {
+        return repetition_strategy_Agents;
+    }
+
+    public int[] getDeliberation_strategy_Agents() {
+        return deliberation_strategy_Agents;
+    }
+
+    public int[] getImitation_strategy_Agents() {
+        return imitation_strategy_Agents;
+    }
+
+    public int[] getSocial_strategy_Agents() {
+        return social_strategy_Agents;
+    }
+
+    public int[] getUtility_strategy_Agents() {
+        return utility_strategy_Agents;
+    }
+
     /**
      * Clone the object
      */
     /*public Object clone() {
-    	Controller m = (Controller)(this.clone());
-        m.model = (Model)(model.clone());
-        
-        return m;        
+    Controller m = (Controller)(this.clone());
+    m.model = (Model)(model.clone());
+    return m;        
     }*/
+    public int[] getStrategyChanges() {    
+        return strategyChanges;
+    }
+
     /**
      * @return the ModelParameters object where all the parameters are defined
      */
@@ -110,8 +140,9 @@ public class Controller {
 
         ArrayList<Integer> results = new ArrayList<Integer>();
         int tmpArray[];
+        
 
-        int tmpBrandArray[][];
+        // int tmpBrandArray[][];
 
         if (CalibrationController.DEBUG_CALIB) {
             time1 = System.currentTimeMillis();
@@ -138,6 +169,13 @@ public class Controller {
 
             // int[][] results2 = new [model.getBrands().length][model.schedule.getSteps()];
             this.newPurchasesArray = model.getNewPurchasesOfEveryBrand();
+            
+            this.repetition_strategy_Agents = model.getRepetition_strategy_Agents();
+            this.deliberation_strategy_Agents = model.getDeliberation_strategy_Agents();
+            this.imitation_strategy_Agents = model.getImitation_strategy_Agents();
+            this.social_strategy_Agents = model.getSocial_strategy_Agents();
+            this.utility_strategy_Agents = model.getUtility_strategy_Agents();
+            this.strategyChanges = model.getStrategyChanges();
 
 //            for (int i = 0; i < model.getBrands().length; i++) {
 //                for (int j = 0; j < model.schedule.getSteps(); j++) {

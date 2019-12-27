@@ -40,11 +40,11 @@ public class Model extends SimState {
     static boolean INCLUDEZERO = true;
     static boolean INCLUDEONE = true;
     // Constantes del los tipo de decisiones
-    static int REPETITION = 1;
-    static int DELIBERATION = 2;
-    static int IMITATION = 3;
-    static int SOCIALCOMPARISION = 4;
-    static int UTILITY = 0;
+    static int REPETITION = 2;
+    static int DELIBERATION = 3;
+    static int IMITATION = 4;
+    static int SOCIALCOMPARISION = 5;
+    static int UTILITY = 1;
 
     // LOGGING
     //public static Logger logger = LoggerFactory.getLogger(Model.class);
@@ -88,8 +88,66 @@ public class Model extends SimState {
 
     Brand[] brands;
 
+    int repetition_strategy_Agents[]; 			// a counter of the k_I agents during the simulation
+    int deliberation_strategy_Agents[]; 			// a counter of the k_T agents during the simulation
+    int imitation_strategy_Agents[];			// a counter of the k_U agents during the simulation
+    int social_strategy_Agents[]; 			// a counter of the k_T agents during the simulation
+    int utility_strategy_Agents[];			// a counter of the k_U agents during the simulation
+    int strategyChanges[];		// array with the total number of evolutionStrategies changes during the simulation
+
     //--------------------------- Get/Set methods ---------------------------//	
+    
     //
+
+    public int[] getRepetition_strategy_Agents() {
+        return repetition_strategy_Agents;
+    }
+
+    public void setRepetition_strategy_Agents(int[] repetition_strategy_Agents) {
+        this.repetition_strategy_Agents = repetition_strategy_Agents;
+    }
+
+    public int[] getDeliberation_strategy_Agents() {
+        return deliberation_strategy_Agents;
+    }
+
+    public void setDeliberation_strategy_Agents(int[] deliberation_strategy_Agents) {
+        this.deliberation_strategy_Agents = deliberation_strategy_Agents;
+    }
+
+    public int[] getImitation_strategy_Agents() {
+        return imitation_strategy_Agents;
+    }
+
+    public void setImitation_strategy_Agents(int[] imitation_strategy_Agents) {
+        this.imitation_strategy_Agents = imitation_strategy_Agents;
+    }
+
+    public int[] getSocial_strategy_Agents() {
+        return social_strategy_Agents;
+    }
+
+    public void setSocial_strategy_Agents(int[] social_strategy_Agents) {
+        this.social_strategy_Agents = social_strategy_Agents;
+    }
+
+    public int[] getUtility_strategy_Agents() {
+        return utility_strategy_Agents;
+    }
+
+    public void setUtility_strategy_Agents(int[] utility_strategy_Agents) {
+        this.utility_strategy_Agents = utility_strategy_Agents;
+    }
+
+    public int[] getStrategyChanges() {
+        return strategyChanges;
+    }
+
+    public void setStrategyChanges(int[] strategyChanges) {
+        this.strategyChanges = strategyChanges;
+    }
+    
+    
     public static String getConfigFileName() {
         return CONFIGFILENAME;
     }
@@ -308,6 +366,13 @@ public class Model extends SimState {
         newPremiumAgents = new int[MAX_STEPS];
         cumPremiumAgents = new int[MAX_STEPS];
 
+        strategyChanges = new int[MAX_STEPS];
+        repetition_strategy_Agents = new int[MAX_STEPS];
+        deliberation_strategy_Agents = new int[MAX_STEPS];
+        imitation_strategy_Agents = new int[MAX_STEPS];
+        social_strategy_Agents = new int[MAX_STEPS];
+        utility_strategy_Agents = new int[MAX_STEPS];
+
         newPurchases = new int[params.brands][MAX_STEPS];
         cumPurchases = new int[params.brands][MAX_STEPS];
 
@@ -318,7 +383,9 @@ public class Model extends SimState {
         }
 
         for (int i = 0; i < MAX_STEPS; i++) {
-            newPremiumAgents[i] = cumPremiumAgents[i] = 0;
+            strategyChanges[i] = newPremiumAgents[i] = cumPremiumAgents[i] = 0;
+
+            repetition_strategy_Agents[0] = deliberation_strategy_Agents[0] = imitation_strategy_Agents[0] = social_strategy_Agents[0] = utility_strategy_Agents[0] = strategyChanges[i] = 0;
         }
 
         socialNetwork = new GraphStreamer(params.nrAgents, params);
@@ -693,10 +760,9 @@ public class Model extends SimState {
 
         for (int j = 0; j < params.getMaxDrivers(); j++) {
             // generamos los valores de las preferencias dando una media y una desviación
-            cl.setPreferences(j, randomno.nextGaussian() * Model.getParametersObject().getBrandStdev() + Model.getParametersObject().getPreferences()[j]);
+            cl.setPreferences(j, Functions.scaleGaussianValue(Model.getParametersObject().getPreferences()[j], randomno.nextGaussian(), Model.getParametersObject().getBrandStdev(), 0.0, 1.0));
             // calculamos la utilidad de cada agente para cada marca
             for (int brand = 0; brand < this.brands.length; brand++) {
-
                 cl.setUtility(brand, util.Functions.utilityFunction(this.getBrands()[brand].getDrivers(), cl.getPreferences()));
             }
 
@@ -825,12 +891,40 @@ public class Model extends SimState {
 
                 // refresh date
                 currentDay++;
-
-                //calendar.setTime(currentDate);
-                //calendar.add(Calendar.DATE, 1);
-                //currentDate = calendar.getTime();
-                // we will update the number of cumulative and new premiums. 												
+                
                 int currentStep = (int) schedule.getSteps();
+
+                for (int i = 0; i < params.nrAgents; i++) {
+
+                    if (((GamerAgent) agents.get(i)).getCurrentStratey(currentStep)
+                            == REPETITION) {
+                        repetition_strategy_Agents[currentStep]++;
+                    }
+
+                    if (((GamerAgent) agents.get(i)).getCurrentStratey(currentStep)
+                            == IMITATION) {
+                        imitation_strategy_Agents[currentStep]++;
+                    }
+
+                    if (((GamerAgent) agents.get(i)).getCurrentStratey(currentStep)
+                            == SOCIALCOMPARISION) {
+                        social_strategy_Agents[currentStep]++;
+                    }
+
+                    if (((GamerAgent) agents.get(i)).getCurrentStratey(currentStep)
+                            == UTILITY) {
+                        utility_strategy_Agents[currentStep]++;
+                    }
+
+                    if (((GamerAgent) agents.get(i)).getCurrentStratey(currentStep)
+                            == DELIBERATION) {
+                        deliberation_strategy_Agents[currentStep]++;
+                    }
+
+                    if (((GamerAgent) agents.get(i)).hasChangedStrategyAtStep(currentStep)) {
+                        strategyChanges[currentStep]++;
+                    }
+                }
 
                 if (currentStep == 0) {
 
