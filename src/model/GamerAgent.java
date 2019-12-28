@@ -723,7 +723,7 @@ public class GamerAgent implements Steppable {
              
         ArrayList<Integer> neighbors = (ArrayList<Integer>) model.socialNetwork.getNeighborsOfNode(this.gamerAgentId);
        
-        // Iterate over neighbors
+        // miramos entre todos mis vecinos que productos han comprado
         for (int i = 0; i < neighbors.size(); i++) {
             GamerAgent neighbor = (GamerAgent) (model.getAgents()).get(neighbors.get(i));
             //
@@ -734,7 +734,7 @@ public class GamerAgent implements Steppable {
             
 
         }
-
+        // Solo de los productos que han comprado mis vecinos, calculo la utilidad
         for (int i = 0; i < model.getParametersObject().brands; i++) {
             // si el producto no lo ha comprado nadie entonces no lo consideramos
             if (!purchasedBrands[i]) {
@@ -825,7 +825,10 @@ public class GamerAgent implements Steppable {
                 count = count + 1;
             }
         }
-
+        // evitamos dividir un numero entre 0
+        if (neighbors.size() <= 0) {
+            return 0.0;
+        }
         return (double) count / neighbors.size();
 
     }
@@ -856,6 +859,10 @@ public class GamerAgent implements Steppable {
             if (p != productId) {
                 count = count + 1;
             }
+        }
+        
+        if (neighbors.size() <= 0) {
+            return 0.0;
         }
 
         double aux = (double) Math.round((double) count / neighbors.size() * 100) / 100;
@@ -1090,7 +1097,7 @@ public class GamerAgent implements Steppable {
                         brandId = obtainBrand(state, probs);
 
                     } else {
-                        System.err.println("Ninguna estrategia");
+                        System.err.println("Ninguna estrategia: " + biasedProductUtilities[brandId] + "  " + uncertaintyAboutDecisions[brandId]);
                     }
                 }
                 // Guardamos el resultado
