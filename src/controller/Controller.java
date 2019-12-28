@@ -22,14 +22,15 @@ public class Controller {
     protected Model model = null;
 
     protected ArrayList<Integer> newPremiumsArray;
+    
     protected int[][] newPurchasesArray;
 
-    int repetition_strategy_Agents[]; 			// a counter of the k_I agents during the simulation
-    int deliberation_strategy_Agents[]; 			// a counter of the k_T agents during the simulation
-    int imitation_strategy_Agents[];			// a counter of the k_U agents during the simulation
-    int social_strategy_Agents[]; 			// a counter of the k_T agents during the simulation
-    int utility_strategy_Agents[];			// a counter of the k_U agents during the simulation
-    int strategyChanges[];		// array with the total number of evolutionStrategies changes during the simulation
+    int repetition_strategy_Agents[]; 		
+    int deliberation_strategy_Agents[]; 			
+    int imitation_strategy_Agents[];			
+    int social_strategy_Agents[]; 			
+    int utility_strategy_Agents[];			
+    int strategyChanges[];		
 
     public int[] getRepetition_strategy_Agents() {
         return repetition_strategy_Agents;
@@ -187,6 +188,7 @@ public class Controller {
             model.finish();
 
         } catch (Exception e) {
+            System.out.println(e);
 
             System.err.println("Controller: Error when running model, execution is aborted.\n"
                     + e.getMessage());
@@ -197,7 +199,7 @@ public class Controller {
             System.out.println((double) (time2 - time1) / 1000 + "s for running the model");
         }
         this.newPremiumsArray = results;
-        // this.newPurchasesArray = tmpBrandArray;
+        //this.newPurchasesArray = tmpBrandArray;
 
     }
 

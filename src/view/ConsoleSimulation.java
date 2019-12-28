@@ -87,16 +87,16 @@ public class ConsoleSimulation {
 
             for (int i = 0; i < NRUNS; i++) {
                 controller.runModel();
-                // int[][] compras = controller.getNewPuchasesOfEveryBrand();   
-                for (int j = 0; j < controller.getModelParameters().getBrands(); j++) {
-                    stats.setDataPurchases(i, j, controller.getNewPuchasesOfEveryBrand()[j]);
-
-                }
-                stats.setDeliberation_strategy_Agents(i, controller.getDeliberation_strategy_Agents());
-                stats.setImitation_strategy_Agents(i, controller.getImitation_strategy_Agents());
-                stats.setRepetition_strategy_Agents(i, controller.getRepetition_strategy_Agents());
-                stats.setSocial_strategy_Agents(i, controller.getSocial_strategy_Agents());
-                stats.setUtility_strategy_Agents(i, controller.getUtility_strategy_Agents());
+                //int[][] compras = controller.getNewPuchasesOfEveryBrand();   
+//                for (int j = 0; j < controller.getModelParameters().getBrands(); j++) {
+//                    stats.setDataPurchases(i, j, controller.getNewPuchasesOfEveryBrand()[j]);
+//
+//                }
+//                stats.setDeliberation_strategy_Agents(i, controller.getDeliberation_strategy_Agents());
+//                stats.setImitation_strategy_Agents(i, controller.getImitation_strategy_Agents());
+//                stats.setRepetition_strategy_Agents(i, controller.getRepetition_strategy_Agents());
+//                stats.setSocial_strategy_Agents(i, controller.getSocial_strategy_Agents());
+//                stats.setUtility_strategy_Agents(i, controller.getUtility_strategy_Agents());
 
 //                for (int j = 0; j < results2.length; j++) {;
 //                    stats.setDataPurchases(i, j, results2[j]);
@@ -146,18 +146,25 @@ public class ConsoleSimulation {
 //                }
                 String outputFile = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
 
-                File fileAllMC = new File("./logs/" + "AllMCruns_" + outputFile + ".txt");
-                File fileSummaryMC = new File("./logs/" + "SummaryMCruns_" + outputFile + ".txt");
+                File fileAllMC = new File("./logs/" + "AllMCruns_" + outputFile + ".csv");
+                File fileSummaryMC = new File("./logs/" + "SummaryMCruns_" + outputFile + ".csv");
                 //File fileAllMCLQ = new File("./logs/" + "AllMCrunsLQ_" + outputFile + ".txt");
-                //File fileSummaryMCLQ = new File("./logs/" + "SummaryMCrunsLQ_" + outputFile + ".txt");
-                //File fileTimeSeriesMC = new File("./logs/" + "TimeSeriesMCruns_" + outputFile + ".txt");
+                File fileSummaryMCLQ = new File("./logs/" + "SummaryDeliberatio" + outputFile + ".csv");
+                File fileTimeSeriesMC = new File("./logs/" + "TimeSeriesMCruns_" + outputFile + ".csv");
                 PrintWriter printWriter;
 
                 //PrintWriter out = new PrintWriter(System.out, true);
                 printWriter = new PrintWriter(fileAllMC);
                 stats.printAllStats(printWriter, true);
+                
                 printWriter = new PrintWriter(fileSummaryMC);
                 stats.printSummaryStats(printWriter, true);
+                
+                printWriter = new PrintWriter(fileSummaryMCLQ);
+                stats.printSummaryDeliberation(printWriter, true);
+
+                printWriter = new PrintWriter(fileTimeSeriesMC);
+                stats.printAllDeliberation(printWriter, true);
 
             }
 

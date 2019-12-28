@@ -17,7 +17,7 @@ public class RunStats {
     private int runs;				// number of MC simulations
     private int steps;			// number of steps simulation
     private int[][][] data_purchases;			// runs / brands / step
-    private int[][][] data_strategy;			// runs / brands / step
+
     private int brands;
 
     private double avg_purchases[][];			// average k_I over all the runs for each step
@@ -57,12 +57,11 @@ public class RunStats {
     private double max_utility[];
 
     // int strategyChanges[];		// array with the total number of evolutionStrategies changes during the simulation
-
-    public void setRepetition_strategy_Agents(int _run,  int[] _data) {
+    public void setRepetition_strategy_Agents(int _run, int[] _data) {
         this.repetition_strategy_Agents[_run] = _data;
     }
 
-    public void setDeliberation_strategy_Agents(int _run,  int[] _data) {
+    public void setDeliberation_strategy_Agents(int _run, int[] _data) {
         this.deliberation_strategy_Agents[_run] = _data;
     }
 
@@ -70,16 +69,14 @@ public class RunStats {
         this.imitation_strategy_Agents[_run] = _data;
     }
 
-    public void setSocial_strategy_Agents(int _run,  int[] _data) {
+    public void setSocial_strategy_Agents(int _run, int[] _data) {
         this.social_strategy_Agents[_run] = _data;
     }
 
     public void setUtility_strategy_Agents(int _run, int[] _data) {
         this.utility_strategy_Agents[_run] = _data;
     }
-    
-    
-    
+
     public int getRuns() {
         return runs;
     }
@@ -104,18 +101,13 @@ public class RunStats {
         this.data_purchases[_run][_brand] = _data;
     }
 
-    public void setStrategyChanges(int _run, int _brand, int[] _data) {
-        this.data_strategy[_run][_brand] = _data;
-    }
-
     public RunStats(int _runs, int _steps, int _brands) {
 
         this.runs = _runs;
         this.steps = _steps;
         this.brands = _brands;
-        this.data_purchases = new int[this.runs][this.brands][this.steps];
-        this.data_strategy = new int[this.runs][this.brands][this.steps];
 
+        this.data_purchases = new int[this.runs][this.brands][this.steps];
         this.std_purchases = new double[this.brands][this.steps];
         this.avg_purchases = new double[this.brands][this.steps];
         this.min_purchases = new double[this.brands][this.steps];
@@ -167,12 +159,49 @@ public class RunStats {
                 this.std_purchases[b][j] = purchasesBrands.getStandardDeviation();
                 this.min_purchases[b][j] = purchasesBrands.getMin();
                 this.max_purchases[b][j] = purchasesBrands.getMax();
-
-//                this.avg_strategy_changes = strategies.getMean();
-//                this.std_strategy_changes = strategies.getStandardDeviation();
-//                this.min_strategy_changes = strategies.getMin();
-//                this.max_strategy_changes = strategies.getMax();
             }
+        }
+
+        for (int i = 0; i < this.steps; i++) {
+            DescriptiveStatistics del = new DescriptiveStatistics();
+            DescriptiveStatistics imi = new DescriptiveStatistics();
+            DescriptiveStatistics rep = new DescriptiveStatistics();
+            DescriptiveStatistics so = new DescriptiveStatistics();
+            DescriptiveStatistics ut = new DescriptiveStatistics();
+
+            for (int j = 0; j < this.runs; j++) {
+                del.addValue(this.deliberation_strategy_Agents[j][i]);
+                imi.addValue(this.imitation_strategy_Agents[j][i]);
+                rep.addValue(this.repetition_strategy_Agents[j][i]);
+                so.addValue(this.social_strategy_Agents[j][i]);
+                ut.addValue(this.utility_strategy_Agents[j][i]);
+                // strategies.addValue(this.strategies[i][b][j]);
+            }
+
+            this.avg_deliberation[i] = del.getMean();
+            this.avg_imitation[i] = imi.getMean();
+            this.avg_repetition[i] = rep.getMean();
+            this.avg_social[i] = so.getMean();
+            this.avg_utility[i] = ut.getMean();
+
+            this.std_deliberation[i] = del.getStandardDeviation();
+            this.std_imitation[i] = imi.getStandardDeviation();
+            this.std_repetition[i] = rep.getStandardDeviation();
+            this.std_social[i] = so.getStandardDeviation();
+            this.std_utility[i] = ut.getStandardDeviation();
+
+            this.min_deliberation[i] = del.getMin();
+            this.min_imitation[i] = imi.getMin();
+            this.min_repetition[i] = rep.getMin();
+            this.min_social[i] = so.getMin();
+            this.min_utility[i] = ut.getMin();
+
+            this.max_deliberation[i] = del.getMax();
+            this.max_imitation[i] = imi.getMax();
+            this.max_repetition[i] = rep.getMax();
+            this.max_social[i] = so.getMax();
+            this.max_utility[i] = ut.getMax();
+
         }
 
     }
@@ -204,6 +233,37 @@ public class RunStats {
         writer.close();
     }
 
+    public void printAllDeliberation(PrintWriter writer, boolean append) {
+
+        StringBuffer csvHeader = new StringBuffer("");
+        StringBuffer csvData = new StringBuffer("");
+        csvHeader.append("Run,step,repetition,deliberation,imitation,social,utility\n");
+        // write header
+        writer.write(csvHeader.toString());
+
+        for (int i = 0; i < this.runs; i++) {
+            for (int j = 0; j < this.steps; j++) {
+                csvData.append(i);
+                csvData.append(',');
+                csvData.append(j);
+                csvData.append(',');
+                csvData.append(this.repetition_strategy_Agents[i][j]);
+                csvData.append(',');
+                csvData.append(this.deliberation_strategy_Agents[i][j]);
+                csvData.append(',');
+                csvData.append(this.imitation_strategy_Agents[i][j]);
+                csvData.append(',');
+                csvData.append(this.social_strategy_Agents[i][j]);
+                csvData.append(',');
+                csvData.append(this.utility_strategy_Agents[i][j]);
+                csvData.append('\n');
+
+            }
+        }
+        writer.write(csvData.toString());
+        writer.close();
+    }
+
     public void printSummaryStats(PrintWriter writer, boolean append) {
 
         StringBuffer csvHeader = new StringBuffer("");
@@ -227,6 +287,42 @@ public class RunStats {
                 csvData.append(String.format("%.4f", this.max_purchases[b][i]));
                 csvData.append('\n');
             }
+        }
+        writer.write(csvData.toString());
+        writer.close();
+    }
+
+    public void printSummaryDeliberation(PrintWriter writer, boolean append) {
+
+        StringBuffer csvHeader = new StringBuffer("");
+        StringBuffer csvData = new StringBuffer("");
+        csvHeader.append("avg_deliberation,avg_imitation,avg_repetition,avg_social,avg_utility,std_deliberation,std_imitation,std_repetition,std_social,std_utility\n");
+        // write header
+        writer.write(csvHeader.toString());
+
+        for (int i = 0; i < this.steps; i++) {
+            //for (int i = 0; i < this.steps; i++) {
+            csvData.append(String.format("%.4f", this.avg_deliberation[i]));
+            csvData.append(',');
+            csvData.append(String.format("%.4f", this.avg_imitation[i]));
+            csvData.append(',');
+            csvData.append(String.format("%.4f", this.avg_repetition[i]));
+            csvData.append(',');
+            csvData.append(String.format("%.4f", this.avg_social[i]));
+            csvData.append(',');
+            csvData.append(String.format("%.4f", this.avg_utility[i]));
+            csvData.append(',');
+            csvData.append(String.format("%.4f", this.std_deliberation[i]));
+            csvData.append(',');
+            csvData.append(String.format("%.4f", this.std_imitation[i]));
+            csvData.append(',');
+            csvData.append(String.format("%.4f", this.std_repetition[i]));
+            csvData.append(',');
+            csvData.append(String.format("%.4f", this.std_social[i]));
+            csvData.append(',');
+            csvData.append(String.format("%.4f", this.std_utility[i]));
+            csvData.append('\n');
+            //}
         }
         writer.write(csvData.toString());
         writer.close();
