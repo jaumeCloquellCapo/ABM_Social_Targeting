@@ -6,8 +6,12 @@ import controller.Controller;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import util.Functions;
+import static util.Functions.copyFileUsingFileStreams;
 
 //----------------------------- MAIN FUNCTION -----------------------------//
 /**
@@ -80,15 +84,14 @@ public class ConsoleSimulation {
                         + "\n\nRunning Agent-based DSS. Please wait...");
 
             }
-            
-            
+
             controller = new Controller(fileName, seed, maxSteps);
 
             RunStats stats = new RunStats(NRUNS, (int) maxSteps, controller.getModelParameters().getBrands());
 
             for (int i = 0; i < NRUNS; i++) {
                 controller.runModel();
-                
+
                 for (int j = 0; j < controller.getModelParameters().getBrands(); j++) {
                     stats.setDataPurchases(i, j, controller.getNewPuchasesOfEveryBrand()[j]);
 
@@ -133,7 +136,7 @@ public class ConsoleSimulation {
                 String PATH = "./logs/";
                 String outputFile = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
 
-                String directoryName = PATH.concat(seed + "_" +outputFile);
+                String directoryName = PATH.concat(seed + "_" + outputFile);
 
                 // String fileName = id + getTimeStamp() + ".txt";
                 File directory = new File(directoryName);
@@ -144,28 +147,56 @@ public class ConsoleSimulation {
                 }
                 try {
 
-                    File fileAllMC = new File(directoryName + "/" + "AllMCruns_" + outputFile + ".csv");
-                    File fileSummaryMC = new File(directoryName + "/" + "SummaryMCruns_" + outputFile + ".csv");
-                    //File fileAllMCLQ = new File("./logs/" + "AllMCrunsLQ_" + outputFile + ".txt");
-                    File SummaryDeliberations = new File(directoryName + "/" + "SummaryDeliberations" + outputFile + ".csv");
-                    File ALLDeliberations = new File(directoryName + "/" + "ALLDeliberations" + outputFile + ".csv");
+                    System.out.println();
+
+                    File AllRuns = new File(directoryName + "/" + "AllRuns" + ".csv");
+                    File SummaryRuns = new File(directoryName + "/" + "SummaryRuns" + ".csv");
+                    File SummaryDeliberations = new File(directoryName + "/" + "SummaryDeliberations" + ".csv");
+                    File AllDeliberations = new File(directoryName + "/" + "AllDeliberations" + ".csv");
+                    File TotalRuns = new File(directoryName + "/" + "TotalRuns" + ".csv");
+                    File TotalDeliberations = new File(directoryName + "/" + "TotalDeliberations" + ".csv");
+//                    File Configuration = new File(directoryName + "/" + "Configuration" + ".txt");
+
                     PrintWriter printWriter;
 
                     //PrintWriter out = new PrintWriter(System.out, true);
-                    printWriter = new PrintWriter(fileAllMC);
+                    printWriter = new PrintWriter(AllRuns);
                     stats.printAllStats(printWriter, true);
 
-                    printWriter = new PrintWriter(fileSummaryMC);
+                    printWriter = new PrintWriter(SummaryRuns);
                     stats.printSummaryStats(printWriter, true);
 
                     printWriter = new PrintWriter(SummaryDeliberations);
                     stats.printSummaryDeliberation(printWriter, true);
 
-                    printWriter = new PrintWriter(ALLDeliberations);
+                    printWriter = new PrintWriter(AllDeliberations);
                     stats.printAllDeliberation(printWriter, true);
+
+                    printWriter = new PrintWriter(TotalRuns);
+                    stats.printTotalResults(printWriter, true);
+
+                    printWriter = new PrintWriter(TotalDeliberations);
+                    stats.printTotalDeliberations(printWriter, true);
+
+                   
+                    File source = new File(fileName);
+                    File dest = new File(directoryName + "/configuration.properties");
+
+                    // copy file using FileStreams
+                    long start = System.nanoTime();
+                    long end;
+                   copyFileUsingFileStreams(source, dest);
+                    System.out.println("Time taken by FileStreams Copy = "
+                            + (System.nanoTime() - start));
+
+//                    printWriter = new PrintWriter(Configuration);
+//                    printWriter.write(controller.getModelParameters().export());
+//                    printWriter.close();
                 } catch (Exception e) {
                     System.err.println("Error write results: " + e.toString());
                 }
+
+                System.out.println(directoryName);
             }
 
         } else {

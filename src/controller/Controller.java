@@ -151,6 +151,7 @@ public class Controller {
                 if (!model.schedule.step(model)) {
                     break;
                 }
+                
 
             } while (model.schedule.getSteps() < maxSteps);
 
@@ -165,7 +166,7 @@ public class Controller {
             
             for (int i = 0; i < maxSteps; i++) {
                 for (int j = 0; j < getModelParameters().getBrands(); j++) {
-                    this.newPurchasesArray[j][i] = model.getCumPurchasesToBrandAtStep(i, j);
+                    this.newPurchasesArray[j][i] = model.getNewPurchasesForBrandAtStep(i, j);
 
                 }
 

@@ -20,6 +20,9 @@ import javax.swing.JTextField;
 
 import au.com.bytecode.opencsv.CSVReader;
 import ec.util.MersenneTwisterFast;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -84,6 +87,24 @@ public class Functions {
             return (o1, o2) -> -tempMap.get(o1).compareTo(tempMap.get(o2));
         } else {
             return (o1, o2) -> tempMap.get(o1).compareTo(tempMap.get(o2));
+        }
+    }
+
+    public static void copyFileUsingFileStreams(File source, File dest)
+            throws IOException {
+        InputStream input = null;
+        OutputStream output = null;
+        try {
+            input = new FileInputStream(source);
+            output = new FileOutputStream(dest);
+            byte[] buf = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = input.read(buf)) > 0) {
+                output.write(buf, 0, bytesRead);
+            }
+        } finally {
+            input.close();
+            output.close();
         }
     }
 

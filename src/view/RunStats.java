@@ -7,6 +7,7 @@ package view;
 
 import java.io.PrintWriter;
 import java.util.Arrays;
+import model.Model;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /**
@@ -270,25 +271,42 @@ public class RunStats {
 
         StringBuffer csvHeader = new StringBuffer("");
         StringBuffer csvData = new StringBuffer("");
-        csvHeader.append("Step;Brand;avg_purchases;std;min;max\n");
+        csvHeader.append("Step");
+
+        for (int b = 0; b < this.brands; b++) {
+            csvHeader.append(';');
+            csvHeader.append("brand_" + b);
+            csvHeader.append(';');
+            csvHeader.append("avg_purchases_" + b);
+            csvHeader.append(';');
+            csvHeader.append("std" + b);
+            csvHeader.append(';');
+            csvHeader.append("min" + b);
+            csvHeader.append(';');
+            csvHeader.append("max" + b);
+            csvData.append('\n');
+        }
+
         // write header
         writer.write(csvHeader.toString());
 
-        for (int b = 0; b < this.brands; b++) {
-            for (int i = 0; i < this.steps; i++) {
-                csvData.append(i);
+        for (int i = 0; i < this.steps; i++) {
+            csvData.append(i);
+            for (int b = 0; b < this.brands; b++) {
+
                 csvData.append(';');
                 csvData.append(b);
                 csvData.append(';');
-                csvData.append(String.format("%.4f", this.avg_purchases[b][i]));
+                csvData.append(this.avg_purchases[b][i]);
                 csvData.append(';');
                 csvData.append(String.format("%.4f", this.std_purchases[b][i]));
                 csvData.append(';');
                 csvData.append(String.format("%.4f", this.min_purchases[b][i]));
                 csvData.append(';');
                 csvData.append(String.format("%.4f", this.max_purchases[b][i]));
-                csvData.append('\n');
+
             }
+            csvData.append('\n');
         }
         writer.write(csvData.toString());
         writer.close();
@@ -298,21 +316,22 @@ public class RunStats {
 
         StringBuffer csvHeader = new StringBuffer("");
         StringBuffer csvData = new StringBuffer("");
-        csvHeader.append("avg_deliberation;avg_imitation;avg_repetition;avg_social;vg_utility;std_deliberation;std_imitation;std_repetition;std_social;std_utility\n");
+        csvHeader.append("Step;avg_deliberation;avg_imitation;avg_repetition;avg_social;avg_utility;std_deliberation;std_imitation;std_repetition;std_social;std_utility\n");
         // write header
         writer.write(csvHeader.toString());
 
         for (int i = 0; i < this.steps; i++) {
-            //for (int i = 0; i < this.steps; i++) {
-            csvData.append(String.format("%.4f", this.avg_deliberation[i]));
+            csvData.append(i);
             csvData.append(';');
-            csvData.append(String.format("%.4f", this.avg_imitation[i]));
+            csvData.append(this.avg_deliberation[i]);
             csvData.append(';');
-            csvData.append(String.format("%.4f", this.avg_repetition[i]));
+            csvData.append(this.avg_imitation[i]);
             csvData.append(';');
-            csvData.append(String.format("%.4f", this.avg_social[i]));
+            csvData.append(this.avg_repetition[i]);
             csvData.append(';');
-            csvData.append(String.format("%.4f", this.avg_utility[i]));
+            csvData.append(this.avg_social[i]);
+            csvData.append(';');
+            csvData.append(this.avg_utility[i]);
             csvData.append(';');
             csvData.append(String.format("%.4f", this.std_deliberation[i]));
             csvData.append(';');
@@ -326,6 +345,61 @@ public class RunStats {
             csvData.append('\n');
             //}
         }
+        writer.write(csvData.toString());
+        writer.close();
+    }
+
+    public void printTotalResults(PrintWriter writer, boolean append) {
+
+        StringBuffer csvHeader = new StringBuffer("");
+        StringBuffer csvData = new StringBuffer("");
+        csvHeader.append("brand;total\n");
+        // write header
+        writer.write(csvHeader.toString());
+
+        for (int b = 0; b < this.brands; b++) {
+
+            csvData.append(b);
+            csvData.append(';');
+            csvData.append(Arrays.stream(this.avg_purchases[b]).sum());
+            csvData.append('\n');
+
+        }
+        writer.write(csvData.toString());
+        writer.close();
+    }
+
+    public void printTotalDeliberations(PrintWriter writer, boolean append) {
+
+        StringBuffer csvHeader = new StringBuffer("");
+        StringBuffer csvData = new StringBuffer("");
+        csvHeader.append("type;total\n");
+        // write header
+        writer.write(csvHeader.toString());
+
+        // for (int b = 0; b < this.steps; b++) {
+        csvData.append(Model.DELIBERATION);
+        csvData.append(';');
+        csvData.append(Arrays.stream(this.avg_deliberation).sum());
+        csvData.append('\n');
+        csvData.append(Model.IMITATION);
+        csvData.append(';');
+        csvData.append(Arrays.stream(this.avg_imitation).sum());
+        csvData.append('\n');
+        csvData.append(Model.REPETITION);
+        csvData.append(';');
+        csvData.append(Arrays.stream(this.avg_repetition).sum());
+        csvData.append('\n');
+        csvData.append(Model.SOCIALCOMPARISION);
+        csvData.append(';');
+        csvData.append(Arrays.stream(this.avg_social).sum());
+        csvData.append('\n');
+        csvData.append(Model.UTILITY);
+        csvData.append(';');
+        csvData.append(Arrays.stream(this.avg_utility).sum());
+        csvData.append('\n');
+
+        // }
         writer.write(csvData.toString());
         writer.close();
     }

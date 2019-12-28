@@ -40,11 +40,11 @@ public class Model extends SimState {
     static boolean INCLUDEZERO = true;
     static boolean INCLUDEONE = true;
     // Constantes del los tipo de decisiones
-    static final int REPETITION = 2;
-    static final int DELIBERATION = 3;
-    static final int IMITATION = 4;
-    static final int SOCIALCOMPARISION = 5;
-    static final int UTILITY = 1;
+    public static final int REPETITION = 2;
+    public static final int DELIBERATION = 3;
+    public static final int IMITATION = 4;
+    public static final int SOCIALCOMPARISION = 5;
+    public static final int UTILITY = 1;
 
     // LOGGING
     //public static Logger logger = LoggerFactory.getLogger(Model.class);
@@ -438,6 +438,7 @@ public class Model extends SimState {
         // Todo: Remove it
         //setAnonymousAgentApriori(scheduleCounter);
         setAnonymousAgentApriori(scheduleCounter);
+       
         
         scheduleCounter++;
 
@@ -454,6 +455,7 @@ public class Model extends SimState {
                 cumPurchases[i][j] = 0;
             }
         }
+        
 
         // start the number strategy list
         for (int i = 0; i < MAX_STEPS; i++) {
@@ -476,10 +478,10 @@ public class Model extends SimState {
             // Add agent to the schedule
             schedule.scheduleRepeating(Schedule.EPOCH, scheduleCounter, cl);
         }
-
+        
         // elegimos a los influencers
         int strategy = params.getTargetingStrategy();
-        
+
         switch (strategy) {
             case ModelParameters.TARGETING_RANDOM:
                 this.initialPrems = this.generateRandomPremiun();
@@ -510,6 +512,8 @@ public class Model extends SimState {
             }
             
         }
+        
+ 
 
         // calculate the set of non premium agents to be rewarded
         // if (params.getExperimentType() == ModelParameters.BASS_WEIGHTS_INITIAL_BASICS) {
@@ -633,9 +637,9 @@ public class Model extends SimState {
         int[] degreeMap = this.orderByDegreeAndTargeting();
         
         int numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
-        
+
         for (int i = 0; i < numberOfInitPremiums; i++) {
-            initialPrems.add(Integer.valueOf(degreeMap[i]));
+            initialPrems.add(degreeMap[i]);
         }
         
         return initialPrems;
@@ -837,6 +841,8 @@ public class Model extends SimState {
                     }
                 }
                 
+            
+                
                 for (int i = 0; i < params.brands; i++) {
                     
                     Brand b = brands[i];
@@ -862,6 +868,8 @@ public class Model extends SimState {
                         
                     }
                 }
+                
+                
                 
             }
         });
