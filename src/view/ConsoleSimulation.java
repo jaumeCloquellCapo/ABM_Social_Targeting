@@ -88,6 +88,7 @@ public class ConsoleSimulation {
 
             for (int i = 0; i < NRUNS; i++) {
                 controller.runModel();
+                
                 for (int j = 0; j < controller.getModelParameters().getBrands(); j++) {
                     stats.setDataPurchases(i, j, controller.getNewPuchasesOfEveryBrand()[j]);
 
@@ -132,7 +133,7 @@ public class ConsoleSimulation {
                 String PATH = "./logs/";
                 String outputFile = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
 
-                String directoryName = PATH.concat(outputFile);
+                String directoryName = PATH.concat(seed + "_" +outputFile);
 
                 // String fileName = id + getTimeStamp() + ".txt";
                 File directory = new File(directoryName);

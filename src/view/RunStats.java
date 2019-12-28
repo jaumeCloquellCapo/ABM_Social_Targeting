@@ -146,7 +146,6 @@ public class RunStats {
     }
 
     public void calcAllStats() {
-      
 
         for (int b = 0; b < this.brands; b++) {
             DescriptiveStatistics purchasesBrands = new DescriptiveStatistics();
@@ -165,7 +164,7 @@ public class RunStats {
         }
 
         for (int i = 0; i < this.steps; i++) {
-         
+
             DescriptiveStatistics del = new DescriptiveStatistics();
             DescriptiveStatistics imi = new DescriptiveStatistics();
             DescriptiveStatistics rep = new DescriptiveStatistics();
@@ -213,7 +212,7 @@ public class RunStats {
 
         StringBuffer csvHeader = new StringBuffer("");
         StringBuffer csvData = new StringBuffer("");
-        csvHeader.append("Run,step,brand,purchase\n");
+        csvHeader.append("Run;step;brand;purchase\n");
         // write header
         writer.write(csvHeader.toString());
 
@@ -221,11 +220,11 @@ public class RunStats {
             for (int b = 0; b < this.brands; b++) {
                 for (int j = 0; j < this.steps; j++) {
                     csvData.append(i);
-                    csvData.append(',');
+                    csvData.append(';');
                     csvData.append(j);
-                    csvData.append(',');
+                    csvData.append(';');
                     csvData.append(b);
-                    csvData.append(',');
+                    csvData.append(';');
                     csvData.append(String.format("%03d", this.data_purchases[i][b][j]));
                     csvData.append('\n');
 
@@ -240,24 +239,24 @@ public class RunStats {
 
         StringBuffer csvHeader = new StringBuffer("");
         StringBuffer csvData = new StringBuffer("");
-        csvHeader.append("Run,step,repetition,deliberation,imitation,social,utility\n");
+        csvHeader.append("Run;step;repetition;deliberation;imitation;social;utility\n");
         // write header
         writer.write(csvHeader.toString());
 
         for (int i = 0; i < this.runs; i++) {
             for (int j = 0; j < this.steps; j++) {
                 csvData.append(i);
-                csvData.append(',');
+                csvData.append(';');
                 csvData.append(j);
-                csvData.append(',');
+                csvData.append(';');
                 csvData.append(this.repetition_strategy_Agents[i][j]);
-                csvData.append(',');
+                csvData.append(';');
                 csvData.append(this.deliberation_strategy_Agents[i][j]);
-                csvData.append(',');
+                csvData.append(';');
                 csvData.append(this.imitation_strategy_Agents[i][j]);
-                csvData.append(',');
+                csvData.append(';');
                 csvData.append(this.social_strategy_Agents[i][j]);
-                csvData.append(',');
+                csvData.append(';');
                 csvData.append(this.utility_strategy_Agents[i][j]);
                 csvData.append('\n');
 
@@ -271,22 +270,22 @@ public class RunStats {
 
         StringBuffer csvHeader = new StringBuffer("");
         StringBuffer csvData = new StringBuffer("");
-        csvHeader.append("Step,Brand,avg_purchases,std,min,max\n");
+        csvHeader.append("Step;Brand;avg_purchases;std;min;max\n");
         // write header
         writer.write(csvHeader.toString());
 
         for (int b = 0; b < this.brands; b++) {
             for (int i = 0; i < this.steps; i++) {
                 csvData.append(i);
-                csvData.append(',');
+                csvData.append(';');
                 csvData.append(b);
-                csvData.append(',');
+                csvData.append(';');
                 csvData.append(String.format("%.4f", this.avg_purchases[b][i]));
-                csvData.append(',');
+                csvData.append(';');
                 csvData.append(String.format("%.4f", this.std_purchases[b][i]));
-                csvData.append(',');
+                csvData.append(';');
                 csvData.append(String.format("%.4f", this.min_purchases[b][i]));
-                csvData.append(',');
+                csvData.append(';');
                 csvData.append(String.format("%.4f", this.max_purchases[b][i]));
                 csvData.append('\n');
             }
@@ -299,30 +298,30 @@ public class RunStats {
 
         StringBuffer csvHeader = new StringBuffer("");
         StringBuffer csvData = new StringBuffer("");
-        csvHeader.append("avg_deliberation,avg_imitation,avg_repetition,avg_social,avg_utility,std_deliberation,std_imitation,std_repetition,std_social,std_utility\n");
+        csvHeader.append("avg_deliberation;avg_imitation;avg_repetition;avg_social;vg_utility;std_deliberation;std_imitation;std_repetition;std_social;std_utility\n");
         // write header
         writer.write(csvHeader.toString());
 
         for (int i = 0; i < this.steps; i++) {
             //for (int i = 0; i < this.steps; i++) {
             csvData.append(String.format("%.4f", this.avg_deliberation[i]));
-            csvData.append(',');
+            csvData.append(';');
             csvData.append(String.format("%.4f", this.avg_imitation[i]));
-            csvData.append(',');
+            csvData.append(';');
             csvData.append(String.format("%.4f", this.avg_repetition[i]));
-            csvData.append(',');
+            csvData.append(';');
             csvData.append(String.format("%.4f", this.avg_social[i]));
-            csvData.append(',');
+            csvData.append(';');
             csvData.append(String.format("%.4f", this.avg_utility[i]));
-            csvData.append(',');
+            csvData.append(';');
             csvData.append(String.format("%.4f", this.std_deliberation[i]));
-            csvData.append(',');
+            csvData.append(';');
             csvData.append(String.format("%.4f", this.std_imitation[i]));
-            csvData.append(',');
+            csvData.append(';');
             csvData.append(String.format("%.4f", this.std_repetition[i]));
-            csvData.append(',');
+            csvData.append(';');
             csvData.append(String.format("%.4f", this.std_social[i]));
-            csvData.append(',');
+            csvData.append(';');
             csvData.append(String.format("%.4f", this.std_utility[i]));
             csvData.append('\n');
             //}

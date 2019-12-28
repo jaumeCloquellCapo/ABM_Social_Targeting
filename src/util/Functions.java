@@ -282,6 +282,20 @@ public class Functions {
         }
     }
 
+    public static double nextGaussian(
+            double mean,
+            MersenneTwisterFast randomizer,
+            double stDeviation,
+            double bottom,
+            double top) {
+        double delay;
+        do {
+            double val = randomizer.nextGaussian() * stDeviation + mean;
+            delay = val;
+        } while (delay < bottom || delay > top);
+        return delay;
+    }
+
     /**
      * Returns numbers between -1 and 1, normally distributed with 0 as its
      * mean. [KT] Keep in mind that dividing by 3, the stdev is 0.333.

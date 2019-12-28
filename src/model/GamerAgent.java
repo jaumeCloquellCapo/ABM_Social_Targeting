@@ -64,6 +64,7 @@ public class GamerAgent implements Steppable {
             this.purchasedBrands[i] = -1;
             this.evolutionStrategies[i] = 0;
         }
+        
 
         this.utility = new double[brands];
 
@@ -81,7 +82,7 @@ public class GamerAgent implements Steppable {
         if (aux < 0.0 || aux > 1.0) {
             System.err.println("Error: Invalid utility: " + aux);
         }
-        this.utility[index] = aux;
+        this.utility[index] = utility;
     }
 
     public int[] getPurchasedBrands() {
@@ -106,10 +107,11 @@ public class GamerAgent implements Steppable {
 
     public void setPreferences(int _preference, double _value) {
         double aux = (double) Math.round(_value * 100) / 100;
+        
         if (aux < 0.0 || aux > 1.0) {
             System.err.println("Error :Invalid preference: " + aux);
         }
-        this.preferences[_preference] = aux;
+        this.preferences[_preference] = _value;
     }
 
     // ########################################################################
@@ -1045,6 +1047,7 @@ public class GamerAgent implements Steppable {
 
                 // Calculamos un array de utilidades por cada marca
                 // double[] utilities = this.Utility(state);
+                // System.out.println(this.gamerAgentId + "  " + Arrays.toString(this.utility));
                 int brandId = obtainBrand(state, this.utility);
                 this.setStrategy(this.currentStep, model.UTILITY);
 

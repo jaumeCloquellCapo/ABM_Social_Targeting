@@ -125,7 +125,7 @@ public class Controller {
      * Run the model one time
      */
     public void runModel() {
-        
+
         long time1 = 0, time2 = 0;
 
         // starting and looping the mode
@@ -154,24 +154,29 @@ public class Controller {
 
             } while (model.schedule.getSteps() < maxSteps);
 
+            this.newPurchasesArray = new int[getModelParameters().getBrands()][(int) maxSteps];
 
-            this.newPurchasesArray = new int[model.getBrands().length][(int) model.schedule.getSteps()];
-            this.repetition_strategy_Agents = new int[(int) model.schedule.getSteps()];
-            this.deliberation_strategy_Agents = new int[(int) model.schedule.getSteps()];
-            this.imitation_strategy_Agents = new int[(int) model.schedule.getSteps()];
-            this.social_strategy_Agents = new int[(int) model.schedule.getSteps()];
-            this.utility_strategy_Agents = new int[(int) model.schedule.getSteps()];
-            this.strategyChanges = new int[(int) model.schedule.getSteps()];
-
-
-            this.newPurchasesArray = model.getNewPurchasesOfEveryBrand();
+            this.repetition_strategy_Agents = new int[(int) maxSteps];
+            this.deliberation_strategy_Agents = new int[(int) maxSteps];
+            this.imitation_strategy_Agents = new int[(int) maxSteps];
+            this.social_strategy_Agents = new int[(int) maxSteps];
+            this.utility_strategy_Agents = new int[(int) maxSteps];
+            this.strategyChanges = new int[(int) maxSteps];
             
-            this.repetition_strategy_Agents = model.getRepetition_strategy_Agents();
-            this.deliberation_strategy_Agents = model.getDeliberation_strategy_Agents();
-            this.imitation_strategy_Agents = model.getImitation_strategy_Agents();
-            this.social_strategy_Agents = model.getSocial_strategy_Agents();
-            this.utility_strategy_Agents = model.getUtility_strategy_Agents();
-            this.strategyChanges = model.getStrategyChanges();
+            for (int i = 0; i < maxSteps; i++) {
+                for (int j = 0; j < getModelParameters().getBrands(); j++) {
+                    this.newPurchasesArray[j][i] = model.getCumPurchasesToBrandAtStep(i, j);
+
+                }
+
+                this.repetition_strategy_Agents[i] = model.getRepetition_strategy_Agents()[i];
+                this.deliberation_strategy_Agents[i] = model.getDeliberation_strategy_Agents()[i];
+                this.imitation_strategy_Agents[i] = model.getImitation_strategy_Agents()[i];
+                this.social_strategy_Agents[i] = model.getSocial_strategy_Agents()[i];
+                this.utility_strategy_Agents[i] = model.getUtility_strategy_Agents()[i];
+                this.strategyChanges[i] = model.getStrategyChanges()[i];
+
+            }
 
             model.finish();
 
@@ -197,5 +202,4 @@ public class Controller {
 
         return this.newPurchasesArray;
     }
-
 }

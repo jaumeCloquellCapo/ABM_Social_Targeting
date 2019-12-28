@@ -49,7 +49,7 @@ public class Brand {
             System.err.println("Error :Invalid driver: "+ _value);
         }
         
-        this.drivers[driver] = aux;
+        this.drivers[driver] = _value;
     }
 
     /**

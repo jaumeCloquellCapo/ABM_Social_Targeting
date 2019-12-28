@@ -31,7 +31,7 @@ public class GUISimulation extends GUIState {
     // ########################################################################
     // Variables
     // ######################################################################## 
-    public static String configFileName;
+    public static String configFileName = "config/targeting/config.properties";
     public static boolean showSocialNetwork;
 
     // values for the state of the agents
@@ -64,7 +64,7 @@ public class GUISimulation extends GUIState {
         colorPalette = new Colors(6);
         showSocialNetwork = true;
 
-        configFileName = args[0];
+//        configFileName = args[0];
 
         if (args.length > 1 && args[1].compareTo("--noSocialNetwork") == 0) {
             showSocialNetwork = false;
