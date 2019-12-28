@@ -80,23 +80,23 @@ public class ConsoleSimulation {
                         + "\n\nRunning Agent-based DSS. Please wait...");
 
             }
-
+            
+            
             controller = new Controller(fileName, seed, maxSteps);
 
             RunStats stats = new RunStats(NRUNS, (int) maxSteps, controller.getModelParameters().getBrands());
 
             for (int i = 0; i < NRUNS; i++) {
                 controller.runModel();
-                //int[][] compras = controller.getNewPuchasesOfEveryBrand();   
-//                for (int j = 0; j < controller.getModelParameters().getBrands(); j++) {
-//                    stats.setDataPurchases(i, j, controller.getNewPuchasesOfEveryBrand()[j]);
-//
-//                }
-//                stats.setDeliberation_strategy_Agents(i, controller.getDeliberation_strategy_Agents());
-//                stats.setImitation_strategy_Agents(i, controller.getImitation_strategy_Agents());
-//                stats.setRepetition_strategy_Agents(i, controller.getRepetition_strategy_Agents());
-//                stats.setSocial_strategy_Agents(i, controller.getSocial_strategy_Agents());
-//                stats.setUtility_strategy_Agents(i, controller.getUtility_strategy_Agents());
+                for (int j = 0; j < controller.getModelParameters().getBrands(); j++) {
+                    stats.setDataPurchases(i, j, controller.getNewPuchasesOfEveryBrand()[j]);
+
+                }
+                stats.setDeliberation_strategy_Agents(i, controller.getDeliberation_strategy_Agents());
+                stats.setImitation_strategy_Agents(i, controller.getImitation_strategy_Agents());
+                stats.setRepetition_strategy_Agents(i, controller.getRepetition_strategy_Agents());
+                stats.setSocial_strategy_Agents(i, controller.getSocial_strategy_Agents());
+                stats.setUtility_strategy_Agents(i, controller.getUtility_strategy_Agents());
 
 //                for (int j = 0; j < results2.length; j++) {;
 //                    stats.setDataPurchases(i, j, results2[j]);
@@ -129,43 +129,42 @@ public class ConsoleSimulation {
 //                writer.close();
             } else {
 
-//                System.out.print(">> Purchases obtained at every step by the macro-level simulation:\n");
-//                System.out.println();
-//                for (int k = 0; k < NRUNS; k++) {
-//                    for (int j = 0; j < maxSteps; j++) {
-//                        System.out.println("** NRUNS " + k);
-//                        System.out.println("**** Step  " + j);
-//                        for (int i = 0; i < controller.getModelParameters().getBrands(); i++) {
-//                            System.out.println("****** Brand " + i + ": " + stats.getData()[k][i][j]);
-//                            //System.out.println();
-//                        }
-//                        System.out.println();
-//                        System.out.println();
-//
-//                    }
-//                }
+                String PATH = "./logs/";
                 String outputFile = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
 
-                File fileAllMC = new File("./logs/" + "AllMCruns_" + outputFile + ".csv");
-                File fileSummaryMC = new File("./logs/" + "SummaryMCruns_" + outputFile + ".csv");
-                //File fileAllMCLQ = new File("./logs/" + "AllMCrunsLQ_" + outputFile + ".txt");
-                File fileSummaryMCLQ = new File("./logs/" + "SummaryDeliberatio" + outputFile + ".csv");
-                File fileTimeSeriesMC = new File("./logs/" + "TimeSeriesMCruns_" + outputFile + ".csv");
-                PrintWriter printWriter;
+                String directoryName = PATH.concat(outputFile);
 
-                //PrintWriter out = new PrintWriter(System.out, true);
-                printWriter = new PrintWriter(fileAllMC);
-                stats.printAllStats(printWriter, true);
-                
-                printWriter = new PrintWriter(fileSummaryMC);
-                stats.printSummaryStats(printWriter, true);
-                
-                printWriter = new PrintWriter(fileSummaryMCLQ);
-                stats.printSummaryDeliberation(printWriter, true);
+                // String fileName = id + getTimeStamp() + ".txt";
+                File directory = new File(directoryName);
+                if (!directory.exists()) {
+                    directory.mkdir();
+                    // If you require it to make the entire directory path including parents,
+                    // use directory.mkdirs(); here instead.
+                }
+                try {
 
-                printWriter = new PrintWriter(fileTimeSeriesMC);
-                stats.printAllDeliberation(printWriter, true);
+                    File fileAllMC = new File(directoryName + "/" + "AllMCruns_" + outputFile + ".csv");
+                    File fileSummaryMC = new File(directoryName + "/" + "SummaryMCruns_" + outputFile + ".csv");
+                    //File fileAllMCLQ = new File("./logs/" + "AllMCrunsLQ_" + outputFile + ".txt");
+                    File SummaryDeliberations = new File(directoryName + "/" + "SummaryDeliberations" + outputFile + ".csv");
+                    File ALLDeliberations = new File(directoryName + "/" + "ALLDeliberations" + outputFile + ".csv");
+                    PrintWriter printWriter;
 
+                    //PrintWriter out = new PrintWriter(System.out, true);
+                    printWriter = new PrintWriter(fileAllMC);
+                    stats.printAllStats(printWriter, true);
+
+                    printWriter = new PrintWriter(fileSummaryMC);
+                    stats.printSummaryStats(printWriter, true);
+
+                    printWriter = new PrintWriter(SummaryDeliberations);
+                    stats.printSummaryDeliberation(printWriter, true);
+
+                    printWriter = new PrintWriter(ALLDeliberations);
+                    stats.printAllDeliberation(printWriter, true);
+                } catch (Exception e) {
+                    System.err.println("Error write results: " + e.toString());
+                }
             }
 
         } else {

@@ -74,8 +74,8 @@ public class Model extends SimState {
 
     public static int PREMIUM_USER = 1;
 
-    int newPremiumAgents[]; //  to count new premium agents every day
-    int cumPremiumAgents[]; //  to count the cumulative number of premium agents every day
+//    int newPremiumAgents[]; //  to count new premium agents every day
+//    int cumPremiumAgents[]; //  to count the cumulative number of premium agents every day
     int newPurchases[][]; //  to count new purchases of every brand every day
     int cumPurchases[][]; //  to count the cumulative purchases of every brand every day
 
@@ -192,10 +192,9 @@ public class Model extends SimState {
      *
      * @return the number of premiums
      */
-    public int getCumPremiumsAtStep(int _position) {
-        return cumPremiumAgents[_position];
-    }
-
+//    public int getCumPremiumsAtStep(int _position) {
+//        return cumPremiumAgents[_position];
+//    }
     public int getCumPurchasesToBrandAtStep(int _position, int _brand) {
         return cumPurchases[_brand][_position];
     }
@@ -205,19 +204,17 @@ public class Model extends SimState {
      *
      * @return an ArrayList with the evolution of the premium members
      */
-    public int[] getCumPremiumsArray() {
-        return cumPremiumAgents;
-    }
-
+//    public int[] getCumPremiumsArray() {
+//        return cumPremiumAgents;
+//    }
     /**
      * Get the number of NEW premium members at a given step - time
      *
      * @return the number of premiums
      */
-    public int getNewPremiumsAtStep(int _position) {
-        return newPremiumAgents[_position];
-    }
-
+//    public int getNewPremiumsAtStep(int _position) {
+//        return newPremiumAgents[_position];
+//    }
     public int getNewPurchasesForBrandAtStep(int _position, int _brand) {
         return newPurchases[_brand][_position];
     }
@@ -227,10 +224,9 @@ public class Model extends SimState {
      *
      * @return an ArrayList with the evolution of the premium members
      */
-    public int[] getNewPremiumsArray() {
-        return newPremiumAgents;
-    }
-
+//    public int[] getNewPremiumsArray() {
+//        return newPremiumAgents;
+//    }
     public int[][] getNewPurchasesOfEveryBrand() {
         return newPurchases;
     }
@@ -379,8 +375,6 @@ public class Model extends SimState {
         }
 
         for (int i = 0; i < MAX_STEPS; i++) {
-//            strategyChanges[i] = newPremiumAgents[i] = cumPremiumAgents[i] = 0;
-
             repetition_strategy_Agents[i] = deliberation_strategy_Agents[i] = imitation_strategy_Agents[i] = social_strategy_Agents[i] = utility_strategy_Agents[i] = strategyChanges[i] = 0;
         }
 
@@ -440,7 +434,7 @@ public class Model extends SimState {
 
         // Todo: Remove it
         //setAnonymousAgentApriori(scheduleCounter);
-        setNewAnonymousAgentApriori(scheduleCounter);
+        setAnonymousAgentApriori(scheduleCounter);
 
         scheduleCounter++;
 
@@ -454,6 +448,11 @@ public class Model extends SimState {
         for (int i = 0; i < params.brands; i++) {
             newPurchases[i][(int) schedule.getSteps()] = 0;
             cumPurchases[i][(int) schedule.getSteps()] = 0;
+        }
+
+        // start the number strategy list
+        for (int i = 0; i < MAX_STEPS; i++) {
+            repetition_strategy_Agents[i] = deliberation_strategy_Agents[i] = imitation_strategy_Agents[i] = social_strategy_Agents[i] = utility_strategy_Agents[i] = strategyChanges[i] = 0;
         }
 
         // changed to have agents with random initial states (shuffle IDs which link them with nodes)		
@@ -513,15 +512,13 @@ public class Model extends SimState {
         // check the status to count initial premium agents (not the new)
 //        cumPremiumAgents[0] = calcNrInfectedPremiums();
         // check the status to count initial purchases (not the new)
-        for (int i = 0; i < params.brands; i++) {
-            Brand b = brands[i];
-            cumPurchases[i][0] = calcNrPurchasesOfBrand(b);
-        }
-
+//        for (int i = 0; i < params.brands; i++) {
+//            Brand b = brands[i];
+//            cumPurchases[i][0] = calcNrPurchasesOfBrand(b);
+//        }
         scheduleCounter++;
 
-        //setAnonymousAgentAposteriori(scheduleCounter);
-        setNewAnonymousAgentAposteriori(scheduleCounter);
+        setAnonymousAgentAposteriori(scheduleCounter);
 
         // logging  test
         //java.util.Date date= new java.util.Date();
@@ -750,11 +747,11 @@ public class Model extends SimState {
 
         GamerAgent cl = new GamerAgent(nodeId, segmentId, state, params.getMaxDrivers(), MAX_STEPS, params.brands);
 
-        Random randomno = new Random();
+        double r = this.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE);
 
         for (int j = 0; j < params.getMaxDrivers(); j++) {
             // generamos los valores de las preferencias dando una media y una desviación
-            cl.setPreferences(j, Functions.scaleGaussianValue(Model.getParametersObject().getPreferences()[j], randomno.nextGaussian(), Model.getParametersObject().getBrandStdev(), 0.0, 1.0));
+            cl.setPreferences(j, Functions.scaleGaussianValue(Model.getParametersObject().getPreferences()[j], r, Model.getParametersObject().getBrandStdev(), 0.0, 1.0));
             // calculamos la utilidad de cada agente para cada marca
             for (int brand = 0; brand < this.brands.length; brand++) {
                 cl.setUtility(brand, util.Functions.utilityFunction(this.getBrands()[brand].getDrivers(), cl.getPreferences()));
@@ -766,8 +763,7 @@ public class Model extends SimState {
         return cl;
     }
 
-
-    private void setNewAnonymousAgentApriori(int scheduleCounter) {
+    private void setAnonymousAgentApriori(int scheduleCounter) {
 
         // Add to the schedule at the end of each step
         schedule.scheduleRepeating(Schedule.EPOCH, scheduleCounter, new Steppable() {
@@ -791,7 +787,7 @@ public class Model extends SimState {
 
     }
 
-    private void setNewAnonymousAgentAposteriori(int scheduleCounter) {
+    private void setAnonymousAgentAposteriori(int scheduleCounter) {
 
         // Add to the schedule at the end of each step
         schedule.scheduleRepeating(Schedule.EPOCH, scheduleCounter, new Steppable() {
@@ -808,8 +804,10 @@ public class Model extends SimState {
                 int currentStep = (int) schedule.getSteps();
 
                 for (int i = 0; i < params.nrAgents; i++) {
+
                     int strategy = ((GamerAgent) agents.get(i)).getCurrentStratey(currentStep);
-                    switch(strategy){
+                    // System.out.println("Agente " + i + "estrategia " + strategy);
+                    switch (strategy) {
                         case REPETITION:
                             repetition_strategy_Agents[currentStep]++;
                             break;
@@ -821,12 +819,11 @@ public class Model extends SimState {
                             break;
                         case UTILITY:
                             utility_strategy_Agents[currentStep]++;
-                            break; 
+                            break;
                         case DELIBERATION:
                             deliberation_strategy_Agents[currentStep]++;
                             break;
-                                    
-                            
+
                     }
 
                     if (((GamerAgent) agents.get(i)).hasChangedStrategyAtStep(currentStep)) {
@@ -844,7 +841,7 @@ public class Model extends SimState {
                         cumPurchases[b.getBrandId()][currentStep] = calcNrPurchasesOfBrand(b);
 
                         newPurchases[b.getBrandId()][currentStep]
-                                = calcNrNewlyInfectedPremiums(tempCum, cumPurchases[b.getBrandId()][0]);
+                                = calcNrNewPurchases(tempCum, cumPurchases[b.getBrandId()][0]);
 
                     } else {
 
@@ -853,7 +850,7 @@ public class Model extends SimState {
                         cumPurchases[b.getBrandId()][currentStep] = calcNrPurchasesOfBrand(b);
 
                         newPurchases[b.getBrandId()][currentStep]
-                                = calcNrNewlyInfectedPremiums(cumPurchases[b.getBrandId()][previousStep],
+                                = calcNrNewPurchases(cumPurchases[b.getBrandId()][previousStep],
                                         cumPurchases[b.getBrandId()][currentStep]);
 
                     }
@@ -900,32 +897,17 @@ public class Model extends SimState {
         return res;
     }
 
-    private int countStrategyUsed(int _strategy, int _step) {
-
-        int res = 0;
-
-        for (int i = 0; i < params.nrAgents; i++) {
-            if (((GamerAgent) agents.get(i)).getCurrentStratey(_step)
-                    == _strategy) {
-                res++;
-            }
-
-        }
-
-        return res;
-    }
-
     /**
      *
      * @param NrInfectedApriori
      * @param NrInfectedAposteriori
      * @return
      */
-    private int calcNrNewlyInfectedPremiums(int NrInfectedApriori,
-            int NrInfectedAposteriori) {
+    private int calcNrNewPurchases(int NrNewPurchase,
+            int NrCumPurchase) {
         int diffs;
 
-        diffs = NrInfectedAposteriori - NrInfectedApriori;
+        diffs = NrCumPurchase - NrNewPurchase;
 
         return diffs;
     }

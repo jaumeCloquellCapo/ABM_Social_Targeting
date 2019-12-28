@@ -1056,8 +1056,6 @@ public class GamerAgent implements Steppable {
                     double[] biasedProductUtilities = this.BiasedProductUtility(state);
                     double[] uncertaintyAboutDecisions = this.UncertaintyAboutDecision(state);
 
-                    // System.out.println("biasedProductUtilities[brandId] ==" + biasedProductUtilities[brandId]);
-                    // System.out.println("uncertaintyAboutDecisions[brandId] ==" + uncertaintyAboutDecisions[brandId]);
                     double[] probs = new double[model.getParametersObject().brands];
 
                     // solo puedo aplicar las heuristicas si hice una compra en el step -1

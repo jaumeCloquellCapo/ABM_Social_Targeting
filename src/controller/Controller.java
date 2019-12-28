@@ -22,15 +22,15 @@ public class Controller {
     protected Model model = null;
 
     protected ArrayList<Integer> newPremiumsArray;
-    
+
     protected int[][] newPurchasesArray;
 
-    int repetition_strategy_Agents[]; 		
-    int deliberation_strategy_Agents[]; 			
-    int imitation_strategy_Agents[];			
-    int social_strategy_Agents[]; 			
-    int utility_strategy_Agents[];			
-    int strategyChanges[];		
+    int repetition_strategy_Agents[];
+    int deliberation_strategy_Agents[];
+    int imitation_strategy_Agents[];
+    int social_strategy_Agents[];
+    int utility_strategy_Agents[];
+    int strategyChanges[];
 
     public int[] getRepetition_strategy_Agents() {
         return repetition_strategy_Agents;
@@ -60,7 +60,7 @@ public class Controller {
     m.model = (Model)(model.clone());
     return m;        
     }*/
-    public int[] getStrategyChanges() {    
+    public int[] getStrategyChanges() {
         return strategyChanges;
     }
 
@@ -125,6 +125,7 @@ public class Controller {
      * Run the model one time
      */
     public void runModel() {
+        
         long time1 = 0, time2 = 0;
 
         // starting and looping the mode
@@ -138,12 +139,6 @@ public class Controller {
             time2 = System.currentTimeMillis();
             System.out.println((double) (time2 - time1) / 1000 + "s for starting model");
         }
-
-        ArrayList<Integer> results = new ArrayList<Integer>();
-        int tmpArray[];
-        
-
-        // int tmpBrandArray[][];
 
         if (CalibrationController.DEBUG_CALIB) {
             time1 = System.currentTimeMillis();
@@ -159,16 +154,16 @@ public class Controller {
 
             } while (model.schedule.getSteps() < maxSteps);
 
-            // Todo: remove it
-            tmpArray = model.getNewPremiumsArray();
-
-            for (int i = 0; i < model.schedule.getSteps(); i++) {
-                results.add(tmpArray[i]);
-            }
 
             this.newPurchasesArray = new int[model.getBrands().length][(int) model.schedule.getSteps()];
+            this.repetition_strategy_Agents = new int[(int) model.schedule.getSteps()];
+            this.deliberation_strategy_Agents = new int[(int) model.schedule.getSteps()];
+            this.imitation_strategy_Agents = new int[(int) model.schedule.getSteps()];
+            this.social_strategy_Agents = new int[(int) model.schedule.getSteps()];
+            this.utility_strategy_Agents = new int[(int) model.schedule.getSteps()];
+            this.strategyChanges = new int[(int) model.schedule.getSteps()];
 
-            // int[][] results2 = new [model.getBrands().length][model.schedule.getSteps()];
+
             this.newPurchasesArray = model.getNewPurchasesOfEveryBrand();
             
             this.repetition_strategy_Agents = model.getRepetition_strategy_Agents();
@@ -178,17 +173,9 @@ public class Controller {
             this.utility_strategy_Agents = model.getUtility_strategy_Agents();
             this.strategyChanges = model.getStrategyChanges();
 
-//            for (int i = 0; i < model.getBrands().length; i++) {
-//                for (int j = 0; j < model.schedule.getSteps(); j++) {
-//                    ArrayList<Integer> aux = new ArrayList<>();
-//                    aux.add(tmpBrandArray[i][j]);
-//                    results2[i][j] = tmpBrandArray[i][j]
-//                }
-//            }
             model.finish();
 
         } catch (Exception e) {
-            System.out.println(e);
 
             System.err.println("Controller: Error when running model, execution is aborted.\n"
                     + e.getMessage());
@@ -198,8 +185,6 @@ public class Controller {
             time2 = System.currentTimeMillis();
             System.out.println((double) (time2 - time1) / 1000 + "s for running the model");
         }
-        this.newPremiumsArray = results;
-        //this.newPurchasesArray = tmpBrandArray;
 
     }
 

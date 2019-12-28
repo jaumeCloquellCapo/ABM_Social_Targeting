@@ -295,26 +295,26 @@ public class GUISimulation extends GUIState {
         chart2.repaint();
         chart2.stopMovie();
 
-        if (data != null) {
-
-            // calculate error performance if historical data available
-            Model model = (Model) state;
-            CalibrationStats stats = new CalibrationStats(model.getParametersObject().getRatioAgentsPop(),
-                    1, data.getNumSteps());
-
-            double simulated[][] = new double[1][data.getNumSteps()];
-            for (int i = 0; i < data.getNumSteps(); i++) {
-                simulated[0][i] = (double) model.getNewPremiumsAtStep(i);
-            }
-
-            stats.setSimulated(simulated);
-
-            stats.calcAllStats(data.getHistoricalDataArray());
-
-            System.out.println("corr: " + stats.getAvgCorr());
-            System.out.println("eucl: " + stats.getAvgEucl());
-            System.out.println("L0: " + stats.getAvgL0());
-        }
+//        if (data != null) {
+//
+//            // calculate error performance if historical data available
+//            Model model = (Model) state;
+//            CalibrationStats stats = new CalibrationStats(model.getParametersObject().getRatioAgentsPop(),
+//                    1, data.getNumSteps());
+//
+//            double simulated[][] = new double[1][data.getNumSteps()];
+//            for (int i = 0; i < data.getNumSteps(); i++) {
+//                simulated[0][i] = (double) model.getNewPremiumsAtStep(i);
+//            }
+//
+//            stats.setSimulated(simulated);
+//
+//            stats.calcAllStats(data.getHistoricalDataArray());
+//
+//            System.out.println("corr: " + stats.getAvgCorr());
+//            System.out.println("eucl: " + stats.getAvgEucl());
+//            System.out.println("L0: " + stats.getAvgL0());
+//        }
     }
 
     /**

@@ -6,6 +6,7 @@
 package view;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /**
@@ -145,6 +146,7 @@ public class RunStats {
     }
 
     public void calcAllStats() {
+      
 
         for (int b = 0; b < this.brands; b++) {
             DescriptiveStatistics purchasesBrands = new DescriptiveStatistics();
@@ -163,6 +165,7 @@ public class RunStats {
         }
 
         for (int i = 0; i < this.steps; i++) {
+         
             DescriptiveStatistics del = new DescriptiveStatistics();
             DescriptiveStatistics imi = new DescriptiveStatistics();
             DescriptiveStatistics rep = new DescriptiveStatistics();
