@@ -36,7 +36,7 @@ public class Model extends SimState {
     // Variables
     // ########################################################################
     static final long serialVersionUID = 1L;
-    
+
     static boolean INCLUDEZERO = true;
     static boolean INCLUDEONE = true;
     // Constantes del los tipo de decisiones
@@ -46,6 +46,8 @@ public class Model extends SimState {
     public static final int SOCIALCOMPARISION = 5;
     public static final int UTILITY = 1;
 
+    public static int NOT_PURCHASE = -1;
+
     // LOGGING
     //public static Logger logger = LoggerFactory.getLogger(Model.class);
     //static String LOGFILENAME = "./config/log4j.properties";
@@ -53,15 +55,15 @@ public class Model extends SimState {
 
     // MODEL VARIABLES
     static int MAX_STEPS = 800;
-    
+
     static int daysOfWeek[];		// this array is for allocating the day of the week for each step
     // notice that calendar.getInstance and setTime are time-consuming
     // instead, we pre-calculate the days of the week in advance
 
     int currentDay;
-    
+
     public static ModelParameters params;
-    
+
     Bag agents;
 
     // SEGMENTS OF CLIENTS
@@ -69,9 +71,9 @@ public class Model extends SimState {
 
     // SUMMARY VALUES FOR THE SUBSCRIPTION STATUS OF AGENTS
     public static int NON_USER = -1;
-    
+
     public static int BASIC_USER = 0;
-    
+
     public static int PREMIUM_USER = 1;
 
 //    int newPremiumAgents[]; //  to count new premium agents every day
@@ -81,13 +83,13 @@ public class Model extends SimState {
 
     // SOCIAL NETWORK
     GraphStreamer socialNetwork;
-    
+
     HashSet<Integer> initialPrems;					// IDs of agents to be initial premiums 
 
     HashSet<Integer> initialNoPremsRewarded;		// IDs of agents to be rewarded to become prem & influence people 
 
     Brand[] brands;
-    
+
     int repetition_strategy_Agents[]; 			// a counter of the k_I agents during the simulation
     int deliberation_strategy_Agents[]; 			// a counter of the k_T agents during the simulation
     int imitation_strategy_Agents[];			// a counter of the k_U agents during the simulation
@@ -100,55 +102,55 @@ public class Model extends SimState {
     public int[] getRepetition_strategy_Agents() {
         return repetition_strategy_Agents;
     }
-    
+
     public void setRepetition_strategy_Agents(int[] repetition_strategy_Agents) {
         this.repetition_strategy_Agents = repetition_strategy_Agents;
     }
-    
+
     public int[] getDeliberation_strategy_Agents() {
         return deliberation_strategy_Agents;
     }
-    
+
     public void setDeliberation_strategy_Agents(int[] deliberation_strategy_Agents) {
         this.deliberation_strategy_Agents = deliberation_strategy_Agents;
     }
-    
+
     public int[] getImitation_strategy_Agents() {
         return imitation_strategy_Agents;
     }
-    
+
     public void setImitation_strategy_Agents(int[] imitation_strategy_Agents) {
         this.imitation_strategy_Agents = imitation_strategy_Agents;
     }
-    
+
     public int[] getSocial_strategy_Agents() {
         return social_strategy_Agents;
     }
-    
+
     public void setSocial_strategy_Agents(int[] social_strategy_Agents) {
         this.social_strategy_Agents = social_strategy_Agents;
     }
-    
+
     public int[] getUtility_strategy_Agents() {
         return utility_strategy_Agents;
     }
-    
+
     public void setUtility_strategy_Agents(int[] utility_strategy_Agents) {
         this.utility_strategy_Agents = utility_strategy_Agents;
     }
-    
+
     public int[] getStrategyChanges() {
         return strategyChanges;
     }
-    
+
     public void setStrategyChanges(int[] strategyChanges) {
         this.strategyChanges = strategyChanges;
     }
-    
+
     public static String getConfigFileName() {
         return CONFIGFILENAME;
     }
-    
+
     public static void setConfigFileName(String _configFileName) {
         CONFIGFILENAME = _configFileName;
     }
@@ -163,7 +165,7 @@ public class Model extends SimState {
     public boolean isAnInitialRewardedBasicUser(int _gamerId) {
         return this.initialNoPremsRewarded.contains(_gamerId);
     }
-    
+
     public GraphStreamer getSocialNetwork() {
         return socialNetwork;
     }
@@ -198,8 +200,8 @@ public class Model extends SimState {
     public int getCumPurchasesToBrandAtStep(int _position, int _brand) {
         return cumPurchases[_brand][_position];
     }
-    
-     public int[][] getCumPurchases() {
+
+    public int[][] getCumPurchases() {
         return cumPurchases;
     }
 
@@ -257,7 +259,7 @@ public class Model extends SimState {
      * @param _start
      */
     private void createSeasonality(Date _start) {
-        
+
         daysOfWeek = new int[MAX_STEPS];
 
         // creating the calendar
@@ -265,9 +267,9 @@ public class Model extends SimState {
 
         // set the current date to the initial date
         calendar.setTime(_start);
-        
+
         daysOfWeek[0] = calendar.get(Calendar.DAY_OF_WEEK);
-        
+
         for (int i = 1; i < MAX_STEPS; i++) {
             daysOfWeek[i] = (daysOfWeek[i - 1] + 1) % 8;
             if (daysOfWeek[i] == 0) {
@@ -277,15 +279,15 @@ public class Model extends SimState {
 					" and today is " + daysOfWeek[i] + " being Sunday " + Calendar.SUNDAY +
 					" and saturday " + Calendar.SATURDAY);*/
         }
-        
+
     }
-    
+
     private void createBrands(ModelParameters params) {
         int _brands = params.getBrands();
         int _drivers = params.getMaxDrivers();
-        
+
         this.brands = new Brand[_brands];
-        
+
         for (int i = 0; i < _brands; i++) {
             Brand b = new Brand(i, _drivers, params.getBrandNames(i));
             for (int j = 0; j < _drivers; j++) {
@@ -293,13 +295,13 @@ public class Model extends SimState {
                 this.setBrands(i, b);
             }
         }
-        
+
     }
-    
+
     public Brand[] getBrands() {
         return brands;
     }
-    
+
     public void setBrands(int _index, Brand brand) {
         this.brands[_index] = brand;
     }
@@ -323,7 +325,7 @@ public class Model extends SimState {
      * @param seedIn - a seed provided for the given simulation.
      */
     public Model(long seed) {
-        
+
         super(seed);
 
         //PropertyConfigurator.configure(LOGFILENAME);
@@ -335,12 +337,12 @@ public class Model extends SimState {
         // store an IDs array with the agents to be premium at the beginning of the sim
         // TODO only valid for 1 segment. make it for more than 1 if needed
         this.initialPrems = new HashSet<Integer>();
-        
+
         if (params.getExperimentType() == ModelParameters.BASS_WEIGHTS_INITIAL_BASICS) {
             // store an IDs array with the agents to be rewarded at the beginning of the run
             // they are no premiums agents with a mininum no. of prem friends and then likely to convert
             this.initialNoPremsRewarded = new HashSet<Integer>();
-            
+
         }
 
         // set an array with the days of the week for seasonality
@@ -368,7 +370,7 @@ public class Model extends SimState {
         imitation_strategy_Agents = new int[MAX_STEPS];
         social_strategy_Agents = new int[MAX_STEPS];
         utility_strategy_Agents = new int[MAX_STEPS];
-        
+
         newPurchases = new int[params.brands][MAX_STEPS];
         cumPurchases = new int[params.brands][MAX_STEPS];
 
@@ -380,7 +382,7 @@ public class Model extends SimState {
         for (int i = 0; i < MAX_STEPS; i++) {
             repetition_strategy_Agents[i] = deliberation_strategy_Agents[i] = imitation_strategy_Agents[i] = social_strategy_Agents[i] = utility_strategy_Agents[i] = strategyChanges[i] = 0;
         }
-        
+
         socialNetwork = new GraphStreamer(params.nrAgents, params);
         socialNetwork.setGraph(params);
 
@@ -393,7 +395,7 @@ public class Model extends SimState {
      * Sets up the simulation. The first method called when the simulation.
      */
     public void start() {
-        
+
         super.start();
 
         // first init currentDay
@@ -404,20 +406,20 @@ public class Model extends SimState {
         // IMPORTANT! IDs of the nodes and gamers must be the same to avoid BUGS!!
         // clear the initial premiums
         this.initialPrems.clear();
-        
+
         final int FIRST_SCHEDULE = 0;
-        
+
         int scheduleCounter = FIRST_SCHEDULE;
 
         // Initialize social network 
         if (params.typeOfNetwork == GraphStreamer.NetworkType.FILE_NETWORK) {
-            
+
             if (!params.isStaticSN()) {
 
                 // if the SN evolves we reset it to the parameters
                 socialNetwork.setGraph(params);
             }
-            
+
         } else {
 
             //long time1 = System.currentTimeMillis( );
@@ -438,8 +440,7 @@ public class Model extends SimState {
         // Todo: Remove it
         //setAnonymousAgentApriori(scheduleCounter);
         setAnonymousAgentApriori(scheduleCounter);
-       
-        
+
         scheduleCounter++;
 
         // Initialization of the gamer agents
@@ -455,7 +456,6 @@ public class Model extends SimState {
                 cumPurchases[i][j] = 0;
             }
         }
-        
 
         // start the number strategy list
         for (int i = 0; i < MAX_STEPS; i++) {
@@ -478,7 +478,7 @@ public class Model extends SimState {
             // Add agent to the schedule
             schedule.scheduleRepeating(Schedule.EPOCH, scheduleCounter, cl);
         }
-        
+
         // elegimos a los influencers
         int strategy = params.getTargetingStrategy();
 
@@ -486,34 +486,32 @@ public class Model extends SimState {
             case ModelParameters.TARGETING_RANDOM:
                 this.initialPrems = this.generateRandomPremiun();
                 break;
-            
+
             case ModelParameters.TARGETING_DEGREE:
                 this.initialPrems = this.generatePremiunsWithMostDegree();
                 break;
-            
+
             case ModelParameters.TARGETING_PREFERENCES:
                 this.initialPrems = this.generatePremiunsWithMostTargeting();
                 break;
-            
+
             case ModelParameters.TARGETING_PREFERENCES_DEGREE:
                 this.initialPrems = this.generatePremiunsWithMostTargetingAndDegree();
                 break;
-            
+
         }
-        
+
         for (int i = 0; i < params.nrAgents; i++) {
             GamerAgent gamerAgend = ((GamerAgent) agents.get(i));
-            
+
             if (this.initialPrems.contains(gamerAgend.gamerAgentId)) {
                 // le asignamos el status premiun 
                 gamerAgend.setSubscriptionState(Model.PREMIUM_USER);
                 // Regalamos en el step 0 el producto al influencer seleccionado
                 gamerAgend.setPurchasedBrands(0, params.getBrandToGive());
             }
-            
+
         }
-        
- 
 
         // calculate the set of non premium agents to be rewarded
         // if (params.getExperimentType() == ModelParameters.BASS_WEIGHTS_INITIAL_BASICS) {
@@ -527,7 +525,7 @@ public class Model extends SimState {
 //            cumPurchases[i][0] = calcNrPurchasesOfBrand(b);
 //        }
         scheduleCounter++;
-        
+
         setAnonymousAgentAposteriori(scheduleCounter);
 
         // logging  test
@@ -545,9 +543,9 @@ public class Model extends SimState {
      * @return
      */
     private HashSet<Integer> generateRandomPremiun() {
-        
+
         HashSet<Integer> initialPrems = new HashSet<>();
-        
+
         int numberOfInitPremiums = 0;
         //TODO: Pendiente de la respuesta de profe
         //for (int i = 0; i < params.brands; i++) {
@@ -558,28 +556,28 @@ public class Model extends SimState {
         while (initialPrems.size() < numberOfInitPremiums) {
             initialPrems.add(this.random.nextInt(params.nrAgents));
         }
-        
+
         return initialPrems;
     }
-    
+
     private HashSet<Integer> generatePremiunsWithMostDegree() {
         HashSet<Integer> initialPrems = new HashSet<>();
-        
+
         int[] degreeMap = this.orderNodesByDegree();
-        
+
         int numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
-        
+
         for (int i = 0; i < numberOfInitPremiums; i++) {
             //System.out.println("   " + i + "  "+degreeMap.get(i).getId() + "   " + degreeMap.get(i).getDegree() + "   " + degreeMap.get(i).getAttributeCount());
             initialPrems.add(Integer.valueOf(degreeMap[i]));
         }
-        
+
         return initialPrems;
     }
-    
+
     private int[] orderNodesByDegree() {
         int[] initialPrems = new int[params.nrAgents];
-        
+
         ArrayList<Node> degreeMap = socialNetwork.getDegreeMap();
 
         // var numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
@@ -587,70 +585,70 @@ public class Model extends SimState {
             //System.out.println("   " + i + "  "+degreeMap.get(i).getId() + "   " + degreeMap.get(i).getDegree() + "   " + degreeMap.get(i).getAttributeCount());
             initialPrems[i] = Integer.valueOf(degreeMap.get(i).getId());
         }
-        
+
         return initialPrems;
     }
-    
+
     private HashSet<Integer> generatePremiunsWithMostTargeting() {
         HashSet<Integer> initialPrems = new HashSet<>();
-        
+
         int[] degreeMap = this.orderNodesByTargeting();
-        
+
         int numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
-        
+
         for (int i = 0; i < numberOfInitPremiums; i++) {
             initialPrems.add(Integer.valueOf(degreeMap[i]));
         }
-        
+
         return initialPrems;
     }
-    
+
     private int[] orderNodesByTargeting() {
         int[] initialPrems = new int[params.nrAgents];
-        
+
         HashMap<Integer, Double> map = new HashMap<Integer, Double>();
-        
+
         for (int i = 0; i < params.nrAgents; i++) {
             GamerAgent aux = (GamerAgent) agents.get(i);
             map.put(i, util.Functions.utilityFunction(brands[params.getBrandToGive()].getDrivers(), aux.getPreferences()));
         }
-        
+
         Map<Integer, Double> mapSorted = util.Functions.sortHashMapByValue(map, true);
-        
+
         int numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
-        
+
         int i = 0;
-        
+
         for (Map.Entry<Integer, Double> en : mapSorted.entrySet()) {
             //System.out.println("Key = " + en.getKey()
             //        + ", Value = " + en.getValue() + ", i = " + i + ", max = " + numberOfInitPremiums);
             initialPrems[i] = en.getKey();
             i++;
         }
-        
+
         return initialPrems;
     }
-    
+
     private HashSet<Integer> generatePremiunsWithMostTargetingAndDegree() {
         HashSet<Integer> initialPrems = new HashSet<>();
-        
+
         int[] degreeMap = this.orderByDegreeAndTargeting();
-        
+
         int numberOfInitPremiums = (int) (params.nrAgents * (params.getInitialPercentagePremium())[0]);
 
         for (int i = 0; i < numberOfInitPremiums; i++) {
             initialPrems.add(degreeMap[i]);
         }
-        
+
         return initialPrems;
     }
-    
+
     private int[] orderByDegreeAndTargeting() {
-        
+
         int[] initialPrems = new int[params.nrAgents];
-        
+
         HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
-        
+
         int[] bestDegre = this.orderNodesByDegree();
         int[] bestTarg = this.orderNodesByTargeting();
 
@@ -661,14 +659,14 @@ public class Model extends SimState {
             int b = util.Functions.findIndex(bestTarg, i);
             map.put(i, a + b);
         }
-        
+
         int i = 0;
         for (Map.Entry<Integer, Integer> entry : util.Functions.sortHashMapByValue(map, false).entrySet()) {
             // System.out.println(entry.getKey() + " : " + entry.getValue());
             initialPrems[i] = entry.getKey();
             i++;
         }
-        
+
         return initialPrems;
     }
 
@@ -688,7 +686,7 @@ public class Model extends SimState {
 		}*/
         // selecting our seeded users at random is like setting 0 for the min no. of prem friends
         int minThresholdFriends;
-        
+
         if (params.getRewardApproach() == ModelParameters.RANDOM) {
             minThresholdFriends = 0;
         } else {
@@ -697,7 +695,7 @@ public class Model extends SimState {
 
         // clear rewarded prems from previous MC simulation runs
         this.initialNoPremsRewarded.clear();
-        
+
         double avgPremFriends = 0;
         for (int i = 0; i < params.nrAgents
                 && this.initialNoPremsRewarded.size() < params.getSeededUsers(); i++) {
@@ -705,39 +703,39 @@ public class Model extends SimState {
             // check if the agent is premium
             if (((GamerAgent) agents.get(i)).getSubscriptionState()
                     == Model.BASIC_USER) {
-                
+
                 ArrayList<Integer> neighbors = (ArrayList<Integer>) socialNetwork.getNeighborsOfNode(i);
 
                 // Iterate over neighbors
                 int noOfSubscribedFriends = 0;
                 for (int j = 0; j < neighbors.size(); j++) {
-                    
+
                     GamerAgent neighbor = (GamerAgent) agents.get(neighbors.get(j));
-                    
+
                     if (neighbor.getSubscriptionState() == Model.PREMIUM_USER) {
                         noOfSubscribedFriends++;
                     }
                 }
-                
+
                 if (params.getRewardApproach() == ModelParameters.LESS_LIKELY) {
 
                     // to get the least likely
                     if (noOfSubscribedFriends < minThresholdFriends) {
                         // add agent to the set
                         this.initialNoPremsRewarded.add(i);
-                        
+
                         avgPremFriends += noOfSubscribedFriends;
                     }
-                    
+
                 } else if (noOfSubscribedFriends >= minThresholdFriends) {
                     // add agent to the set
                     this.initialNoPremsRewarded.add(i);
-                    
+
                     avgPremFriends += noOfSubscribedFriends;
                 }
             }
         }
-        
+
         avgPremFriends = (double) avgPremFriends / this.initialNoPremsRewarded.size();
 
         //System.out.println("We have " + this.initialNoPremsRewarded.size() + " users with"
@@ -752,16 +750,16 @@ public class Model extends SimState {
      */
     private GamerAgent generateAgent(int nodeId, int state) {
         int segmentId;
-        
+
         segmentId = segment.assignSegment();
-        
+
         GamerAgent cl = new GamerAgent(nodeId, segmentId, state, params.getMaxDrivers(), MAX_STEPS, params.brands);
 
         // double r = this.random.nextGaussian();
         for (int j = 0; j < params.getMaxDrivers(); j++) {
             // generamos los valores de las preferencias dando una media y una desviación
             cl.setPreferences(j, util.Functions.nextGaussian(Model.getParametersObject().getPreferences()[j], this.random, Model.getParametersObject().getBrandStdev(), 0.0, 1.0));
-            
+
         }
         // calculamos la utilidad de cada agente para cada marca
         for (int brand = 0; brand < this.brands.length; brand++) {
@@ -769,10 +767,10 @@ public class Model extends SimState {
         }
 //        System.out.println(cl.getGamerAgentId() + "//" + Arrays.toString(cl.getPreferences()));
 //        System.out.println(cl.getGamerAgentId() + "//" + Arrays.toString(cl.getUtility()));
-        
+
         return cl;
     }
-    
+
     private void setAnonymousAgentApriori(int scheduleCounter) {
 
         // Add to the schedule at the end of each step
@@ -781,22 +779,22 @@ public class Model extends SimState {
              *
              */
             private static final long serialVersionUID = -2837885990121299044L;
-            
+
             public void step(SimState state) {
-                
+
                 int currentStep = (int) schedule.getSteps();
-                
+
                 for (int i = 0; i < params.brands; i++) {
                     Brand b = brands[i];
                     cumPurchases[b.getBrandId()][currentStep] = calcNrPurchasesOfBrand(b);
                     newPurchases[b.getBrandId()][currentStep] = 0;
                 }
-                
+
             }
         });
-        
+
     }
-    
+
     private void setAnonymousAgentAposteriori(int scheduleCounter) {
 
         // Add to the schedule at the end of each step
@@ -805,16 +803,16 @@ public class Model extends SimState {
              *
              */
             private static final long serialVersionUID = 3078492735754898981L;
-            
+
             public void step(SimState state) {
 
                 // refresh date
                 currentDay++;
-                
+
                 int currentStep = (int) schedule.getSteps();
-                
+
                 for (int i = 0; i < params.nrAgents; i++) {
-                    
+
                     int strategy = ((GamerAgent) agents.get(i)).getCurrentStratey(currentStep);
                     // System.out.println("Agente " + i + "estrategia " + strategy);
                     switch (strategy) {
@@ -833,59 +831,55 @@ public class Model extends SimState {
                         case DELIBERATION:
                             deliberation_strategy_Agents[currentStep]++;
                             break;
-                        
+
                     }
-                    
+
                     if (((GamerAgent) agents.get(i)).hasChangedStrategyAtStep(currentStep)) {
                         strategyChanges[currentStep]++;
                     }
                 }
-                
-            
-                
+
                 for (int i = 0; i < params.brands; i++) {
-                    
+
                     Brand b = brands[i];
-                    
+
                     if (currentStep == 0) {
-                        
+
                         int tempCum = cumPurchases[b.getBrandId()][currentStep];
-                        
+
                         cumPurchases[b.getBrandId()][currentStep] = calcNrPurchasesOfBrand(b);
-                        
+
                         newPurchases[b.getBrandId()][currentStep]
                                 = calcNrNewPurchases(tempCum, cumPurchases[b.getBrandId()][currentStep]);
-                        
+
                     } else {
-                        
+
                         int previousStep = currentStep - 1;
-                        
+
                         cumPurchases[b.getBrandId()][currentStep] = calcNrPurchasesOfBrand(b);
-                        
+
                         newPurchases[b.getBrandId()][currentStep]
                                 = calcNrNewPurchases(cumPurchases[b.getBrandId()][previousStep],
                                         cumPurchases[b.getBrandId()][currentStep]);
-                        
+
                     }
                 }
-                
-                
-                
+
             }
         });
-        
+
     }
-    
+
     private int calcNrInfectedPremiums() {
         int nrInfectedAgents = 0;
-        
+
         for (int i = 0; i < params.nrAgents; i++) {
             if (((GamerAgent) agents.get(i)).getSubscriptionState()
                     == Model.PREMIUM_USER) {
                 nrInfectedAgents++;
             }
         }
-        
+
         return nrInfectedAgents;
     }
 
@@ -896,9 +890,9 @@ public class Model extends SimState {
      * @return
      */
     private int calcNrPurchasesOfBrand(Brand brand) {
-        
+
         int res = 0;
-        
+
         for (int i = 0; i < params.nrAgents; i++) {
             int[] brandsPurchases = ((GamerAgent) agents.get(i)).getPurchasedBrands();
             for (int j = 0; j < brandsPurchases.length; j++) {
@@ -906,9 +900,9 @@ public class Model extends SimState {
                     res++;
                 }
             }
-            
+
         }
-        
+
         return res;
     }
 
@@ -921,20 +915,20 @@ public class Model extends SimState {
     private int calcNrNewPurchases(int NrNewPurchase,
             int NrCumPurchase) {
         int diffs;
-        
+
         diffs = NrCumPurchase - NrNewPurchase;
-        
+
         return diffs;
     }
 
     //----------------------------- I/O methods -----------------------------//
     public void printSumamryBrandScreen() {
-        
+
         System.out.println("Summary brands config \n*******************\n\n");
-        
+
         for (int i = 0; i < params.brands; i++) {
             Brand b = this.getBrands()[i];
-            
+
             System.out.print("Brand nº " + i + " :");
             System.out.println();
             System.out.print("  ID " + b.getBrandId());
@@ -943,11 +937,11 @@ public class Model extends SimState {
             System.out.println();
             System.out.print("  Name: " + b.name);
             System.out.println();
-            
+
         }
-        
+
         System.out.println("\n******************* \n\n");
-        
+
     }
-    
+
 }

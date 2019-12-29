@@ -23,3 +23,5 @@ nbdist/
 bin/*
 !build.xml
 bin/
+
+logs/
