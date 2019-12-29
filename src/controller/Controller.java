@@ -152,7 +152,6 @@ public class Controller {
                     break;
                 }
                 
-
             } while (model.schedule.getSteps() < maxSteps);
 
             this.newPurchasesArray = new int[getModelParameters().getBrands()][(int) maxSteps];

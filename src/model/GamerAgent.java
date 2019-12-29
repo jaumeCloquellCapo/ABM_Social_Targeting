@@ -100,6 +100,15 @@ public class GamerAgent implements Steppable {
         return this.purchasedBrands[_index];
     }
 
+    public int getLastPurchasedBrand() {
+        for (int i = 0; i < this.purchasedBrands.length; i++) {
+            if (this.purchasedBrands[i] != Model.NOT_PURCHASE) {
+                return this.purchasedBrands[i];
+            }
+        }
+        return Model.NOT_PURCHASE;
+    }
+
     public double[] getPreferences() {
         return preferences;
     }
@@ -1064,12 +1073,14 @@ public class GamerAgent implements Steppable {
             double[] biasedProductUtilities = this.BiasedProductUtility(state);
             double[] uncertaintyAboutDecisions = this.UncertaintyAboutDecision(state);
             double[] probs = new double[model.getParametersObject().brands];
+            int lastPurchase = this.getLastPurchasedBrand();
 
             if (subscriptionState == Model.PREMIUM_USER && this.currentStep <= 0) {
-                
+                // DO NOTHING
                 return;
-
-            } else if (this.currentStep == 0 || this.getPurchasedBrandsBySpecificStep(this.currentStep - 1) < 0) {
+            }
+            // si estamos en el step 0 o nunca hemos comprado nada, entonces aplicamos el modelo de deliberacion
+            if (this.currentStep == 0 || lastPurchase == Model.NOT_PURCHASE) {
 
                 this.setStrategy(this.currentStep, model.DELIBERATION);
                 probs = Deliberation(state, biasedProductUtilities);
@@ -1077,31 +1088,32 @@ public class GamerAgent implements Steppable {
                 this.setPurchasedBrands(this.currentStep, actualPurchase);
 
             } else {
+                
+                double Ui = biasedProductUtilities[lastPurchase];
+                double Unci = uncertaintyAboutDecisions[lastPurchase];
 
-                int lastPurchase = this.getPurchasedBrandsBySpecificStep(this.currentStep - 1);
-
-                if (biasedProductUtilities[lastPurchase] >= model.getParametersObject().getMinimunSatisfactionAgend() && uncertaintyAboutDecisions[lastPurchase] <= model.getParametersObject().getUncertaintyToleranceLevel()) {
+                if (Ui >= model.getParametersObject().getMinimunSatisfactionAgend() && Unci <= model.getParametersObject().getUncertaintyToleranceLevel()) {
                     //System.out.println("Repetition");
                     this.setStrategy(this.currentStep, model.REPETITION);
                     this.setPurchasedBrands(this.currentStep, lastPurchase);
                     actualPurchase = this.Repetition(state);
                     this.setPurchasedBrands(this.currentStep, actualPurchase);
 
-                } else if (biasedProductUtilities[lastPurchase] < model.getParametersObject().getMinimunSatisfactionAgend() && uncertaintyAboutDecisions[lastPurchase] <= model.getParametersObject().getUncertaintyToleranceLevel()) {
+                } else if (Ui < model.getParametersObject().getMinimunSatisfactionAgend() && Unci <= model.getParametersObject().getUncertaintyToleranceLevel()) {
                     //System.out.println("  Deliberation");
                     this.setStrategy(this.currentStep, model.DELIBERATION);
                     probs = Deliberation(state, biasedProductUtilities);
                     actualPurchase = obtainBrand(state, probs);
                     this.setPurchasedBrands(this.currentStep, actualPurchase);
 
-                } else if (biasedProductUtilities[lastPurchase] >= model.getParametersObject().getMinimunSatisfactionAgend() && uncertaintyAboutDecisions[lastPurchase] > model.getParametersObject().getUncertaintyToleranceLevel()) {
+                } else if (Ui >= model.getParametersObject().getMinimunSatisfactionAgend() && Unci > model.getParametersObject().getUncertaintyToleranceLevel()) {
                     // System.out.println("**Imitation");
                     this.setStrategy(this.currentStep, model.IMITATION);
                     probs = Imitation(state, this.getUtility());
                     actualPurchase = obtainBrand(state, probs);
                     this.setPurchasedBrands(this.currentStep, actualPurchase);
 
-                } else if (biasedProductUtilities[lastPurchase] < model.getParametersObject().getMinimunSatisfactionAgend() && uncertaintyAboutDecisions[lastPurchase] > model.getParametersObject().getUncertaintyToleranceLevel()) {
+                } else if (Ui < model.getParametersObject().getMinimunSatisfactionAgend() && Unci > model.getParametersObject().getUncertaintyToleranceLevel()) {
                     // System.out.println("--SocialComparison");
                     this.setStrategy(this.currentStep, model.SOCIALCOMPARISION);
                     probs = SocialComparison(state, biasedProductUtilities);
@@ -1109,11 +1121,11 @@ public class GamerAgent implements Steppable {
                     this.setPurchasedBrands(this.currentStep, actualPurchase);
 
                 } else {
-                    System.err.println("Ninguna estrategia: " + biasedProductUtilities[lastPurchase] + "  " + uncertaintyAboutDecisions[lastPurchase]);
+                    System.err.println("Ninguna estrategia: " + Ui + "  " + Unci);
                 }
 
             }
-            
+
             obtainNewFriend(state);
             loseExistingFriend(state);
 

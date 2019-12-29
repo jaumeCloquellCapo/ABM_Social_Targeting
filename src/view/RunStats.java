@@ -149,9 +149,10 @@ public class RunStats {
     public void calcAllStats() {
 
         for (int b = 0; b < this.brands; b++) {
-            DescriptiveStatistics purchasesBrands = new DescriptiveStatistics();
+            //DescriptiveStatistics purchasesBrands = new DescriptiveStatistics();
             // DescriptiveStatistics strategies = new DescriptiveStatistics();
             for (int j = 0; j < this.steps; j++) {
+                DescriptiveStatistics purchasesBrands = new DescriptiveStatistics();
                 for (int i = 0; i < this.runs; i++) {
                     purchasesBrands.addValue(this.data_purchases[i][b][j]);
                     // strategies.addValue(this.strategies[i][b][j]);

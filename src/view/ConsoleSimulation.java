@@ -136,7 +136,7 @@ public class ConsoleSimulation {
                 String PATH = "./logs/";
                 String outputFile = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
 
-                String directoryName = PATH.concat(seed + "_" + outputFile);
+                String directoryName = PATH.concat(outputFile);
 
                 // String fileName = id + getTimeStamp() + ".txt";
                 File directory = new File(directoryName);
@@ -178,25 +178,15 @@ public class ConsoleSimulation {
                     printWriter = new PrintWriter(TotalDeliberations);
                     stats.printTotalDeliberations(printWriter, true);
 
-                   
                     File source = new File(fileName);
                     File dest = new File(directoryName + "/configuration.properties");
-
-                    // copy file using FileStreams
-                    long start = System.nanoTime();
-                    long end;
-                   copyFileUsingFileStreams(source, dest);
-                    System.out.println("Time taken by FileStreams Copy = "
-                            + (System.nanoTime() - start));
-
-//                    printWriter = new PrintWriter(Configuration);
-//                    printWriter.write(controller.getModelParameters().export());
-//                    printWriter.close();
+                    copyFileUsingFileStreams(source, dest);
+                    
                 } catch (Exception e) {
                     System.err.println("Error write results: " + e.toString());
                 }
 
-                System.out.println(directoryName);
+                System.out.println(outputFile);
             }
 
         } else {
