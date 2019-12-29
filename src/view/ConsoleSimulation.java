@@ -96,11 +96,13 @@ public class ConsoleSimulation {
                     stats.setDataPurchases(i, j, controller.getNewPuchasesOfEveryBrand()[j]);
 
                 }
-                stats.setDeliberation_strategy_Agents(i, controller.getDeliberation_strategy_Agents());
-                stats.setImitation_strategy_Agents(i, controller.getImitation_strategy_Agents());
-                stats.setRepetition_strategy_Agents(i, controller.getRepetition_strategy_Agents());
-                stats.setSocial_strategy_Agents(i, controller.getSocial_strategy_Agents());
-                stats.setUtility_strategy_Agents(i, controller.getUtility_strategy_Agents());
+                for (int j = 0; j < maxSteps; j++) {
+                    stats.setDeliberation_strategy_Agents(i, j, (controller.getDeliberation_strategy_Agents())[j]);
+                    stats.setImitation_strategy_Agents(i, j, (controller.getImitation_strategy_Agents())[j]);
+                    stats.setRepetition_strategy_Agents(i, j, (controller.getRepetition_strategy_Agents())[j]);
+                    stats.setSocial_strategy_Agents(i, j, (controller.getSocial_strategy_Agents())[j]);
+                    stats.setUtility_strategy_Agents(i, j, (controller.getUtility_strategy_Agents())[j]);
+                }
 
 //                for (int j = 0; j < results2.length; j++) {;
 //                    stats.setDataPurchases(i, j, results2[j]);
@@ -181,7 +183,7 @@ public class ConsoleSimulation {
                     File source = new File(fileName);
                     File dest = new File(directoryName + "/configuration.properties");
                     copyFileUsingFileStreams(source, dest);
-                    
+
                 } catch (Exception e) {
                     System.err.println("Error write results: " + e.toString());
                 }

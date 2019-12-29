@@ -59,24 +59,24 @@ public class RunStats {
     private double max_utility[];
 
     // int strategyChanges[];		// array with the total number of evolutionStrategies changes during the simulation
-    public void setRepetition_strategy_Agents(int _run, int[] _data) {
-        this.repetition_strategy_Agents[_run] = _data;
+    public void setRepetition_strategy_Agents(int _run, int _step, int _data) {
+        this.repetition_strategy_Agents[_run][_step] = _data;
     }
 
-    public void setDeliberation_strategy_Agents(int _run, int[] _data) {
-        this.deliberation_strategy_Agents[_run] = _data;
+    public void setDeliberation_strategy_Agents(int _run, int _step, int _data) {
+        this.deliberation_strategy_Agents[_run][_step] = _data;
     }
 
-    public void setImitation_strategy_Agents(int _run, int[] _data) {
-        this.imitation_strategy_Agents[_run] = _data;
+    public void setImitation_strategy_Agents(int _run, int _step, int _data) {
+        this.imitation_strategy_Agents[_run][_step] = _data;
     }
 
-    public void setSocial_strategy_Agents(int _run, int[] _data) {
-        this.social_strategy_Agents[_run] = _data;
+    public void setSocial_strategy_Agents(int _run, int _step, int _data) {
+        this.social_strategy_Agents[_run][_step] = _data;
     }
 
-    public void setUtility_strategy_Agents(int _run, int[] _data) {
-        this.utility_strategy_Agents[_run] = _data;
+    public void setUtility_strategy_Agents(int _run, int _step, int _data) {
+        this.utility_strategy_Agents[_run][_step] = _data;
     }
 
     public int getRuns() {

@@ -30,7 +30,7 @@ public class GamerAgent implements Steppable {
 
     // ------------------------------- Dynamic -------------------------------//
     // Current state of the user (premium, free or non user (initialization))
-    int subscriptionState = Model.NON_USER;
+    int subscriptionState;
 
     double[] preferences;
 
@@ -101,12 +101,21 @@ public class GamerAgent implements Steppable {
     }
 
     public int getLastPurchasedBrand() {
-        for (int i = 0; i < this.purchasedBrands.length; i++) {
-            if (this.purchasedBrands[i] != Model.NOT_PURCHASE) {
-                return this.purchasedBrands[i];
+        int last = Model.NOT_PURCHASE;
+        for (int i = 1; i <= this.currentStep; i++) {
+            if (this.purchasedBrands[this.currentStep - i] != Model.NOT_PURCHASE) {
+                last = this.purchasedBrands[i];
+                break;
             }
         }
-        return Model.NOT_PURCHASE;
+
+        return last;
+//        if (this.currentStep > 0) {
+//            return this.purchasedBrands[this.currentStep -1];
+//        } else {
+//            return Model.NOT_PURCHASE;
+//        }
+
     }
 
     public double[] getPreferences() {
@@ -1078,9 +1087,8 @@ public class GamerAgent implements Steppable {
             if (subscriptionState == Model.PREMIUM_USER && this.currentStep <= 0) {
                 // DO NOTHING
                 return;
-            }
-            // si estamos en el step 0 o nunca hemos comprado nada, entonces aplicamos el modelo de deliberacion
-            if (this.currentStep == 0 || lastPurchase == Model.NOT_PURCHASE) {
+            } else if (this.currentStep == 0 || lastPurchase == Model.NOT_PURCHASE) {
+                // si estamos en el step 0 o nunca hemos comprado nada, entonces aplicamos el modelo de deliberacion
 
                 this.setStrategy(this.currentStep, model.DELIBERATION);
                 probs = Deliberation(state, biasedProductUtilities);
@@ -1088,7 +1096,7 @@ public class GamerAgent implements Steppable {
                 this.setPurchasedBrands(this.currentStep, actualPurchase);
 
             } else {
-                
+
                 double Ui = biasedProductUtilities[lastPurchase];
                 double Unci = uncertaintyAboutDecisions[lastPurchase];
 
