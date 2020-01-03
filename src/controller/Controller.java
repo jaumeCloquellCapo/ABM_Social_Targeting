@@ -144,7 +144,7 @@ public class Controller {
             time1 = System.currentTimeMillis();
         }
 
-        try {
+//        try {
 
             do {
 
@@ -180,11 +180,11 @@ public class Controller {
 
             model.finish();
 
-        } catch (Exception e) {
-
-            System.err.println("Controller: Error when running model, execution is aborted.\n"
-                    + e.getMessage());
-        }
+//        } catch (Exception e) {
+//
+//            System.err.println("Controller: Error when running model, execution is aborted.\n"
+//                    + e.getMessage());
+//        }
 
         if (CalibrationController.DEBUG_CALIB) {
             time2 = System.currentTimeMillis();

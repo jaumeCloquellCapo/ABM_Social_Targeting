@@ -768,6 +768,15 @@ public class Model extends SimState {
         for (int brand = 0; brand < this.params.brands; brand++) {
             cl.setUtility(brand, util.Functions.utilityFunction(this.getBrands()[brand].getDrivers(), cl.getPreferences()));
         }
+        for (int brand = 0; brand < this.params.brands; brand++) {
+            double p = this.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE);
+             cl.calcAwarenessProduct(p, 0, brand);
+        }
+        
+        for (int brand = 0; brand < this.params.brands; brand++) {
+            double p = this.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE);
+            cl.calcAwarenessDifussion(p, 0, brand);
+        }
 
         return cl;
     }

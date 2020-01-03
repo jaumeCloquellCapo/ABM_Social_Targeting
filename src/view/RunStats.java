@@ -383,7 +383,7 @@ public class RunStats {
         csvData.append(';');
         csvData.append(Arrays.stream(this.avg_deliberation).sum());
         csvData.append('\n');
-        csvData.append("Model.IMITATION");
+        csvData.append("IMITATION");
         csvData.append(';');
         csvData.append(Arrays.stream(this.avg_imitation).sum());
         csvData.append('\n');
