@@ -14,6 +14,8 @@ import org.jfree.data.xy.*;
 
 import calibration.CalibrationStats;
 import calibration.HistoricalData;
+import java.awt.Color;
+import java.util.Random;
 import sim.portrayal.*;
 import sim.util.Bag;
 import sim.util.media.chart.*;
@@ -169,6 +171,23 @@ public class GUISimulation extends GUIState {
         c.registerFrame(chartFrame2);
 
     }
+    
+    public Color generateRandomColor(Color mix) {
+    Random random = new Random();
+    int red = random.nextInt(256);
+    int green = random.nextInt(256);
+    int blue = random.nextInt(256);
+
+    // mix the color
+    if (mix != null) {
+        red = (red + mix.getRed()) / 2;
+        green = (green + mix.getGreen()) / 2;
+        blue = (blue + mix.getBlue()) / 2;
+    }
+
+    Color color = new Color(red, green, blue);
+    return color;
+}
 
     /**
      * Starts the simulation.
@@ -200,7 +219,8 @@ public class GUISimulation extends GUIState {
             series[i] = SeriesTmp;
             TimeSeriesAttributes TSAttributes
                     = (TimeSeriesAttributes) chart.addSeries(series[i], null);
-            TSAttributes.setStrokeColor(col.getPaletteColor(i * 2));
+            
+            TSAttributes.setStrokeColor(col.getPaletteColor(i));
         }
 
         for (int i = 0; i < series2.length; i++) {
@@ -208,7 +228,7 @@ public class GUISimulation extends GUIState {
             series2[i] = SeriesTmp;
             TimeSeriesAttributes TSAttributes
                     = (TimeSeriesAttributes) chart2.addSeries(series2[i], null);
-            TSAttributes.setStrokeColor(col.getPaletteColor(i * 2));
+            TSAttributes.setStrokeColor(col.getPaletteColor(i));
         }
 
         // Schedules a Steppable to be stepped immediately after 
@@ -224,6 +244,7 @@ public class GUISimulation extends GUIState {
                 if (showSocialNetwork) {
                     // first, re-paint the nodes of the graph stream
                     Bag agents = model.getAgents();
+                    
                     for (int i = 0; i < agents.size(); i++) {
 
                         GamerAgent gamer = ((GamerAgent) agents.get(i));

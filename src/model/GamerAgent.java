@@ -41,7 +41,7 @@ public class GamerAgent implements Steppable {
 
     int awarenessDifusion[][];
 
-    ArrayList<Integer> productIndexAwaness;
+    ArrayList<Integer> productIndexAwareness;
 
     // ########################################################################
     // Constructors
@@ -65,7 +65,7 @@ public class GamerAgent implements Steppable {
         this.evolutionStrategies = new int[_maxSteps];
         this.productAwaness = new int[_brands][_maxSteps];
         this.awarenessDifusion = new int[_brands][_maxSteps];
-        this.productIndexAwaness = new ArrayList<Integer>();
+        this.productIndexAwareness = new ArrayList<Integer>();
 
         for (int i = 0; i < _maxSteps; i++) {
             this.purchasedBrands[i] = Model.NOT_PURCHASE;
@@ -122,7 +122,6 @@ public class GamerAgent implements Steppable {
     }
 
     public void setPurchasedBrands(int _index, int brandId) {
-//        System.out.println("setPurchasedBrands ==> " + brandId);
         this.purchasedBrands[_index] = brandId;
     }
 
@@ -131,20 +130,20 @@ public class GamerAgent implements Steppable {
     }
 
     public int getLastPurchasedBrand() {
-//        int last = Model.NOT_PURCHASE;
-//        for (int i = this.currentStep - 1; i >= 0; i--) {
-//            if (this.purchasedBrands[i] != Model.NOT_PURCHASE) {
-//                last = this.purchasedBrands[i];
-//                break;
-//            }
-//        }
-//
-//        return last;
-        if (this.currentStep > 0) {
-            return this.purchasedBrands[this.currentStep - 1];
-        } else {
-            return Model.NOT_PURCHASE;
+        int last = Model.NOT_PURCHASE;
+        for (int i = this.currentStep - 1; i >= 0; i--) {
+            if (this.purchasedBrands[i] != Model.NOT_PURCHASE) {
+                last = this.purchasedBrands[i];
+                break;
+            }
         }
+
+        return last;
+//        if (this.currentStep > 0) {
+//            return this.purchasedBrands[this.currentStep - 1];
+//        } else {
+//            return Model.NOT_PURCHASE;
+//        }
 
     }
 
@@ -728,15 +727,15 @@ public class GamerAgent implements Steppable {
     public Boolean Deliberation(SimState state, double[] biasedProductsUtilities) {
         Model model = (Model) state;
 
-        double result[] = new double[this.productIndexAwaness.size()];
+        double result[] = new double[this.productIndexAwareness.size()];
 
-        for (int i = 0; i < this.productIndexAwaness.size(); i++) {
+        for (int i = 0; i < this.productIndexAwareness.size(); i++) {
 
             result[i] = util.Functions.deliberationFunction(biasedProductsUtilities[i], biasedProductsUtilities);
         }
 
         int _position = obtainBrand(state, result);
-        this.setPurchasedBrands(this.currentStep, this.productIndexAwaness.get(_position));
+        this.setPurchasedBrands(this.currentStep, this.productIndexAwareness.get(_position));
 
         return true;
 
@@ -751,16 +750,16 @@ public class GamerAgent implements Steppable {
     public Boolean Imitation(SimState state, double[] utilities) {
         Model model = (Model) state;
 
-        double result[] = new double[this.productIndexAwaness.size()];
+        double result[] = new double[this.productIndexAwareness.size()];
 
-        for (int i = 0; i < this.productIndexAwaness.size(); i++) {
+        for (int i = 0; i < this.productIndexAwareness.size(); i++) {
 
             result[i] = util.Functions.imitationFunction(utilities[i], utilities);
         }
 
         int actualPurchase = obtainBrand(state, result);
 
-        this.setPurchasedBrands(this.currentStep, this.productIndexAwaness.get(actualPurchase));
+        this.setPurchasedBrands(this.currentStep, this.productIndexAwareness.get(actualPurchase));
 
         return true;
 
@@ -778,7 +777,7 @@ public class GamerAgent implements Steppable {
 
 //        double[] biasedProductsUtilities = this.BiasedProductUtility(model);
         // Arrayq que utilizaremos para ver que productos no ha comprado nadie
-//        Boolean[] purchasedBrands = new Boolean[this.productIndexAwaness.size()];
+//        Boolean[] purchasedBrands = new Boolean[this.productIndexAwareness.size()];
 //
 //        Arrays.fill(purchasedBrands, Boolean.FALSE);
         ArrayList<Integer> subProductIndex = new ArrayList<Integer>();
@@ -791,7 +790,7 @@ public class GamerAgent implements Steppable {
 
             int lastPurchase = neighbor.getLastPurchasedBrand();
 
-            if (!subProductIndex.contains(lastPurchase) && this.productIndexAwaness.contains(lastPurchase) && lastPurchase != Model.NOT_PURCHASE && neighbor.getAwarenessDifusion(lastPurchase, this.currentStep) == Model.DIFUSSIONAWARENESS) {
+            if (!subProductIndex.contains(lastPurchase) && this.productIndexAwareness.contains(lastPurchase) && lastPurchase != Model.NOT_PURCHASE && neighbor.getAwarenessDifusion(lastPurchase, this.currentStep) == Model.DIFUSSIONAWARENESS) {
                 subProductIndex.add(lastPurchase);
             }
 
@@ -828,11 +827,11 @@ public class GamerAgent implements Steppable {
 
         Model model = (Model) state;
 
-        double biasedProductUtility[] = new double[this.productIndexAwaness.size()];
+        double biasedProductUtility[] = new double[this.productIndexAwareness.size()];
 
-        for (int i : this.productIndexAwaness) {
+        for (int i : this.productIndexAwareness) {
 
-            int index = this.productIndexAwaness.indexOf(i);
+            int index = this.productIndexAwareness.indexOf(i);
 
             double fractionDirectContactsPurchaseBrand = this.fractionDirectContactsPurchaseBrand(state, i);
 
@@ -853,11 +852,11 @@ public class GamerAgent implements Steppable {
 
         Model model = (Model) state;
 
-        double uncertaintyAboutDecision[] = new double[this.productIndexAwaness.size()];
+        double uncertaintyAboutDecision[] = new double[this.productIndexAwareness.size()];
 
-        for (int i : this.productIndexAwaness) {
+        for (int i : this.productIndexAwareness) {
 
-            int index = this.productIndexAwaness.indexOf(i);
+            int index = this.productIndexAwareness.indexOf(i);
 
             double fractionDirectContactsNotPurchaseBrand = this.fractionDirectContactsNotPurchaseBrand(state, i);
 
@@ -1106,6 +1105,7 @@ public class GamerAgent implements Steppable {
     }
 
     public void calcAwarenessProduct(Double r, int _step, int _brand) {
+
         this.setProductAwaness(_brand, _step, 0);
         if (r < Model.params.awarenessDecay) {
             this.setProductAwaness(_brand, _step, Model.PRODUCTAWARENESS);
@@ -1144,6 +1144,45 @@ public class GamerAgent implements Steppable {
 
     }
 
+    public void calcAwarenessForNextStep(SimState state) {
+        Model model = (Model) state;
+
+        int lastPurchase = this.getLastPurchasedBrand();
+        // actualizamos los productos que el agente tendra conocimiento de que existen en el siguiente step
+        int nextStep = this.currentStep + 1;
+
+        for (int i = 0; i < Model.params.brands; i++) {
+            this.calcAwarenessProduct(model.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE), nextStep, i);
+            this.calcAwarenessDifussion(model.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE), nextStep, i);
+        }
+
+        // guardamos la ultima compra o la actual para el siguiente step
+        if (this.purchasedBrands[this.currentStep] != Model.NOT_PURCHASE) {
+            this.setProductAwaness(this.purchasedBrands[this.currentStep], nextStep, Model.PRODUCTAWARENESS);
+            this.setAwarenessDifusion(this.purchasedBrands[this.currentStep], nextStep, Model.DIFUSSIONAWARENESS);
+        } else if (lastPurchase != Model.NOT_PURCHASE) {
+            this.setProductAwaness(lastPurchase, nextStep, Model.PRODUCTAWARENESS);
+            this.setAwarenessDifusion(lastPurchase, nextStep, Model.DIFUSSIONAWARENESS);
+        }
+    }
+
+    public void getProductAwarenessForThisStep() {
+        int lastPurchase = this.getLastPurchasedBrand();
+        this.productIndexAwareness.clear();
+
+        // seleccionamos el subconjunto de producto que tenemos conocimiento que existen
+        for (int i = 0; i < Model.params.brands; i++) {
+            if (this.getProductAwaness(i, currentStep) == Model.PRODUCTAWARENESS) {
+                this.productIndexAwareness.add(i);
+            }
+        }
+
+        if (lastPurchase != Model.NOT_PURCHASE && !this.productIndexAwareness.contains(lastPurchase)) {
+            System.err.println("La ultima compra no esta dentro de los productos conocidos");
+
+        }
+    }
+
     // --------------------------- Steppable method --------------------------//
     /**
      * Step of the simulation (equals to a day of iteration).
@@ -1158,80 +1197,67 @@ public class GamerAgent implements Steppable {
         currentStep = (int) model.schedule.getSteps();
 
         int lastPurchase = this.getLastPurchasedBrand();
+        
+        this.getProductAwarenessForThisStep();
 
-        this.productIndexAwaness.clear();
+        // Check to play
+        if (this.playToday(state)) {
 
-        // añadimos la ultima compra como producto awareness y difusion awareness
-        for (int i = 0; i < Model.params.brands; i++) {
-            if (this.getProductAwaness(i, this.currentStep) == Model.PRODUCTAWARENESS) {
-                this.productIndexAwaness.add(i);
-            }
-        }
+            // Comprobamos que tenemos conocimiento de algun producto
+            if (this.productIndexAwareness.size() > 0) {
 
-        // si nos toca jugar y tenemos conocimiento de algun producto
-        if (this.playToday(state) && this.productIndexAwaness.size() > 0) {
+                double[] biasedProductUtilities = this.BiasedProductUtility(state);
 
-            double[] biasedProductUtilities = this.BiasedProductUtility(state);
+                double[] uncertaintyAboutDecisions = this.UncertaintyAboutDecision(state);
 
-            double[] uncertaintyAboutDecisions = this.UncertaintyAboutDecision(state);
-
-//            System.out.println("lastPurchase " + lastPurchase);
-            if (subscriptionState == Model.PREMIUM_USER && this.currentStep <= 0) {
-                // DO NOTHING
-                return;
-            } else if (lastPurchase == Model.NOT_PURCHASE) {
-                // si nunca hemos comprado nada, entonces solo nos basamos en la utilidad del subconjunto de productos que tenemos conocimiento
-
-//                Boolean changed = Deliberation(state, biasedProductUtilities);
-//                if (changed) {
-//                    this.setStrategy(this.currentStep, model.DELIBERATION);
-//                }
-                double[] auxUtility = new double[this.productIndexAwaness.size()];
-
-                for (int i = 0; i < this.productIndexAwaness.size(); i++) {
-
-                    auxUtility[i] = this.utility[this.productIndexAwaness.get(i)];
-                }
-
-                int _position = obtainBrand(state, auxUtility);
-
-                this.setPurchasedBrands(this.currentStep, this.productIndexAwaness.get(_position));
-
-            } else {
-
-                int posLastPurchase = this.productIndexAwaness.indexOf(lastPurchase);
-
-                double Ui = biasedProductUtilities[posLastPurchase];
-
-                double Unci = uncertaintyAboutDecisions[posLastPurchase];
-
-                if (Ui >= model.getParametersObject().getMinimunSatisfactionAgend() && Unci <= model.getParametersObject().getUncertaintyToleranceLevel()) {
-
-                    this.setStrategy(this.currentStep, model.REPETITION);
-                    this.Repetition(state);
-
-                } else if (Ui < model.getParametersObject().getMinimunSatisfactionAgend() && Unci <= model.getParametersObject().getUncertaintyToleranceLevel()) {
-                    Boolean changed = Deliberation(state, biasedProductUtilities);
-                    if (changed) {
-                        this.setStrategy(this.currentStep, model.DELIBERATION);
+                if (subscriptionState == Model.PREMIUM_USER && this.currentStep <= 0) {
+                    // Los influencers no pueden comprar en el step 0 ya que tiene un regalo
+                    return;
+                    
+                } else if (lastPurchase == Model.NOT_PURCHASE) {
+                    // si nunca hemos comprado nada, entonces solo nos basamos en la utilidad del subconjunto de productos que tenemos conocimiento, no nos basamos en nuestra satisfacción
+                    double[] auxUtility = new double[this.productIndexAwareness.size()];
+                    for (int i = 0; i < this.productIndexAwareness.size(); i++) {
+                        auxUtility[i] = this.utility[this.productIndexAwareness.get(i)];
                     }
-
-                } else if (Ui >= model.getParametersObject().getMinimunSatisfactionAgend() && Unci > model.getParametersObject().getUncertaintyToleranceLevel()) {
-                    Boolean changed = Imitation(state, this.getUtility());
-                    if (changed) {
-                        this.setStrategy(this.currentStep, model.IMITATION);
-                    }
-
-                } else if (Ui < model.getParametersObject().getMinimunSatisfactionAgend() && Unci > model.getParametersObject().getUncertaintyToleranceLevel()) {
-                    Boolean changed = SocialComparison(state, biasedProductUtilities);
-                    if (changed) {
-                        this.setStrategy(this.currentStep, model.SOCIALCOMPARISION);
-                    }
+                    int _position = obtainBrand(state, auxUtility);
+                    this.setPurchasedBrands(this.currentStep, this.productIndexAwareness.get(_position));
 
                 } else {
-                    System.err.println("Ninguna estrategia: " + Ui + "  " + Unci);
-                }
+                    int posLastPurchase = this.productIndexAwareness.indexOf(lastPurchase);
 
+                    double Ui = biasedProductUtilities[posLastPurchase];
+
+                    double Unci = uncertaintyAboutDecisions[posLastPurchase];
+
+                    if (Ui >= model.getParametersObject().getMinimunSatisfactionAgend() && Unci <= model.getParametersObject().getUncertaintyToleranceLevel()) {
+
+                        this.setStrategy(this.currentStep, model.REPETITION);
+                        this.Repetition(state);
+
+                    } else if (Ui < model.getParametersObject().getMinimunSatisfactionAgend() && Unci <= model.getParametersObject().getUncertaintyToleranceLevel()) {
+                        Boolean changed = Deliberation(state, biasedProductUtilities);
+                        if (changed) {
+                            this.setStrategy(this.currentStep, model.DELIBERATION);
+                        }
+
+                    } else if (Ui >= model.getParametersObject().getMinimunSatisfactionAgend() && Unci > model.getParametersObject().getUncertaintyToleranceLevel()) {
+                        Boolean changed = Imitation(state, this.getUtility());
+                        if (changed) {
+                            this.setStrategy(this.currentStep, model.IMITATION);
+                        }
+
+                    } else if (Ui < model.getParametersObject().getMinimunSatisfactionAgend() && Unci > model.getParametersObject().getUncertaintyToleranceLevel()) {
+                        Boolean changed = SocialComparison(state, biasedProductUtilities);
+                        if (changed) {
+                            this.setStrategy(this.currentStep, model.SOCIALCOMPARISION);
+                        }
+
+                    } else {
+                        System.err.println("Ninguna estrategia: " + Ui + "  " + Unci);
+                    }
+
+                }
             }
 
             obtainNewFriend(state);
@@ -1239,17 +1265,7 @@ public class GamerAgent implements Steppable {
 
         }
 
-        int nextStep = this.currentStep + 1;
-        for (int i = 0; i < Model.params.brands; i++) {
-            this.calcAwarenessProduct(model.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE), nextStep, i);
-            this.calcAwarenessDifussion(model.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE), nextStep, i);
-        }
-
-        if (this.purchasedBrands[this.currentStep] != Model.NOT_PURCHASE) {
-            this.setProductAwaness(this.purchasedBrands[this.currentStep], nextStep, Model.PRODUCTAWARENESS);
-            this.setAwarenessDifusion(this.purchasedBrands[this.currentStep], nextStep, Model.DIFUSSIONAWARENESS);
-        }
+        this.calcAwarenessForNextStep(state);
 
     }
-
 }

@@ -512,6 +512,10 @@ public class Model extends SimState {
                 gamerAgend.setSubscriptionState(Model.PREMIUM_USER);
                 // Regalamos en el step 0 el producto al influencer seleccionado
                 gamerAgend.setPurchasedBrands(0, params.getBrandToGive());
+
+                // Le permitimos al agente hablar del producto
+                gamerAgend.setProductAwaness(params.getBrandToGive(), 0, PRODUCTAWARENESS);
+                gamerAgend.setAwarenessDifusion(params.getBrandToGive(), 0, DIFUSSIONAWARENESS);
             }
 
         }
@@ -768,11 +772,14 @@ public class Model extends SimState {
         for (int brand = 0; brand < this.params.brands; brand++) {
             cl.setUtility(brand, util.Functions.utilityFunction(this.getBrands()[brand].getDrivers(), cl.getPreferences()));
         }
+
+        // seleccionamos aleatoriamente un subconjunto de productos
         for (int brand = 0; brand < this.params.brands; brand++) {
             double p = this.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE);
-             cl.calcAwarenessProduct(p, 0, brand);
+            cl.calcAwarenessProduct(p, 0, brand);
         }
-        
+
+        // De los productos que conocemos asignamos cuales de ellos vamos a poder hablar con el resto de agentes
         for (int brand = 0; brand < this.params.brands; brand++) {
             double p = this.random.nextDouble(Model.INCLUDEZERO, Model.INCLUDEONE);
             cl.calcAwarenessDifussion(p, 0, brand);
@@ -929,29 +936,6 @@ public class Model extends SimState {
         diffs = NrCumPurchase - NrNewPurchase;
 
         return diffs;
-    }
-
-    //----------------------------- I/O methods -----------------------------//
-    public void printSumamryBrandScreen() {
-
-        System.out.println("Summary brands config \n*******************\n\n");
-
-        for (int i = 0; i < params.brands; i++) {
-            Brand b = this.getBrands()[i];
-
-            System.out.print("Brand nº " + i + " :");
-            System.out.println();
-            System.out.print("  ID " + b.getBrandId());
-            System.out.println();
-            System.out.print("  Drivers nº " + Arrays.toString(b.getDrivers()));
-            System.out.println();
-            System.out.print("  Name: " + b.name);
-            System.out.println();
-
-        }
-
-        System.out.println("\n******************* \n\n");
-
     }
 
 }

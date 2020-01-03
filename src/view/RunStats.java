@@ -360,7 +360,7 @@ public class RunStats {
 
         for (int b = 0; b < this.brands; b++) {
 
-            csvData.append(b);
+            csvData.append("Brand " + b);
             csvData.append(';');
             csvData.append(Arrays.stream(this.avg_purchases[b]).sum());
             csvData.append('\n');
