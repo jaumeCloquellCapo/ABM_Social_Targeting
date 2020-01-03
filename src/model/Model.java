@@ -46,6 +46,9 @@ public class Model extends SimState {
     public static final int SOCIALCOMPARISION = 5;
     public static final int UTILITY = 1;
 
+    public static final int PRODUCTAWARENESS = 1;
+    public static final int DIFUSSIONAWARENESS = 1;
+
     public static int NOT_PURCHASE = -1;
 
     // LOGGING
@@ -755,18 +758,16 @@ public class Model extends SimState {
 
         GamerAgent cl = new GamerAgent(nodeId, segmentId, state, params.getMaxDrivers(), MAX_STEPS, params.brands);
 
-        // double r = this.random.nextGaussian();
+        // generamos los valores de las preferencias dando una media y una desviación
         for (int j = 0; j < params.getMaxDrivers(); j++) {
-            // generamos los valores de las preferencias dando una media y una desviación
             cl.setPreferences(j, util.Functions.nextGaussian(Model.getParametersObject().getPreferences()[j], this.random, Model.getParametersObject().getBrandStdev(), 0.0, 1.0));
 
         }
-        // calculamos la utilidad de cada agente para cada marca
-        for (int brand = 0; brand < this.brands.length; brand++) {
+
+        // calculamos la utilidad de cada agente para cada marca y inicializamos awareness diffusion y product awareness
+        for (int brand = 0; brand < this.params.brands; brand++) {
             cl.setUtility(brand, util.Functions.utilityFunction(this.getBrands()[brand].getDrivers(), cl.getPreferences()));
         }
-//        System.out.println(cl.getGamerAgentId() + "//" + Arrays.toString(cl.getPreferences()));
-//        System.out.println(cl.getGamerAgentId() + "//" + Arrays.toString(cl.getUtility()));
 
         return cl;
     }

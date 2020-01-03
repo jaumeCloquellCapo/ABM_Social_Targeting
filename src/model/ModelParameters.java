@@ -135,9 +135,28 @@ public class ModelParameters {
 
     double socialPeerfInfluence;
 
+    double awarenessDecay;
+    double awarenessDifusion;
+
     // --------------------------- Get/Set methods ---------------------------//
     public double getSocialPeerfInfluence() {
         return socialPeerfInfluence;
+    }
+
+    public double getAwarenessDecay() {
+        return awarenessDecay;
+    }
+
+    public void setAwarenessDecay(double awarenessDecay) {
+        this.awarenessDecay = awarenessDecay;
+    }
+
+    public double getAwarenessDifusion() {
+        return awarenessDifusion;
+    }
+
+    public void setAwarenessDifusion(double awarenessDifusion) {
+        this.awarenessDifusion = awarenessDifusion;
     }
 
     public void setSocialPeerfInfluence(double socialPeerfInfluence) {
@@ -1013,6 +1032,10 @@ public class ModelParameters {
 
             setSocialPeerfInfluence(this.socialPeerfInfluence = config.getParameterDouble("socialPeerfInfluence"));
             
+            setAwarenessDecay(this.awarenessDecay = config.getParameterDouble("awarenessDecay"));
+            
+            setAwarenessDifusion(this.awarenessDifusion = config.getParameterDouble("awarenessDifusion"));
+
             this.brandName = new String[this.brands];
 
             this.preferences = new double[this.maxDrivers];
