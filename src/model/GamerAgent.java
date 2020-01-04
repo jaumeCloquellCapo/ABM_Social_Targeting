@@ -772,45 +772,48 @@ public class GamerAgent implements Steppable {
      * @param biasedProductsUtilities
      * @return product ID
      */
-    public Boolean SocialComparison(SimState state, double[] biasedProductsUtilities) {
+    public Boolean SocialComparison(SimState state) {
+
         Model model = (Model) state;
 
-//        double[] biasedProductsUtilities = this.BiasedProductUtility(model);
-        // Arrayq que utilizaremos para ver que productos no ha comprado nadie
-//        Boolean[] purchasedBrands = new Boolean[this.productIndexAwareness.size()];
-//
-//        Arrays.fill(purchasedBrands, Boolean.FALSE);
         ArrayList<Integer> subProductIndex = new ArrayList<Integer>();
 
         ArrayList<Integer> neighbors = (ArrayList<Integer>) model.socialNetwork.getNeighborsOfNode(this.gamerAgentId);
-        int total = 0;
+        
         // miramos entre todos mis vecinos que productos han comprado
         for (int i = 0; i < neighbors.size(); i++) {
             GamerAgent neighbor = (GamerAgent) (model.getAgents()).get(neighbors.get(i));
 
             int lastPurchase = neighbor.getLastPurchasedBrand();
 
-            if (!subProductIndex.contains(lastPurchase) && this.productIndexAwareness.contains(lastPurchase) && lastPurchase != Model.NOT_PURCHASE && neighbor.getAwarenessDifusion(lastPurchase, this.currentStep) == Model.DIFUSSIONAWARENESS) {
+            if (!subProductIndex.contains(lastPurchase) && lastPurchase != Model.NOT_PURCHASE && neighbor.getAwarenessDifusion(lastPurchase, this.currentStep) == Model.DIFUSSIONAWARENESS) {
                 subProductIndex.add(lastPurchase);
             }
-
         }
-
+        
+        // Si ningun vecino ha comprado nada, nosotros tampoco
         if (subProductIndex.size() <= 0) {
             return false;
         }
-
+        
+        double biasedProductsUtilities[] = new double[subProductIndex.size()];
         double result[] = new double[subProductIndex.size()];
-
+        
+        //Duplicamos el códgo de deliberation para que solo utilize los productos comprados por los vecinos
+        
+        for (int i : subProductIndex) {
+            int index = subProductIndex.indexOf(i);
+            double fractionDirectContactsPurchaseBrand = this.fractionDirectContactsPurchaseBrand(state, i);
+            biasedProductsUtilities[index] = util.Functions.biasedProductUtilityFunction(this.utility[i], fractionDirectContactsPurchaseBrand, model.getParametersObject().getSocialPeerfInfluence());
+        };
+        
         // Solo de los productos que han comprado mis vecinos, calculo la utilidad
-        for (int i = 0; i < subProductIndex.size(); i++) {
-//            System.out.println(i + "--" + biasedProductsUtilities.length);
+        for (int brand : subProductIndex) {
+            int i = subProductIndex.indexOf(brand);
             result[i] = util.Functions.socialComparisonFunction(biasedProductsUtilities[i], biasedProductsUtilities);
         }
-
-        // Return the sum of all the values calculated
+        
         int actualPurchase = obtainBrand(state, result);
-
         this.setPurchasedBrands(this.currentStep, subProductIndex.get(actualPurchase));
 
         return true;
@@ -1197,7 +1200,7 @@ public class GamerAgent implements Steppable {
         currentStep = (int) model.schedule.getSteps();
 
         int lastPurchase = this.getLastPurchasedBrand();
-        
+
         this.getProductAwarenessForThisStep();
 
         // Check to play
@@ -1212,8 +1215,8 @@ public class GamerAgent implements Steppable {
 
                 if (subscriptionState == Model.PREMIUM_USER && this.currentStep <= 0) {
                     // Los influencers no pueden comprar en el step 0 ya que tiene un regalo
-                    return;
-                    
+                
+
                 } else if (lastPurchase == Model.NOT_PURCHASE) {
                     // si nunca hemos comprado nada, entonces solo nos basamos en la utilidad del subconjunto de productos que tenemos conocimiento, no nos basamos en nuestra satisfacción
                     double[] auxUtility = new double[this.productIndexAwareness.size()];
@@ -1248,7 +1251,7 @@ public class GamerAgent implements Steppable {
                         }
 
                     } else if (Ui < model.getParametersObject().getMinimunSatisfactionAgend() && Unci > model.getParametersObject().getUncertaintyToleranceLevel()) {
-                        Boolean changed = SocialComparison(state, biasedProductUtilities);
+                        Boolean changed = SocialComparison(state);
                         if (changed) {
                             this.setStrategy(this.currentStep, model.SOCIALCOMPARISION);
                         }
