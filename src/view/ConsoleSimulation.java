@@ -34,7 +34,7 @@ public class ConsoleSimulation {
             // RUNNING SA 
             SensitivityAnalysis.run(args);
 
-        } else if (args.length == 9) {
+        } else if (args.length == 10) {
 
             Controller controller = null;
 
@@ -90,6 +90,7 @@ public class ConsoleSimulation {
             RunStats stats = new RunStats(NRUNS, (int) maxSteps, controller.getModelParameters().getBrands());
 
             for (int i = 0; i < NRUNS; i++) {
+                System.out.print(".");
                 controller.runModel();
 
                 for (int j = 0; j < controller.getModelParameters().getBrands(); j++) {
@@ -134,9 +135,12 @@ public class ConsoleSimulation {
 //                writer.flush();
 //                writer.close();
             } else {
+                
+                    String out = args[9];
 
-                String PATH = "./logs/";
-                String outputFile = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+                String PATH = "./logs/" + out;
+                // String outputFile = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+                String outputFile = controller.getModelParameters().getTargetingStrategy()+"_"+controller.getModelParameters().getMinimunSatisfactionAgend()+"_"+controller.getModelParameters().getUncertaintyToleranceLevel();
 
                 String directoryName = PATH.concat(outputFile);
 
@@ -180,9 +184,9 @@ public class ConsoleSimulation {
                     printWriter = new PrintWriter(TotalDeliberations);
                     stats.printTotalDeliberations(printWriter, true);
 
-                    File source = new File(fileName);
-                    File dest = new File(directoryName + "/configuration.properties");
-                    copyFileUsingFileStreams(source, dest);
+                    //File source = new File(fileName);
+                    // File dest = new File(directoryName + "/configuration.properties");
+                    // copyFileUsingFileStreams(source, dest);
 
                 } catch (Exception e) {
                     System.err.println("Error write results: " + e.toString());

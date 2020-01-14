@@ -153,11 +153,11 @@ public class RunStats {
             // DescriptiveStatistics strategies = new DescriptiveStatistics();
             for (int j = 0; j < this.steps; j++) {
                 DescriptiveStatistics purchasesBrands = new DescriptiveStatistics();
+                purchasesBrands.clear();
                 for (int i = 0; i < this.runs; i++) {
                     purchasesBrands.addValue(this.data_purchases[i][b][j]);
                     // strategies.addValue(this.strategies[i][b][j]);
                 }
-
                 this.avg_purchases[b][j] = purchasesBrands.getMean();
                 this.std_purchases[b][j] = purchasesBrands.getStandardDeviation();
                 this.min_purchases[b][j] = purchasesBrands.getMin();

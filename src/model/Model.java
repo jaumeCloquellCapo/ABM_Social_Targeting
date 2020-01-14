@@ -865,7 +865,6 @@ public class Model extends SimState {
                         int tempCum = cumPurchases[b.getBrandId()][currentStep];
 
                         cumPurchases[b.getBrandId()][currentStep] = calcNrPurchasesOfBrand(b);
-
                         newPurchases[b.getBrandId()][currentStep]
                                 = calcNrNewPurchases(tempCum, cumPurchases[b.getBrandId()][currentStep]);
 
