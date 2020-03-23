@@ -7,11 +7,10 @@ Análisis de procesos de difusión de innovaciones basados en las preferencias d
 
 ### Descripción
 
-Mediante la aplicación de políticas de targeting, se estudiará la influencia que tiene la adopción de nuevos productos con respecto a las preferencias y motivaciones de compra de los consumidores que se pretenden incentivar, así como las de sus contactos en la red social. Se implementará un modelo basado en agentes, añadiendo a los agentes consumidores sus preferencias y motivaciones. Se realizarán estudios de comportamiento y escenarios hipotéticos con los modelos para clarificar los mecanismos de adopción y difusión del producto (influencia entre pares vs. homofilia). Se aplicarán técnicas estudiadas en el Máster como análisis de redes sociales y simulaciones.
+Cuando se lanza un nuevo producto, las empresas suelen regalar muestras gratuitas para dar a conocer el producto en el mercado. Uno de los problemas fundamentales en el marketing viral es encontrar un pequeño conjunto de consumidores semilla que puedan desencadenar la mayor cantidad de adopciones a través de la propagación de influencias de boca en boca (WOM) en la red. 
 
-```
-Give examples
-```
+Utilizando modelos basados en agentes ( en adelante ABM ) y basándonos en los estudios que demuestran que la difusión es más rápida cuando participan personas con mayor conectividad proponemos un nuevo método de selección de consumidores semilla basada en la combinación entre hubs y los agentes más cercanos al producto. Posteriormente compararemos el método de selección propuesto con el resto de métodos de selección de consumidores semilla (aleatorio, hub y agentes más cercanos al producto) para obtener una respuesta óptima de qué consumidores semilla y cuantos de estos generan mayor difusión del producto con el objetivo de aumentar los ingresos de las campañas de marketing viral y al mismo tiempo reducir los costos.
+
 
 ### Run
 
