@@ -664,6 +664,9 @@ public class Model extends SimState {
         for (int i = 0; i < params.nrAgents; i++) {
             int a = util.Functions.findIndex(bestDegre, i);
             int b = util.Functions.findIndex(bestTarg, i);
+            if (a < 0 || b < 0) {
+                System.out.println("Error orderByDegreeAndTargeting");
+            }
             map.put(i, a + b);
         }
 
