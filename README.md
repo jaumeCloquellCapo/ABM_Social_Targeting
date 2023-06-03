@@ -1,16 +1,15 @@
-# TFM para el Máster de Ciencia de Datos e Ingeniería de Computadores
+# Master's Thesis for Data Science and Computer Engineering
 Curso 2018-19
 
-## Título
+## Title
 
-Análisis de procesos de difusión de innovaciones basados en las preferencias de compra y relaciones sociales de los consumidores
+Analysis of Innovation Diffusion Processes Based on Consumer Purchase Preferences and Social Relationships
 
-### Descripción
+### Description
 
-Cuando se lanza un nuevo producto, las empresas suelen regalar muestras gratuitas para dar a conocer el producto en el mercado. Uno de los problemas fundamentales en el marketing viral es encontrar un pequeño conjunto de consumidores semilla que puedan desencadenar la mayor cantidad de adopciones a través de la propagación de influencias de boca en boca (WOM) en la red. 
+When a new product is launched, companies often give out free samples to introduce the product in the market. One of the fundamental challenges in viral marketing is to find a small set of seed consumers who can trigger the highest number of adoptions through word-of-mouth (WOM) influence spreading in the network.
 
-Utilizando modelos basados en agentes ( en adelante ABM ) y basándonos en los estudios que demuestran que la difusión es más rápida cuando participan personas con mayor conectividad proponemos un nuevo método de selección de consumidores semilla basada en la combinación entre hubs y los agentes más cercanos al producto. Posteriormente compararemos el método de selección propuesto con el resto de métodos de selección de consumidores semilla (aleatorio, hub y agentes más cercanos al producto) para obtener una respuesta óptima de qué consumidores semilla y cuantos de estos generan mayor difusión del producto con el objetivo de aumentar los ingresos de las campañas de marketing viral y al mismo tiempo reducir los costos.
-
+Using Agent-Based Models (ABM) and building upon studies that demonstrate faster diffusion when highly connected individuals participate, we propose a new method for selecting seed consumers based on a combination of hubs and agents closest to the product. Subsequently, we will compare the proposed selection method with other seed consumer selection methods (random, hubs, and agents closest to the product) to obtain an optimal answer to which seed consumers and how many of them generate the greatest product diffusion, aiming to increase revenue from viral marketing campaigns while reducing costs.
 
 ### Run
 
